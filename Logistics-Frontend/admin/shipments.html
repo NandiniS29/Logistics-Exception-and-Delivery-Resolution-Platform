@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Shipment Management | Logistics Platform</title>
+
+    <link rel="stylesheet"
+          href="../css/admin.css">
+
+    <style>
+
+        body {
+            background: #f1f5f9;
+        }
+
+        .page-content {
+            padding: 30px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .page-header h1 {
+            margin: 0;
+            color: #0f172a;
+        }
+
+        .page-header p {
+            margin-top: 6px;
+            color: #64748b;
+        }
+
+        .create-btn {
+            display: inline-block;
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            text-decoration: none;
+        }
+
+        .create-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .filter-panel {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+        }
+
+        .search-input,
+        .status-filter {
+            padding: 11px 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 7px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .search-input {
+            width: 320px;
+        }
+
+        .search-input:focus,
+        .status-filter:focus {
+            border-color: #2563eb;
+        }
+
+        .shipment-table-container {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            overflow-x: auto;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+        }
+
+        .shipment-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .shipment-table th {
+            background: #f8fafc;
+            padding: 14px;
+            text-align: left;
+            font-size: 13px;
+            color: #475569;
+            border-bottom: 1px solid #e2e8f0;
+            white-space: nowrap;
+        }
+
+        .shipment-table td {
+            padding: 14px;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        .shipment-table tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .status-transit {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .status-delivered {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .status-delayed {
+            background: #fef3c7;
+            color: #b45309;
+        }
+
+        .status-cancelled {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .status-unknown {
+            background: #e2e8f0;
+            color: #475569;
+        }
+
+        .action-btn {
+            border: none;
+            padding: 7px 11px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-right: 5px;
+            font-size: 12px;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .view-btn {
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+
+        .view-btn:hover {
+            background: #bae6fd;
+        }
+
+        .edit-btn {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .edit-btn:hover {
+            background: #fde68a;
+        }
+
+        .track-btn {
+            background: #ede9fe;
+            color: #6d28d9;
+        }
+
+        .track-btn:hover {
+            background: #ddd6fe;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 30px;
+            color: #64748b;
+        }
+
+        .error-message {
+            text-align: center;
+            padding: 30px;
+            color: #dc2626;
+        }
+
+        @media (max-width: 900px) {
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .filter-panel {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-input {
+                width: 100%;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="page-content">
+
+
+    <!-- ========================================= -->
+    <!-- PAGE HEADER -->
+    <!-- ========================================= -->
+
+    <div class="page-header">
+
+        <div>
+
+            <h1>
+                Shipment Management
+            </h1>
+
+            <p>
+                Manage and monitor logistics shipments
+            </p>
+
+        </div>
+
+
+        <a
+            href="create-shipment.html"
+            class="create-btn">
+
+            + Create Shipment
+
+        </a>
+
+    </div>
+
+
+    <!-- ========================================= -->
+    <!-- SEARCH / FILTER -->
+    <!-- ========================================= -->
+
+    <div class="filter-panel">
+
+        <input
+            type="text"
+            id="searchInput"
+            class="search-input"
+            placeholder="Search tracking number..."
+        >
+
+
+        <select
+            id="statusFilter"
+            class="status-filter">
+
+            <option value="ALL">
+                All Status
+            </option>
+
+            <option value="In Transit">
+                In Transit
+            </option>
+
+            <option value="Delivered">
+                Delivered
+            </option>
+
+            <option value="Delayed">
+                Delayed
+            </option>
+
+            <option value="Cancelled">
+                Cancelled
+            </option>
+
+        </select>
+
+    </div>
+
+
+    <!-- ========================================= -->
+    <!-- SHIPMENT TABLE -->
+    <!-- ========================================= -->
+
+    <div class="shipment-table-container">
+
+
+        <table class="shipment-table">
+
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        ID
+                    </th>
+
+                    <th>
+                        Tracking Number
+                    </th>
+
+                    <th>
+                        Customer ID
+                    </th>
+
+                    <th>
+                        Origin
+                    </th>
+
+                    <th>
+                        Destination
+                    </th>
+
+                    <th>
+                        Shipment Date
+                    </th>
+
+                    <th>
+                        Expected Delivery
+                    </th>
+
+                    <th>
+                        Status
+                    </th>
+
+                    <th>
+                        Actions
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="shipmentTableBody">
+
+                <tr>
+
+                    <td
+                        colspan="9"
+                        class="loading">
+
+                        Loading shipments...
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+
+        </table>
+
+
+    </div>
+
+
+</div>
+
+
+<script>
+
+
+    // =========================================
+    // BACKEND URL
+    // =========================================
+
+    const API_BASE_URL =
+        "http://127.0.0.1:8080";
+
+
+    let allShipments = [];
+
+
+    // =========================================
+    // LOAD SHIPMENTS
+    // =========================================
+
+    async function loadShipments() {
+
+
+        const tableBody =
+            document.getElementById(
+                "shipmentTableBody"
+            );
+
+
+        try {
+
+
+            const response =
+                await fetch(
+
+                    API_BASE_URL +
+                    "/api/shipments",
+
+                    {
+
+                        method: "GET",
+
+                        credentials: "include"
+
+                    }
+
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "HTTP " +
+                    response.status
+                );
+
+            }
+
+
+            allShipments =
+                await response.json();
+
+
+            displayShipments(
+                allShipments
+            );
+
+
+        }
+
+        catch (error) {
+
+
+            console.error(
+                "Shipment loading error:",
+                error
+            );
+
+
+            tableBody.innerHTML = `
+
+                <tr>
+
+                    <td
+                        colspan="9"
+                        class="error-message">
+
+                        Unable to load shipments.
+
+                        <br><br>
+
+                        Please make sure the
+                        Spring Boot backend is running.
+
+                    </td>
+
+                </tr>
+
+            `;
+
+        }
+
+    }
+
+
+    // =========================================
+    // DISPLAY SHIPMENTS
+    // =========================================
+
+    function displayShipments(
+        shipments
+    ) {
+
+
+        const tableBody =
+            document.getElementById(
+                "shipmentTableBody"
+            );
+
+
+        if (
+            !shipments ||
+            shipments.length === 0
+        ) {
+
+
+            tableBody.innerHTML = `
+
+                <tr>
+
+                    <td
+                        colspan="9"
+                        class="loading">
+
+                        No shipments found.
+
+                    </td>
+
+                </tr>
+
+            `;
+
+
+            return;
+
+        }
+
+
+        tableBody.innerHTML = "";
+
+
+        shipments.forEach(
+            function(shipment) {
+
+
+                const row =
+                    document.createElement(
+                        "tr"
+                    );
+
+
+                const status =
+                    shipment.status || "";
+
+
+                const lowerStatus =
+                    status.toLowerCase();
+
+
+                let statusClass =
+                    "status-unknown";
+
+
+                if (
+                    lowerStatus.includes(
+                        "transit"
+                    )
+                ) {
+
+                    statusClass =
+                        "status-transit";
+
+                }
+
+                else if (
+                    lowerStatus.includes(
+                        "deliver"
+                    )
+                ) {
+
+                    statusClass =
+                        "status-delivered";
+
+                }
+
+                else if (
+                    lowerStatus.includes(
+                        "delay"
+                    )
+                ) {
+
+                    statusClass =
+                        "status-delayed";
+
+                }
+
+                else if (
+                    lowerStatus.includes(
+                        "cancel"
+                    )
+                ) {
+
+                    statusClass =
+                        "status-cancelled";
+
+                }
+
+
+                row.innerHTML = `
+
+                    <td>
+                        ${
+                            shipment.shipmentId
+                            ?? "-"
+                        }
+                    </td>
+
+
+                    <td>
+
+                        <strong>
+                            ${
+                                shipment.trackingNumber
+                                ?? "-"
+                            }
+                        </strong>
+
+                    </td>
+
+
+                    <td>
+                        ${
+                            shipment.customerId
+                            ?? "-"
+                        }
+                    </td>
+
+
+                    <td>
+                        ${
+                            shipment.origin
+                            ?? "-"
+                        }
+                    </td>
+
+
+                    <td>
+                        ${
+                            shipment.destination
+                            ?? "-"
+                        }
+                    </td>
+
+
+                    <td>
+                        ${
+                            shipment.shipmentDate
+                            ?? "-"
+                        }
+                    </td>
+
+
+                    <td>
+                        ${
+                            shipment.expectedDeliveryDate
+                            ?? "-"
+                        }
+                    </td>
+
+
+                    <td>
+
+                        <span
+                            class="status-badge
+                                   ${statusClass}">
+
+                            ${
+                                status ||
+                                "Unknown"
+                            }
+
+                        </span>
+
+                    </td>
+
+
+                    <td>
+
+
+                        <!-- VIEW -->
+
+                        <button
+                            type="button"
+                            class="action-btn view-btn"
+                            onclick="viewShipment(
+                                ${shipment.shipmentId}
+                            )">
+
+                            View
+
+                        </button>
+
+
+                        <!-- EDIT -->
+
+                        <button
+                            type="button"
+                            class="action-btn edit-btn"
+                            onclick="editShipment(
+                                ${shipment.shipmentId}
+                            )">
+
+                            Edit
+
+                        </button>
+
+
+                        <!-- TRACK -->
+
+                        <button
+                            type="button"
+                            class="action-btn track-btn"
+                            onclick="trackShipment(
+                                ${shipment.shipmentId}
+                            )">
+
+                            Track
+
+                        </button>
+
+
+                    </td>
+
+                `;
+
+
+                tableBody.appendChild(
+                    row
+                );
+
+
+            }
+        );
+
+
+    }
+
+
+    // =========================================
+    // SEARCH
+    // =========================================
+
+    document
+        .getElementById(
+            "searchInput"
+        )
+        .addEventListener(
+            "input",
+            filterShipments
+        );
+
+
+    // =========================================
+    // STATUS FILTER
+    // =========================================
+
+    document
+        .getElementById(
+            "statusFilter"
+        )
+        .addEventListener(
+            "change",
+            filterShipments
+        );
+
+
+    // =========================================
+    // FILTER
+    // =========================================
+
+    function filterShipments() {
+
+
+        const searchValue =
+            document
+                .getElementById(
+                    "searchInput"
+                )
+                .value
+                .toLowerCase()
+                .trim();
+
+
+        const selectedStatus =
+            document
+                .getElementById(
+                    "statusFilter"
+                )
+                .value;
+
+
+        const filteredShipments =
+            allShipments.filter(
+                function(shipment) {
+
+
+                    const trackingNumber =
+                        (
+                            shipment.trackingNumber
+                            || ""
+                        )
+                        .toLowerCase();
+
+
+                    const status =
+                        shipment.status
+                        || "";
+
+
+                    const matchesSearch =
+                        trackingNumber.includes(
+                            searchValue
+                        );
+
+
+                    const matchesStatus =
+                        selectedStatus === "ALL"
+                        ||
+                        status === selectedStatus;
+
+
+                    return (
+                        matchesSearch
+                        &&
+                        matchesStatus
+                    );
+
+                }
+            );
+
+
+        displayShipments(
+            filteredShipments
+        );
+
+    }
+
+
+    // =========================================
+    // VIEW SHIPMENT
+    // =========================================
+
+    function viewShipment(
+        shipmentId
+    ) {
+
+
+        window.location.href =
+            "shipment-details.html?shipmentId=" +
+            shipmentId;
+
+    }
+
+
+    // =========================================
+    // EDIT SHIPMENT
+    // =========================================
+
+    function editShipment(
+        shipmentId
+    ) {
+
+
+        window.location.href =
+            "edit-shipment.html?shipmentId=" +
+            shipmentId;
+
+    }
+
+
+    // =========================================
+    // TRACK SHIPMENT
+    // =========================================
+
+    function trackShipment(
+        shipmentId
+    ) {
+
+
+        window.location.href =
+            "tracking.html?shipmentId=" +
+            shipmentId;
+
+    }
+
+
+    // =========================================
+    // START
+    // =========================================
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function() {
+
+            loadShipments();
+
+        }
+    );
+
+
+</script>
+
+
+</body>
+
+</html>

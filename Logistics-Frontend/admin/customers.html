@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Customer Management | Logistics Platform</title>
+
+    <!-- Bootstrap -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <!-- Shared Admin Styles -->
+    <link rel="stylesheet" href="../css/admin.css">
+
+    <style>
+        :root {
+            --navy: #061522;
+            --navy-light: #0b2635;
+            --cyan: #00c9e8;
+            --page: #f1f5f9;
+            --text: #122b40;
+            --muted: #65798a;
+            --panel: #ffffff;
+            --border: #e0e9ef;
+            --table-header: #f5f8fa;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: var(--page);
+            color: var(--text);
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 245px;
+            min-height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            padding: 28px 16px;
+            color: #eaf7ff;
+            background: linear-gradient(
+                180deg,
+                var(--navy),
+                var(--navy-light)
+            );
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .brand {
+            padding: 8px 10px 26px;
+            margin-bottom: 22px;
+            border-bottom: 1px solid #25404e;
+            font-size: 21px;
+            font-weight: 750;
+        }
+
+        .brand span {
+            color: var(--cyan);
+        }
+
+        .sidebar nav {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar .nav-link {
+            color: #c6d7e2;
+            padding: 13px 14px;
+            border-radius: 9px;
+            margin-bottom: 7px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .sidebar .nav-link:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.10);
+        }
+
+        .sidebar .nav-link.active {
+            color: #ffffff;
+            background: #087f98;
+        }
+
+        /* Main Content */
+        .main {
+            margin-left: 245px;
+            padding: 30px;
+            min-height: 100vh;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+            gap: 16px;
+        }
+
+        .eyebrow {
+            color: #087f9a;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            font-size: 30px;
+            font-weight: 750;
+            margin: 5px 0;
+        }
+
+        .subtitle {
+            color: var(--muted);
+        }
+
+        /* Cards and Panels */
+        .panel,
+        .stat-card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            box-shadow: 0 7px 22px rgba(10, 37, 55, 0.045);
+        }
+
+        .panel {
+            padding: 24px;
+            margin-bottom: 22px;
+        }
+
+        .stat-card {
+            padding: 20px;
+            height: 100%;
+        }
+
+        .stat-label {
+            color: #718395;
+            font-size: 14px;
+        }
+
+        .stat-value {
+            font-size: 30px;
+            font-weight: 800;
+            margin-top: 5px;
+        }
+
+        .cyan {
+            color: #008aa6;
+        }
+
+        .green {
+            color: #15966a;
+        }
+
+        .red {
+            color: #d93636;
+        }
+
+        /* Search */
+        .form-control {
+            border-color: #d6e1e9;
+            padding: 11px 12px;
+            border-radius: 8px;
+        }
+
+        .form-control:focus {
+            border-color: var(--cyan);
+            box-shadow: 0 0 0 3px rgba(0, 201, 232, 0.12);
+        }
+
+        .btn-outline {
+            border: 1px solid #cbd9e2;
+            color: #294357;
+            background: white;
+            padding: 9px 14px;
+            border-radius: 8px;
+        }
+
+        .btn-outline:hover {
+            background: #f1f7fa;
+        }
+
+        .btn-view {
+            border: 1px solid #087f98;
+            color: #087f98;
+            background: transparent;
+            padding: 6px 13px;
+            border-radius: 7px;
+            font-weight: 600;
+        }
+
+        .btn-view:hover {
+            background: #087f98;
+            color: #ffffff;
+        }
+
+        /* Customer Table */
+        .table {
+            vertical-align: middle;
+            margin-bottom: 0;
+        }
+
+        .table thead th {
+            color: #63788a;
+            background: var(--table-header);
+            padding: 14px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            white-space: nowrap;
+        }
+
+        .table tbody td {
+            padding: 14px;
+        }
+
+        .customer-name {
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .customer-id {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        #message {
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        /* Theme Toggle */
+        .theme-toggle-container {
+            padding: 14px 10px;
+            margin-top: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .theme-toggle-label {
+            color: #eaf7ff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .theme-toggle-label input {
+            width: 36px;
+            height: 19px;
+            accent-color: #00c9e8;
+            cursor: pointer;
+        }
+
+        /* Dark Mode */
+        html[data-theme="dark"] {
+            --page: #101923;
+            --text: #e5edf5;
+            --muted: #a6b5c4;
+            --panel: #192735;
+            --border: #2c3d4d;
+            --table-header: #223444;
+        }
+
+        html[data-theme="dark"] body {
+            background: var(--page);
+            color: var(--text);
+        }
+
+        html[data-theme="dark"] .panel,
+        html[data-theme="dark"] .stat-card {
+            background: var(--panel);
+            border-color: var(--border);
+        }
+
+        html[data-theme="dark"] .subtitle,
+        html[data-theme="dark"] .stat-label {
+            color: var(--muted);
+        }
+
+        html[data-theme="dark"] .customer-name {
+            color: var(--text);
+        }
+
+        html[data-theme="dark"] .table {
+            --bs-table-bg: var(--panel);
+            --bs-table-color: var(--text);
+            --bs-table-hover-bg: #243748;
+            --bs-table-hover-color: #ffffff;
+            --bs-table-border-color: var(--border);
+        }
+
+        html[data-theme="dark"] .table thead th {
+            background: var(--table-header);
+            color: #c3d2df;
+        }
+
+        html[data-theme="dark"] .form-control {
+            background: #142330;
+            color: #e5edf5;
+            border-color: var(--border);
+        }
+
+        html[data-theme="dark"] .form-control::placeholder {
+            color: #91a2b2;
+        }
+
+        html[data-theme="dark"] .btn-outline {
+            background: #192735;
+            color: #e5edf5;
+            border-color: #526779;
+        }
+
+        html[data-theme="dark"] .btn-outline:hover {
+            background: #2c4051;
+        }
+
+        html[data-theme="dark"] .modal-content {
+            background: var(--panel);
+            color: var(--text);
+            border-color: var(--border);
+        }
+
+        html[data-theme="dark"] .btn-close {
+            filter: invert(1);
+        }
+
+        /* Responsive */
+        @media (max-width: 850px) {
+            .sidebar {
+                position: relative;
+                width: 100%;
+                min-height: auto;
+                padding: 18px 16px;
+            }
+
+            .sidebar nav {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 4px;
+            }
+
+            .sidebar .nav-link {
+                margin-bottom: 0;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 18px;
+            }
+
+            .topbar {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .sidebar nav {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 25px;
+            }
+
+            .panel {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- ================= SIDEBAR ================= -->
+
+<aside class="sidebar">
+
+    <div class="brand">
+        🚚 Logistics <span>Platform</span>
+    </div>
+
+    <nav class="sidebar-nav">
+
+        <a class="nav-link" href="dashboard.html">
+            <span>▦</span> Dashboard
+        </a>
+
+        <a class="nav-link active" href="customers.html">
+            <span>♙</span> Customers
+        </a>
+
+        <a class="nav-link" href="shipments.html">
+            <span>▣</span> Shipments
+        </a>
+
+        <a class="nav-link" href="packages.html">
+            <span>▦</span> Packages &amp; Items
+        </a>
+
+        <a class="nav-link" href="routes.html">
+            <span>➜</span> Routes &amp; Delivery
+        </a>
+
+        <a class="nav-link" href="tracking.html">
+            <span>⌖</span> Shipment Tracking
+        </a>
+
+        <a class="nav-link" href="exceptions.html">
+            <span>⚠</span> Exceptions
+        </a>
+
+        <a class="nav-link" href="investigation.html">
+            <span>⌕</span> Investigation
+        </a>
+
+        <a class="nav-link" href="resolutions.html">
+            <span>✓</span> Resolutions
+        </a>
+
+        <a class="nav-link" href="sla-analytics.html">
+            <span>▥</span> SLA &amp; Analytics
+        </a>
+
+    </nav>
+
+
+</aside>
+
+
+<!-- ================= MAIN CONTENT ================= -->
+
+<main class="main">
+
+    <header class="topbar">
+
+        <div>
+            <div class="eyebrow">Logistics Control Officer</div>
+
+            <h1>Customer Management</h1>
+
+            <div class="subtitle">
+                View registered customers and monitor their delivery information.
+            </div>
+        </div>
+
+        <button
+            type="button"
+            class="btn-outline"
+            onclick="loadCustomers()"
+        >
+            ↻ Refresh
+        </button>
+
+    </header>
+
+
+    <!-- Notifications -->
+
+    <div id="message" class="alert d-none" role="status"></div>
+
+
+    <!-- ================= SUMMARY CARDS ================= -->
+
+    <section class="row g-3 mb-4">
+
+        <div class="col-sm-6 col-xl-4">
+            <div class="stat-card">
+                <div class="stat-label">Total Customers</div>
+                <div class="stat-value cyan" id="totalCustomers">—</div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-xl-4">
+            <div class="stat-card">
+                <div class="stat-label">Customer Records</div>
+                <div class="stat-value green" style="font-size:20px">
+                    <span id="recordStatus">Loading...</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-12 col-xl-4">
+            <div class="stat-card">
+                <div class="stat-label">System Connection</div>
+                <div
+                    class="stat-value"
+                    style="font-size:20px"
+                    id="connectionStatus"
+                >
+                    Connecting...
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+
+    <!-- ================= CUSTOMER DIRECTORY ================= -->
+
+    <section class="panel">
+
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-3">
+
+            <div>
+                <h5 class="fw-bold mb-1">Customer Directory</h5>
+
+                <div class="subtitle small">
+                    Registered customer records retrieved from the backend.
+                </div>
+            </div>
+
+            <input
+                id="searchInput"
+                class="form-control"
+                style="max-width: 300px"
+                placeholder="Search name, email, phone or city..."
+                aria-label="Search customers"
+            >
+
+        </div>
+
+
+        <div class="table-responsive">
+
+            <table class="table table-hover">
+
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Customer</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>City</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody id="customerRows">
+
+                    <tr>
+                        <td colspan="6" class="text-center text-secondary py-4">
+                            Loading customers...
+                        </td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<!-- ================= CUSTOMER DETAILS MODAL ================= -->
+
+<div
+    class="modal fade"
+    id="customerDetailsModal"
+    tabindex="-1"
+    aria-labelledby="customerDetailsTitle"
+    aria-hidden="true"
+>
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title fw-bold" id="customerDetailsTitle">
+                    Customer Details
+                </h5>
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                ></button>
+
+            </div>
+
+            <div class="modal-body">
+
+                <div class="mb-3">
+                    <div class="text-secondary small">Customer ID</div>
+                    <div id="detailId" class="fw-semibold">—</div>
+                </div>
+
+                <div class="mb-3">
+                    <div class="text-secondary small">Full Name</div>
+                    <div id="detailName" class="fw-semibold">—</div>
+                </div>
+
+                <div class="mb-3">
+                    <div class="text-secondary small">Email</div>
+                    <div id="detailEmail">—</div>
+                </div>
+
+                <div class="mb-3">
+                    <div class="text-secondary small">Phone</div>
+                    <div id="detailPhone">—</div>
+                </div>
+
+                <div class="mb-3">
+                    <div class="text-secondary small">City</div>
+                    <div id="detailCity">—</div>
+                </div>
+
+                <div>
+                    <div class="text-secondary small">Address</div>
+                    <div id="detailAddress">—</div>
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                >
+                    Close
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+
+<!-- ================= JAVASCRIPT ================= -->
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    const API_BASE = "http://127.0.0.1:8080/api/customers";
+
+    let customers = [];
+
+    /* Display a status message */
+    function showMessage(text, type = "info") {
+        const box = document.getElementById("message");
+
+        box.textContent = text;
+        box.className = "alert alert-" + type;
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+    }
+
+
+    /* Escape HTML before displaying backend values */
+    function escapeHtml(value) {
+        return String(value ?? "").replace(/[&<>"']/g, ch => ({
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;"
+        }[ch]));
+    }
+
+
+    /* Read a field using supported property names */
+    function getField(customer, ...keys) {
+        for (const key of keys) {
+            if (
+                customer[key] !== undefined &&
+                customer[key] !== null
+            ) {
+                return customer[key];
+            }
+        }
+
+        return "";
+    }
+
+
+    /* API request helper */
+    async function apiRequest(url, options = {}) {
+        const response = await fetch(url, {
+            ...options,
+            credentials: "include",
+            headers: {
+                ...(options.headers || {})
+            }
+        });
+
+        if (!response.ok) {
+            const body = await response.text();
+
+            throw new Error(
+                "HTTP " + response.status +
+                (body ? ": " + body.substring(0, 250) : "")
+            );
+        }
+
+        if (response.status === 204) {
+            return null;
+        }
+
+        const body = await response.text();
+
+        return body ? JSON.parse(body) : null;
+    }
+
+
+    /* Load customers from Spring Boot */
+    async function loadCustomers() {
+        const status = document.getElementById("connectionStatus");
+        const rows = document.getElementById("customerRows");
+
+        status.textContent = "Connecting...";
+        status.className = "stat-value";
+        status.style.fontSize = "20px";
+        status.style.color = "#718395";
+
+        try {
+            const data = await apiRequest(API_BASE);
+
+            customers = Array.isArray(data) ? data : [];
+
+            status.textContent = "Connected";
+            status.style.color = "#15966a";
+
+            document.getElementById("totalCustomers").textContent =
+                customers.length;
+
+            document.getElementById("recordStatus").textContent =
+                customers.length > 0 ? "Available" : "No records";
+
+            renderCustomers();
+
+        } catch (error) {
+            console.error("Customer API error:", error);
+
+            status.textContent = "Connection issue";
+            status.style.color = "#d93636";
+
+            document.getElementById("totalCustomers").textContent = "—";
+            document.getElementById("recordStatus").textContent = "Unavailable";
+
+            let explanation = error.message;
+
+            if (
+                explanation.includes("401") ||
+                explanation.includes("403")
+            ) {
+                explanation =
+                    "Access denied. Please log in as the Logistics Control Officer again. " +
+                    "If the problem continues, check the backend security configuration.";
+            } else if (explanation.includes("Failed to fetch")) {
+                explanation =
+                    "The browser could not reach the backend. Check that Spring Boot is running on port 8080 and that CORS allows this frontend.";
+            }
+
+            rows.innerHTML = `
+                <tr>
+                    <td colspan="6" class="text-center text-danger py-4">
+                        ${escapeHtml(explanation)}
+                    </td>
+                </tr>
+            `;
+        }
+    }
+
+
+    /* Display and search customers */
+    function renderCustomers() {
+        const rows = document.getElementById("customerRows");
+
+        const query = document
+            .getElementById("searchInput")
+            .value
+            .trim()
+            .toLowerCase();
+
+        const filtered = customers.filter(customer => {
+            const text = [
+                getField(customer, "name", "customerName"),
+                getField(customer, "email"),
+                getField(customer, "phone"),
+                getField(customer, "city")
+            ].join(" ").toLowerCase();
+
+            return text.includes(query);
+        });
+
+        if (!filtered.length) {
+            rows.innerHTML = `
+                <tr>
+                    <td colspan="6" class="text-center text-secondary py-4">
+                        ${
+                            customers.length
+                                ? "No matching customers found."
+                                : "No customer records found."
+                        }
+                    </td>
+                </tr>
+            `;
+
+            return;
+        }
+
+        rows.innerHTML = filtered.map(customer => {
+            const id = getField(customer, "customerId", "id");
+            const name = getField(customer, "name", "customerName");
+            const email = getField(customer, "email");
+            const phone = getField(customer, "phone");
+            const city = getField(customer, "city");
+
+            return `
+                <tr>
+                    <td>${escapeHtml(id)}</td>
+
+                    <td>
+                        <div class="customer-name">
+                            ${escapeHtml(name)}
+                        </div>
+                        <div class="customer-id">
+                            Customer #${escapeHtml(id)}
+                        </div>
+                    </td>
+
+                    <td>${escapeHtml(email)}</td>
+
+                    <td>${escapeHtml(phone || "—")}</td>
+
+                    <td>${escapeHtml(city || "—")}</td>
+
+                    <td>
+                        <button
+                            type="button"
+                            class="btn-view"
+                            data-customer-id="${escapeHtml(id)}"
+                        >
+                            View
+                        </button>
+                    </td>
+                </tr>
+            `;
+        }).join("");
+    }
+
+
+    /* Show customer details without editing */
+    function viewCustomer(id) {
+        const customer = customers.find(item =>
+            String(getField(item, "customerId", "id")) === String(id)
+        );
+
+        if (!customer) {
+            showMessage("Customer record was not found.", "warning");
+            return;
+        }
+
+        document.getElementById("detailId").textContent =
+            getField(customer, "customerId", "id") || "—";
+
+        document.getElementById("detailName").textContent =
+            getField(customer, "name", "customerName") || "—";
+
+        document.getElementById("detailEmail").textContent =
+            getField(customer, "email") || "—";
+
+        document.getElementById("detailPhone").textContent =
+            getField(customer, "phone") || "Not provided";
+
+        document.getElementById("detailCity").textContent =
+            getField(customer, "city") || "Not provided";
+
+        document.getElementById("detailAddress").textContent =
+            getField(customer, "address") || "Not provided";
+
+        const modalElement =
+            document.getElementById("customerDetailsModal");
+
+        bootstrap.Modal.getOrCreateInstance(modalElement).show();
+    }
+
+
+    /* Search while typing */
+    document
+        .getElementById("searchInput")
+        .addEventListener("input", renderCustomers);
+
+
+    /* Handle View button clicks */
+    document
+        .getElementById("customerRows")
+        .addEventListener("click", function (event) {
+            const button = event.target.closest("[data-customer-id]");
+
+            if (!button) {
+                return;
+            }
+
+            viewCustomer(button.dataset.customerId);
+        });
+
+
+    /* Persistent theme toggle */
+    function initializeCustomerTheme() {
+        const savedTheme =
+            localStorage.getItem("logisticsTheme") || "light";
+
+        applyCustomerTheme(savedTheme);
+
+        document
+            .getElementById("themeToggle")
+            .addEventListener("change", function () {
+                applyCustomerTheme(this.checked ? "dark" : "light");
+            });
+    }
+
+
+    function applyCustomerTheme(theme) {
+        const selectedTheme = theme === "dark" ? "dark" : "light";
+
+        document.documentElement.setAttribute(
+            "data-theme",
+            selectedTheme
+        );
+
+        localStorage.setItem("logisticsTheme", selectedTheme);
+
+        const toggle = document.getElementById("themeToggle");
+        const label = document.getElementById("themeToggleLabel");
+
+        if (toggle) {
+            toggle.checked = selectedTheme === "dark";
+        }
+
+        if (label) {
+            label.textContent =
+                selectedTheme === "dark" ? "Dark Mode" : "Light Mode";
+        }
+    }
+
+
+    /* Highlight the current sidebar page */
+    function setCustomerActiveNavigation() {
+        const currentPage = window.location.pathname
+            .split("/")
+            .pop()
+            .toLowerCase();
+
+        document.querySelectorAll(".sidebar .nav-link").forEach(link => {
+            const href = link.getAttribute("href");
+
+            if (!href || href === "#") {
+                return;
+            }
+
+            link.classList.toggle(
+                "active",
+                href.split("/").pop().toLowerCase() === currentPage
+            );
+        });
+    }
+
+
+    /* Start the page */
+    document.addEventListener("DOMContentLoaded", function () {
+        initializeCustomerTheme();
+        setCustomerActiveNavigation();
+    });
+
+    /* Load the actual backend data */
+    loadCustomers();
+</script>
+
+</body>
+</html>

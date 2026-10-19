@@ -1,0 +1,1364 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Track Shipment | Logistics Platform</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background: #f4f7fb;
+            color: #1f2937;
+        }
+
+        /* ================= SIDEBAR ================= */
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+            background: #111827;
+            color: white;
+            padding: 25px 15px;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+            padding: 0 15px 30px;
+            border-bottom: 1px solid #374151;
+            margin-bottom: 20px;
+        }
+
+        .logo span {
+            color: #60a5fa;
+        }
+
+        .menu {
+            list-style: none;
+        }
+
+        .menu li {
+            margin-bottom: 7px;
+        }
+
+        .menu a {
+            display: block;
+            text-decoration: none;
+            color: #d1d5db;
+            padding: 13px 15px;
+            border-radius: 8px;
+        }
+
+        .menu a:hover,
+        .menu a.active {
+            background: #2563eb;
+            color: white;
+        }
+
+        .logout {
+            position: absolute;
+            bottom: 25px;
+            left: 15px;
+            right: 15px;
+        }
+
+        .logout a {
+            display: block;
+            text-align: center;
+            padding: 12px;
+            border-radius: 8px;
+            background: #dc2626;
+            color: white;
+            text-decoration: none;
+        }
+
+        /* ================= MAIN ================= */
+
+        .main {
+            margin-left: 250px;
+            min-height: 100vh;
+        }
+
+        .topbar {
+            height: 75px;
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 30px;
+        }
+
+        .topbar h2 {
+            font-size: 22px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-details {
+            text-align: right;
+        }
+
+        .user-name {
+            font-weight: bold;
+        }
+
+        .user-role {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: #2563eb;
+            color: white;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-weight: bold;
+        }
+
+        /* ================= CONTENT ================= */
+
+        .content {
+            padding: 30px;
+        }
+
+        .page-header {
+            margin-bottom: 25px;
+        }
+
+        .page-header h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .page-header p {
+            color: #6b7280;
+        }
+
+        /* ================= CARD ================= */
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.04);
+            margin-bottom: 25px;
+        }
+
+        .card h2 {
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+
+        /* ================= SELECT ================= */
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        select {
+            width: 100%;
+            max-width: 500px;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 7px;
+            background: white;
+            font-size: 14px;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+
+        .track-btn {
+            border: none;
+            background: #2563eb;
+            color: white;
+            padding: 12px 22px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .track-btn:hover {
+            background: #1d4ed8;
+        }
+
+        /* ================= SHIPMENT SUMMARY ================= */
+
+        .shipment-summary {
+            display: none;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .summary-box {
+            background: #f9fafb;
+            border-radius: 8px;
+            padding: 18px;
+        }
+
+        .summary-label {
+            color: #6b7280;
+            font-size: 12px;
+            margin-bottom: 7px;
+        }
+
+        .summary-value {
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        /* ================= STATUS ================= */
+
+        .status {
+            display: inline-block;
+            padding: 7px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .status-transit {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .status-delivered {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .status-delayed {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .status-other {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        /* ================= TRACKING TIMELINE ================= */
+
+        .timeline {
+            position: relative;
+            margin-top: 15px;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding: 0 0 25px 45px;
+        }
+
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+
+        .timeline-item::before {
+            content: "";
+            position: absolute;
+            left: 11px;
+            top: 25px;
+            width: 2px;
+            height: calc(100% - 5px);
+            background: #d1d5db;
+        }
+
+        .timeline-item:last-child::before {
+            display: none;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: 0;
+            top: 0;
+
+            width: 25px;
+            height: 25px;
+
+            border-radius: 50%;
+            background: #2563eb;
+
+            border: 4px solid #dbeafe;
+        }
+
+        .tracking-location {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .tracking-status {
+            color: #2563eb;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .tracking-description {
+            color: #6b7280;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .tracking-date {
+            color: #9ca3af;
+            font-size: 12px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 30px;
+            color: #6b7280;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 30px;
+            color: #6b7280;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 1000px) {
+
+            .shipment-summary {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+        }
+
+        @media (max-width: 750px) {
+
+            .sidebar {
+                width: 200px;
+            }
+
+            .main {
+                margin-left: 200px;
+            }
+
+            .shipment-summary {
+                grid-template-columns: 1fr;
+            }
+
+            .content {
+                padding: 15px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ================= SIDEBAR ================= -->
+
+<aside class="sidebar">
+
+    <div class="logo">
+        Logistics <span>Platform</span>
+    </div>
+
+
+    <ul class="menu">
+
+        <li>
+            <a href="dashboard.html">
+                Dashboard
+            </a>
+        </li>
+
+        <li>
+            <a href="shipments.html">
+                My Shipments
+            </a>
+        </li>
+
+        <li>
+            <a href="tracking.html"
+               class="active">
+                Track Shipment
+            </a>
+        </li>
+
+        <li>
+            <a href="packages.html">
+                Package Details
+            </a>
+        </li>
+
+        <li>
+            <a href="exceptions.html">
+                My Exceptions
+            </a>
+        </li>
+
+        <li>
+            <a href="resolutions.html">
+                Resolution Status
+            </a>
+        </li>
+
+        <li>
+            <a href="profile.html">
+                My Profile
+            </a>
+        </li>
+
+        <li>
+            <a href="notifications.html">
+                Notifications
+            </a>
+        </li>
+
+    </ul>
+
+
+    <div class="logout">
+
+        <a href="#"
+           onclick="logout()">
+
+            Logout
+
+        </a>
+
+    </div>
+
+</aside>
+
+
+<!-- ================= MAIN ================= -->
+
+<main class="main">
+
+
+    <!-- TOPBAR -->
+
+    <header class="topbar">
+
+        <h2>
+            Track Shipment
+        </h2>
+
+
+        <div class="user-info">
+
+            <div class="user-details">
+
+                <div class="user-name"
+                     id="userName">
+
+                    Customer
+
+                </div>
+
+                <div class="user-role">
+
+                    Customer
+
+                </div>
+
+            </div>
+
+
+            <div class="avatar"
+                 id="avatar">
+
+                C
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- ================= CONTENT ================= -->
+
+    <section class="content">
+
+
+        <div class="page-header">
+
+            <h1>
+                Track Your Shipment
+            </h1>
+
+            <p>
+                Select one of your shipments to view
+                its current delivery status and tracking history.
+            </p>
+
+        </div>
+
+
+        <div id="errorMessage"
+             class="error">
+        </div>
+
+
+        <!-- SELECT SHIPMENT -->
+
+        <div class="card">
+
+            <h2>
+                Select Shipment
+            </h2>
+
+
+            <div class="form-group">
+
+                <label for="shipmentSelect">
+
+                    Shipment
+
+                </label>
+
+
+                <select id="shipmentSelect">
+
+                    <option value="">
+
+                        Loading shipments...
+
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <button
+                class="track-btn"
+                onclick="trackShipment()">
+
+                Track Shipment
+
+            </button>
+
+        </div>
+
+
+        <!-- SHIPMENT SUMMARY -->
+
+        <div
+            id="shipmentSummary"
+            class="shipment-summary">
+
+
+            <div class="summary-box">
+
+                <div class="summary-label">
+                    Tracking Number
+                </div>
+
+                <div
+                    class="summary-value"
+                    id="trackingNumber">
+
+                    -
+
+                </div>
+
+            </div>
+
+
+            <div class="summary-box">
+
+                <div class="summary-label">
+                    Origin
+                </div>
+
+                <div
+                    class="summary-value"
+                    id="origin">
+
+                    -
+
+                </div>
+
+            </div>
+
+
+            <div class="summary-box">
+
+                <div class="summary-label">
+                    Destination
+                </div>
+
+                <div
+                    class="summary-value"
+                    id="destination">
+
+                    -
+
+                </div>
+
+            </div>
+
+
+            <div class="summary-box">
+
+                <div class="summary-label">
+                    Current Status
+                </div>
+
+                <div id="currentStatus">
+
+                    -
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- TRACKING HISTORY -->
+
+        <div class="card">
+
+            <h2>
+                Tracking History
+            </h2>
+
+
+            <div
+                id="trackingHistory"
+                class="timeline">
+
+                <div class="empty">
+
+                    Select a shipment and click
+                    <strong>Track Shipment</strong>
+                    to view tracking history.
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </section>
+
+</main>
+
+
+<script>
+
+const API_BASE_URL =
+    "http://127.0.0.1:8080";
+
+
+/* ================= LOAD USER ================= */
+
+async function loadUser() {
+
+    try {
+
+        const response =
+            await fetch(
+                API_BASE_URL +
+                "/api/users/me",
+                {
+                    method: "GET",
+                    credentials: "include"
+                }
+            );
+
+
+        if (!response.ok) {
+            return;
+        }
+
+
+        const user =
+            await response.json();
+
+
+        const name =
+            user.fullName ||
+            user.name ||
+            "Customer";
+
+
+        document.getElementById(
+            "userName"
+        ).textContent = name;
+
+
+        document.getElementById(
+            "avatar"
+        ).textContent =
+            name.charAt(0).toUpperCase();
+
+
+    } catch (error) {
+
+        console.error(
+            "User loading error:",
+            error
+        );
+
+    }
+
+}
+
+
+/* ================= LOAD MY SHIPMENTS ================= */
+
+async function loadShipments() {
+
+    const select =
+        document.getElementById(
+            "shipmentSelect"
+        );
+
+
+    try {
+
+        const response =
+            await fetch(
+                API_BASE_URL +
+                "/api/shipments/my",
+                {
+                    method: "GET",
+                    credentials: "include"
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Unable to load your shipments."
+            );
+
+        }
+
+
+        const shipments =
+            await response.json();
+
+
+        if (
+            !shipments ||
+            shipments.length === 0
+        ) {
+
+            select.innerHTML = `
+                <option value="">
+                    No shipments found
+                </option>
+            `;
+
+            return;
+
+        }
+
+
+        select.innerHTML = `
+
+            <option value="">
+                Select a shipment
+            </option>
+
+        `;
+
+
+        shipments.forEach(
+            shipment => {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+
+                option.value =
+                    shipment.shipmentId;
+
+
+                option.textContent =
+                    (
+                        shipment.trackingNumber ||
+                        "Shipment"
+                    ) +
+                    " - " +
+                    (
+                        shipment.origin ||
+                        "-"
+                    ) +
+                    " → " +
+                    (
+                        shipment.destination ||
+                        "-"
+                    );
+
+
+                option.dataset.trackingNumber =
+                    shipment.trackingNumber || "";
+
+
+                option.dataset.origin =
+                    shipment.origin || "";
+
+
+                option.dataset.destination =
+                    shipment.destination || "";
+
+
+                option.dataset.status =
+                    shipment.status || "";
+
+
+                select.appendChild(
+                    option
+                );
+
+            }
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "Shipment loading error:",
+            error
+        );
+
+
+        select.innerHTML = `
+            <option value="">
+                Unable to load shipments
+            </option>
+        `;
+
+
+        showError(
+            error.message
+        );
+
+    }
+
+}
+
+
+/* ================= TRACK SHIPMENT ================= */
+
+async function trackShipment() {
+
+    const select =
+        document.getElementById(
+            "shipmentSelect"
+        );
+
+
+    const shipmentId =
+        select.value;
+
+
+    if (!shipmentId) {
+
+        showError(
+            "Please select a shipment first."
+        );
+
+        return;
+
+    }
+
+
+    const selectedOption =
+        select.options[
+            select.selectedIndex
+        ];
+
+
+    /* SHOW SHIPMENT SUMMARY */
+
+    document.getElementById(
+        "shipmentSummary"
+    ).style.display =
+        "grid";
+
+
+    document.getElementById(
+        "trackingNumber"
+    ).textContent =
+        selectedOption.dataset.trackingNumber ||
+        "-";
+
+
+    document.getElementById(
+        "origin"
+    ).textContent =
+        selectedOption.dataset.origin ||
+        "-";
+
+
+    document.getElementById(
+        "destination"
+    ).textContent =
+        selectedOption.dataset.destination ||
+        "-";
+
+
+    setStatus(
+        selectedOption.dataset.status ||
+        "Unknown"
+    );
+
+
+    const history =
+        document.getElementById(
+            "trackingHistory"
+        );
+
+
+    history.innerHTML = `
+
+        <div class="loading">
+
+            Loading tracking history...
+
+        </div>
+
+    `;
+
+
+    hideError();
+
+
+    try {
+
+        const response =
+            await fetch(
+                API_BASE_URL +
+                "/api/tracking/shipment/" +
+                shipmentId,
+                {
+                    method: "GET",
+                    credentials: "include"
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Unable to load tracking history."
+            );
+
+        }
+
+
+        const trackingRecords =
+            await response.json();
+
+
+        console.log(
+            "Tracking records:",
+            trackingRecords
+        );
+
+
+        if (
+            !trackingRecords ||
+            trackingRecords.length === 0
+        ) {
+
+            history.innerHTML = `
+
+                <div class="empty">
+
+                    No tracking records found
+                    for this shipment.
+
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        /*
+         * Display latest record first.
+         */
+
+        trackingRecords.sort(
+            function(a, b) {
+
+                const dateA =
+                    new Date(
+                        a.trackingDate ||
+                        a.updatedAt ||
+                        a.createdAt ||
+                        0
+                    );
+
+                const dateB =
+                    new Date(
+                        b.trackingDate ||
+                        b.updatedAt ||
+                        b.createdAt ||
+                        0
+                    );
+
+                return dateB - dateA;
+
+            }
+        );
+
+
+        history.innerHTML =
+            trackingRecords
+                .map(
+                    record => {
+
+                        const location =
+                            record.location ||
+                            record.currentLocation ||
+                            "Unknown Location";
+
+
+                        const status =
+                            record.status ||
+                            record.trackingStatus ||
+                            "Unknown";
+
+
+                        const description =
+                            record.description ||
+                            record.notes ||
+                            "No description available.";
+
+
+                        const date =
+                            record.trackingDate ||
+                            record.updatedAt ||
+                            record.createdAt ||
+                            "-";
+
+
+                        return `
+
+                            <div class="timeline-item">
+
+                                <div class="timeline-dot">
+                                </div>
+
+
+                                <div class="tracking-location">
+
+                                    ${escapeHtml(
+                                        location
+                                    )}
+
+                                </div>
+
+
+                                <div class="tracking-status">
+
+                                    ${escapeHtml(
+                                        status
+                                    )}
+
+                                </div>
+
+
+                                <div class="tracking-description">
+
+                                    ${escapeHtml(
+                                        description
+                                    )}
+
+                                </div>
+
+
+                                <div class="tracking-date">
+
+                                    ${escapeHtml(
+                                        date
+                                    )}
+
+                                </div>
+
+                            </div>
+
+                        `;
+
+                    }
+                )
+                .join("");
+
+
+    } catch (error) {
+
+        console.error(
+            "Tracking error:",
+            error
+        );
+
+
+        history.innerHTML = `
+
+            <div class="empty">
+
+                Unable to load tracking history.
+
+            </div>
+
+        `;
+
+
+        showError(
+            error.message
+        );
+
+    }
+
+}
+
+
+/* ================= STATUS ================= */
+
+function setStatus(
+    status
+) {
+
+    const statusElement =
+        document.getElementById(
+            "currentStatus"
+        );
+
+
+    const lowerStatus =
+        status.toLowerCase();
+
+
+    let className =
+        "status-other";
+
+
+    if (
+        lowerStatus.includes(
+            "transit"
+        )
+    ) {
+
+        className =
+            "status-transit";
+
+    }
+    else if (
+        lowerStatus.includes(
+            "deliver"
+        )
+    ) {
+
+        className =
+            "status-delivered";
+
+    }
+    else if (
+        lowerStatus.includes(
+            "delay"
+        )
+    ) {
+
+        className =
+            "status-delayed";
+
+    }
+
+
+    statusElement.innerHTML = `
+
+        <span class="status ${className}">
+
+            ${escapeHtml(status)}
+
+        </span>
+
+    `;
+
+}
+
+
+/* ================= ESCAPE HTML ================= */
+
+function escapeHtml(
+    value
+) {
+
+    return String(value)
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+/* ================= ERROR ================= */
+
+function showError(
+    message
+) {
+
+    const errorBox =
+        document.getElementById(
+            "errorMessage"
+        );
+
+
+    errorBox.textContent =
+        message;
+
+
+    errorBox.style.display =
+        "block";
+
+}
+
+
+function hideError() {
+
+    const errorBox =
+        document.getElementById(
+            "errorMessage"
+        );
+
+
+    errorBox.style.display =
+        "none";
+
+}
+
+
+/* ================= LOGOUT ================= */
+
+async function logout() {
+
+    try {
+
+        await fetch(
+            API_BASE_URL +
+            "/api/auth/logout",
+            {
+                method: "POST",
+                credentials: "include"
+            }
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Logout error:",
+            error
+        );
+
+    }
+
+
+    sessionStorage.clear();
+
+
+    window.location.href =
+        "../index.html";
+
+}
+
+
+/* ================= INITIALIZE ================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+        loadUser();
+
+        loadShipments();
+
+    }
+);
+
+</script>
+
+
+</body>
+
+</html>

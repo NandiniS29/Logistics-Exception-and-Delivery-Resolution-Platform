@@ -1,0 +1,1657 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Exception Details | Logistics Platform</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background: #f4f7fb;
+            color: #1f2937;
+        }
+
+        /* ================= SIDEBAR ================= */
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+            background: #111827;
+            color: white;
+            padding: 25px 15px;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+            padding: 0 15px 30px;
+            border-bottom: 1px solid #374151;
+            margin-bottom: 20px;
+        }
+
+        .logo span {
+            color: #60a5fa;
+        }
+
+        .menu {
+            list-style: none;
+        }
+
+        .menu li {
+            margin-bottom: 7px;
+        }
+
+        .menu a {
+            display: block;
+            text-decoration: none;
+            color: #d1d5db;
+            padding: 13px 15px;
+            border-radius: 8px;
+        }
+
+        .menu a:hover,
+        .menu a.active {
+            background: #2563eb;
+            color: white;
+        }
+
+        .logout {
+            position: absolute;
+            bottom: 25px;
+            left: 15px;
+            right: 15px;
+        }
+
+        .logout a {
+            display: block;
+            text-align: center;
+            padding: 12px;
+            border-radius: 8px;
+            background: #dc2626;
+            color: white;
+            text-decoration: none;
+        }
+
+        /* ================= MAIN ================= */
+
+        .main {
+            margin-left: 250px;
+            min-height: 100vh;
+        }
+
+        .topbar {
+            height: 75px;
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 30px;
+        }
+
+        .topbar h2 {
+            font-size: 22px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-details {
+            text-align: right;
+        }
+
+        .user-name {
+            font-weight: bold;
+        }
+
+        .user-role {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: #2563eb;
+            color: white;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-weight: bold;
+        }
+
+        /* ================= CONTENT ================= */
+
+        .content {
+            padding: 30px;
+        }
+
+        .page-header {
+            margin-bottom: 25px;
+        }
+
+        .page-header h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .page-header p {
+            color: #6b7280;
+        }
+
+        /* ================= ERROR ================= */
+
+        .error {
+            display: none;
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        /* ================= MAIN EXCEPTION CARD ================= */
+
+        .exception-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 28px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.04);
+            margin-bottom: 25px;
+        }
+
+        .exception-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .exception-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .warning-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: #fee2e2;
+            color: #dc2626;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 24px;
+        }
+
+        .exception-title h2 {
+            font-size: 22px;
+            margin-bottom: 5px;
+        }
+
+        .exception-id {
+            color: #6b7280;
+            font-size: 13px;
+        }
+
+        /* ================= BADGES ================= */
+
+        .badge {
+            display: inline-block;
+            padding: 7px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .status-open {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .status-progress {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-resolved {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .status-closed {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .status-other {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        .priority-high {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .priority-medium {
+            background: #ffedd5;
+            color: #c2410c;
+        }
+
+        .priority-low {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .priority-other {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        /* ================= DETAILS GRID ================= */
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .detail-box {
+            background: #f9fafb;
+            border-radius: 8px;
+            padding: 18px;
+        }
+
+        .detail-label {
+            color: #6b7280;
+            font-size: 12px;
+            margin-bottom: 7px;
+        }
+
+        .detail-value {
+            font-weight: bold;
+            font-size: 15px;
+        }
+
+        /* ================= DESCRIPTION ================= */
+
+        .section {
+            margin-top: 25px;
+            padding-top: 22px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .section h3 {
+            font-size: 18px;
+            margin-bottom: 12px;
+        }
+
+        .description {
+            background: #f9fafb;
+            border-radius: 8px;
+            padding: 18px;
+            line-height: 1.6;
+            color: #4b5563;
+        }
+
+        /* ================= RESOLUTION ================= */
+
+        .resolution-card {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .resolution-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .resolution-box {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .resolution-label {
+            color: #6b7280;
+            font-size: 12px;
+            margin-bottom: 6px;
+        }
+
+        .resolution-value {
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .no-resolution {
+            background: #f9fafb;
+            color: #6b7280;
+            padding: 18px;
+            border-radius: 8px;
+        }
+
+        /* ================= ACTIONS ================= */
+
+        .actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        .btn {
+            display: inline-block;
+            text-decoration: none;
+            border: none;
+            padding: 11px 18px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .btn-secondary:hover {
+            background: #d1d5db;
+        }
+
+        /* ================= LOADING ================= */
+
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: #6b7280;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 1000px) {
+
+            .details-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .resolution-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+        }
+
+        @media (max-width: 750px) {
+
+            .sidebar {
+                width: 200px;
+            }
+
+            .main {
+                margin-left: 200px;
+            }
+
+            .details-grid,
+            .resolution-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .content {
+                padding: 15px;
+            }
+
+            .exception-header {
+                flex-direction: column;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ================= SIDEBAR ================= -->
+
+<aside class="sidebar">
+
+    <div class="logo">
+        Logistics <span>Platform</span>
+    </div>
+
+
+    <ul class="menu">
+
+        <li>
+            <a href="dashboard.html">
+                Dashboard
+            </a>
+        </li>
+
+        <li>
+            <a href="shipments.html">
+                My Shipments
+            </a>
+        </li>
+
+        <li>
+            <a href="tracking.html">
+                Track Shipment
+            </a>
+        </li>
+
+        <li>
+            <a href="packages.html">
+                Package Details
+            </a>
+        </li>
+
+        <li>
+            <a href="exceptions.html"
+               class="active">
+                My Exceptions
+            </a>
+        </li>
+
+        <li>
+            <a href="resolutions.html">
+                Resolution Status
+            </a>
+        </li>
+
+        <li>
+            <a href="profile.html">
+                My Profile
+            </a>
+        </li>
+
+        <li>
+            <a href="notifications.html">
+                Notifications
+            </a>
+        </li>
+
+    </ul>
+
+
+    <div class="logout">
+
+        <a href="#"
+           onclick="logout()">
+
+            Logout
+
+        </a>
+
+    </div>
+
+</aside>
+
+
+<!-- ================= MAIN ================= -->
+
+<main class="main">
+
+
+    <!-- TOPBAR -->
+
+    <header class="topbar">
+
+        <h2>
+            Exception Details
+        </h2>
+
+
+        <div class="user-info">
+
+            <div class="user-details">
+
+                <div class="user-name"
+                     id="userName">
+
+                    Customer
+
+                </div>
+
+                <div class="user-role">
+                    Customer
+                </div>
+
+            </div>
+
+
+            <div class="avatar"
+                 id="avatar">
+
+                C
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- CONTENT -->
+
+    <section class="content">
+
+
+        <div class="page-header">
+
+            <h1>
+                Delivery Exception
+            </h1>
+
+            <p>
+                View the current status and resolution
+                information for your delivery exception.
+            </p>
+
+        </div>
+
+
+        <div id="errorMessage"
+             class="error">
+        </div>
+
+
+        <div id="loading"
+             class="loading">
+
+            Loading exception details...
+
+        </div>
+
+
+        <div id="exceptionContent"
+             style="display:none;">
+
+
+            <!-- ================= EXCEPTION ================= -->
+
+            <div class="exception-card">
+
+
+                <div class="exception-header">
+
+                    <div class="exception-title">
+
+                        <div class="warning-icon">
+                            ⚠
+                        </div>
+
+
+                        <div>
+
+                            <h2 id="exceptionType">
+                                Delivery Exception
+                            </h2>
+
+                            <div class="exception-id"
+                                 id="exceptionId">
+                                -
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div id="statusBadge">
+                        -
+                    </div>
+
+                </div>
+
+
+                <!-- DETAILS -->
+
+                <div class="details-grid">
+
+
+                    <div class="detail-box">
+
+                        <div class="detail-label">
+                            Shipment ID
+                        </div>
+
+                        <div class="detail-value"
+                             id="shipmentId">
+
+                            -
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="detail-box">
+
+                        <div class="detail-label">
+                            Exception Type
+                        </div>
+
+                        <div class="detail-value"
+                             id="typeValue">
+
+                            -
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="detail-box">
+
+                        <div class="detail-label">
+                            Priority
+                        </div>
+
+                        <div id="priorityValue">
+                            -
+                        </div>
+
+                    </div>
+
+
+                    <div class="detail-box">
+
+                        <div class="detail-label">
+                            Reported Date
+                        </div>
+
+                        <div class="detail-value"
+                             id="reportedDate">
+
+                            -
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="detail-box">
+
+                        <div class="detail-label">
+                            Current Status
+                        </div>
+
+                        <div id="currentStatus">
+                            -
+                        </div>
+
+                    </div>
+
+
+                    <div class="detail-box">
+
+                        <div class="detail-label">
+                            Tracking Number
+                        </div>
+
+                        <div class="detail-value"
+                             id="trackingNumber">
+
+                            Loading...
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- DESCRIPTION -->
+
+                <div class="section">
+
+                    <h3>
+                        Issue Description
+                    </h3>
+
+                    <div class="description"
+                         id="description">
+
+                        -
+
+                    </div>
+
+                </div>
+
+
+                <!-- RESOLUTION -->
+
+                <div class="section">
+
+                    <h3>
+                        Resolution Status
+                    </h3>
+
+
+                    <div id="resolutionContainer">
+
+                        <div class="no-resolution">
+
+                            No resolution information
+                            is currently available.
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ACTIONS -->
+
+                <div class="actions">
+
+                    <a
+                        href="exceptions.html"
+                        class="btn btn-secondary">
+
+                        ← Back to My Exceptions
+
+                    </a>
+
+
+                    <button
+                        class="btn btn-primary"
+                        onclick="trackShipment()">
+
+                        View Tracking
+
+                    </button>
+
+
+                    <a
+                        href="resolutions.html"
+                        class="btn btn-primary">
+
+                        View Resolution Status
+
+                    </a>
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+    </section>
+
+</main>
+
+
+<script>
+
+const API_BASE_URL =
+    "http://127.0.0.1:8080";
+
+
+/* ================= GET EXCEPTION ID ================= */
+
+const params =
+    new URLSearchParams(
+        window.location.search
+    );
+
+
+const exceptionId =
+    params.get(
+        "exceptionId"
+    );
+
+
+let currentShipmentId =
+    null;
+
+
+/* ================= USER ================= */
+
+async function loadUser() {
+
+    try {
+
+        const response =
+            await fetch(
+                API_BASE_URL +
+                "/api/users/me",
+                {
+                    method: "GET",
+                    credentials: "include"
+                }
+            );
+
+
+        if (!response.ok) {
+            return;
+        }
+
+
+        const user =
+            await response.json();
+
+
+        const name =
+            user.fullName ||
+            user.name ||
+            "Customer";
+
+
+        document.getElementById(
+            "userName"
+        ).textContent =
+            name;
+
+
+        document.getElementById(
+            "avatar"
+        ).textContent =
+            name
+                .charAt(0)
+                .toUpperCase();
+
+
+    } catch (error) {
+
+        console.error(
+            "User loading error:",
+            error
+        );
+
+    }
+
+}
+
+
+/* ================= LOAD EXCEPTION ================= */
+
+async function loadException() {
+
+    if (!exceptionId) {
+
+        showError(
+            "No exception ID was provided."
+        );
+
+        document.getElementById(
+            "loading"
+        ).style.display =
+            "none";
+
+        return;
+
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                API_BASE_URL +
+                "/api/exceptions/" +
+                exceptionId,
+                {
+                    method: "GET",
+                    credentials: "include"
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Unable to load exception details."
+            );
+
+        }
+
+
+        const exception =
+            await response.json();
+
+
+        console.log(
+            "Exception:",
+            exception
+        );
+
+
+        currentShipmentId =
+            exception.shipmentId;
+
+
+        displayException(
+            exception
+        );
+
+
+        /*
+         * Load shipment information and resolution
+         * after the exception is displayed.
+         */
+
+        await loadShipment(
+            exception.shipmentId
+        );
+
+
+        await loadResolution(
+            exception.exceptionId
+        );
+
+
+        document.getElementById(
+            "loading"
+        ).style.display =
+            "none";
+
+
+        document.getElementById(
+            "exceptionContent"
+        ).style.display =
+            "block";
+
+
+    } catch (error) {
+
+        console.error(
+            "Exception loading error:",
+            error
+        );
+
+
+        document.getElementById(
+            "loading"
+        ).style.display =
+            "none";
+
+
+        showError(
+            error.message
+        );
+
+    }
+
+}
+
+
+/* ================= DISPLAY EXCEPTION ================= */
+
+function displayException(
+    exception
+) {
+
+    document.getElementById(
+        "exceptionType"
+    ).textContent =
+        exception.exceptionType ||
+        "Delivery Exception";
+
+
+    document.getElementById(
+        "exceptionId"
+    ).textContent =
+        "Exception ID: EXC-" +
+        (
+            exception.exceptionId ||
+            "-"
+        );
+
+
+    document.getElementById(
+        "shipmentId"
+    ).textContent =
+        exception.shipmentId ||
+        "-";
+
+
+    document.getElementById(
+        "typeValue"
+    ).textContent =
+        exception.exceptionType ||
+        "-";
+
+
+    document.getElementById(
+        "description"
+    ).textContent =
+        exception.description ||
+        "No description available.";
+
+
+    document.getElementById(
+        "reportedDate"
+    ).textContent =
+        formatDate(
+            exception.reportedDate
+        );
+
+
+    document.getElementById(
+        "priorityValue"
+    ).innerHTML =
+        createPriorityBadge(
+            exception.priority ||
+            "UNKNOWN"
+        );
+
+
+    document.getElementById(
+        "currentStatus"
+    ).innerHTML =
+        createStatusBadge(
+            exception.status ||
+            "UNKNOWN"
+        );
+
+
+    document.getElementById(
+        "statusBadge"
+    ).innerHTML =
+        createStatusBadge(
+            exception.status ||
+            "UNKNOWN"
+        );
+
+}
+
+
+/* ================= LOAD SHIPMENT ================= */
+
+async function loadShipment(
+    shipmentId
+) {
+
+    if (!shipmentId) {
+        return;
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                API_BASE_URL +
+                "/api/shipments/" +
+                shipmentId,
+                {
+                    method: "GET",
+                    credentials: "include"
+                }
+            );
+
+
+        if (!response.ok) {
+            return;
+        }
+
+
+        const shipment =
+            await response.json();
+
+
+        document.getElementById(
+            "trackingNumber"
+        ).textContent =
+            shipment.trackingNumber ||
+            "-";
+
+
+    } catch (error) {
+
+        console.error(
+            "Shipment loading error:",
+            error
+        );
+
+
+        document.getElementById(
+            "trackingNumber"
+        ).textContent =
+            "-";
+
+    }
+
+}
+
+
+/* ================= LOAD RESOLUTION ================= */
+
+async function loadResolution(
+    exceptionId
+) {
+
+    const container =
+        document.getElementById(
+            "resolutionContainer"
+        );
+
+
+    try {
+
+        const response =
+            await fetch(
+                API_BASE_URL +
+                "/api/resolutions",
+                {
+                    method: "GET",
+                    credentials: "include"
+                }
+            );
+
+
+        if (!response.ok) {
+            return;
+        }
+
+
+        const resolutions =
+            await response.json();
+
+
+        const resolution =
+            resolutions.find(
+                item =>
+                    Number(
+                        item.exceptionId
+                    ) ===
+                    Number(
+                        exceptionId
+                    )
+            );
+
+
+        if (!resolution) {
+
+            container.innerHTML = `
+
+                <div class="no-resolution">
+
+                    Resolution is currently
+                    being processed.
+
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        const compensationRequired =
+            resolution.compensationRequired === true;
+
+
+        let compensation =
+            "No compensation";
+
+
+        if (
+            compensationRequired
+        ) {
+
+            compensation =
+                "₹" +
+                Number(
+                    resolution.compensationAmount ||
+                    0
+                ).toLocaleString(
+                    "en-IN"
+                );
+
+        }
+
+
+        container.innerHTML = `
+
+            <div class="resolution-card">
+
+                <div class="resolution-grid">
+
+
+                    <div class="resolution-box">
+
+                        <div class="resolution-label">
+                            Resolution Type
+                        </div>
+
+                        <div class="resolution-value">
+
+                            ${
+                                escapeHtml(
+                                    resolution.resolutionType ||
+                                    "-"
+                                )
+                            }
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="resolution-box">
+
+                        <div class="resolution-label">
+                            Resolution Status
+                        </div>
+
+                        <div>
+
+                            ${
+                                createStatusBadge(
+                                    resolution.resolutionStatus ||
+                                    "UNKNOWN"
+                                )
+                            }
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="resolution-box">
+
+                        <div class="resolution-label">
+                            Compensation
+                        </div>
+
+                        <div class="resolution-value">
+
+                            ${
+                                escapeHtml(
+                                    compensation
+                                )
+                            }
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="section"
+                    style="
+                        border-top:none;
+                        margin-top:18px;
+                        padding-top:0;
+                    ">
+
+                    <h3>
+                        Resolution Description
+                    </h3>
+
+                    <div class="description">
+
+                        ${
+                            escapeHtml(
+                                resolution.resolutionDescription ||
+                                "No resolution description available."
+                            )
+                        }
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        `;
+
+
+    } catch (error) {
+
+        console.error(
+            "Resolution loading error:",
+            error
+        );
+
+    }
+
+}
+
+
+/* ================= PRIORITY BADGE ================= */
+
+function createPriorityBadge(
+    priority
+) {
+
+    const value =
+        String(
+            priority
+        );
+
+
+    const lower =
+        value.toLowerCase();
+
+
+    let className =
+        "priority-other";
+
+
+    if (
+        lower === "high"
+    ) {
+
+        className =
+            "priority-high";
+
+    }
+    else if (
+        lower === "medium"
+    ) {
+
+        className =
+            "priority-medium";
+
+    }
+    else if (
+        lower === "low"
+    ) {
+
+        className =
+            "priority-low";
+
+    }
+
+
+    return `
+
+        <span class="badge ${className}">
+
+            ${escapeHtml(value)}
+
+        </span>
+
+    `;
+
+}
+
+
+/* ================= STATUS BADGE ================= */
+
+function createStatusBadge(
+    status
+) {
+
+    const value =
+        String(
+            status
+        );
+
+
+    const lower =
+        value.toLowerCase();
+
+
+    let className =
+        "status-other";
+
+
+    if (
+        lower === "open"
+    ) {
+
+        className =
+            "status-open";
+
+    }
+    else if (
+        lower.includes(
+            "investig"
+        ) ||
+        lower.includes(
+            "pending"
+        )
+    ) {
+
+        className =
+            "status-progress";
+
+    }
+    else if (
+        lower.includes(
+            "resolved"
+        )
+    ) {
+
+        className =
+            "status-resolved";
+
+    }
+    else if (
+        lower.includes(
+            "closed"
+        )
+    ) {
+
+        className =
+            "status-closed";
+
+    }
+
+
+    return `
+
+        <span class="badge ${className}">
+
+            ${escapeHtml(value)}
+
+        </span>
+
+    `;
+
+}
+
+
+/* ================= TRACK ================= */
+
+function trackShipment() {
+
+    if (!currentShipmentId) {
+
+        showError(
+            "Shipment information is unavailable."
+        );
+
+        return;
+
+    }
+
+
+    window.location.href =
+        "tracking.html?shipmentId=" +
+        currentShipmentId;
+
+}
+
+
+/* ================= DATE ================= */
+
+function formatDate(
+    value
+) {
+
+    if (!value) {
+        return "-";
+    }
+
+
+    try {
+
+        return new Date(
+            value
+        ).toLocaleString();
+
+    } catch (error) {
+
+        return value;
+
+    }
+
+}
+
+
+/* ================= ESCAPE ================= */
+
+function escapeHtml(
+    value
+) {
+
+    return String(value)
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+/* ================= ERROR ================= */
+
+function showError(
+    message
+) {
+
+    const box =
+        document.getElementById(
+            "errorMessage"
+        );
+
+
+    box.textContent =
+        message;
+
+
+    box.style.display =
+        "block";
+
+}
+
+
+/* ================= LOGOUT ================= */
+
+async function logout() {
+
+    try {
+
+        await fetch(
+            API_BASE_URL +
+            "/api/auth/logout",
+            {
+                method: "POST",
+                credentials: "include"
+            }
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Logout error:",
+            error
+        );
+
+    }
+
+
+    sessionStorage.clear();
+
+
+    window.location.href =
+        "../index.html";
+
+}
+
+
+/* ================= INITIALIZE ================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        loadUser();
+
+        loadException();
+
+    }
+);
+
+</script>
+
+
+</body>
+
+</html>

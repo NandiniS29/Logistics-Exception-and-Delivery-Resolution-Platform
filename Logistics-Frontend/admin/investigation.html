@@ -1,0 +1,680 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exception Investigation | Logistics</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f3f6fa;
+            color: #172b4d;
+        }
+
+        .page {
+            max-width: 1140px;
+            margin: 0 auto;
+            padding: 45px 20px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 34px;
+        }
+
+        .subtitle {
+            margin-top: 8px;
+            color: #5f7694;
+            font-size: 18px;
+        }
+
+        .message {
+            margin-top: 24px;
+            padding: 15px 18px;
+            border-radius: 8px;
+            font-size: 15px;
+            display: none;
+            overflow-wrap: anywhere;
+        }
+
+        .error {
+            background: #ffe1e1;
+            color: #b42318;
+        }
+
+        .success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 28px;
+            margin-top: 22px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+        }
+
+        .card h2 {
+            margin-top: 0;
+            margin-bottom: 22px;
+            font-size: 24px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .info-box {
+            background: #f7f9fc;
+            border-radius: 10px;
+            padding: 18px;
+            min-height: 90px;
+            overflow-wrap: anywhere;
+        }
+
+        .label {
+            color: #637994;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .value {
+            font-size: 17px;
+            font-weight: 600;
+            color: #172b4d;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 7px 14px;
+            border-radius: 20px;
+            background: #dbeafe;
+            color: #1d4ed8;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .tracking-item {
+            border-left: 3px solid #2563eb;
+            padding: 12px 18px;
+            margin-bottom: 12px;
+            background: #f8fafc;
+            border-radius: 6px;
+        }
+
+        .tracking-status {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .tracking-location {
+            color: #526b89;
+            margin-bottom: 5px;
+        }
+
+        .tracking-date {
+            font-size: 13px;
+            color: #7b8da5;
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 9px;
+            font-size: 16px;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 13px 15px;
+            font-size: 15px;
+            font-family: inherit;
+            outline: none;
+            background: #fff;
+            color: #172b4d;
+        }
+
+        input:focus,
+        textarea:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.10);
+        }
+
+        input[readonly] {
+            background: #f1f5f9;
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 14px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            border: none;
+            border-radius: 8px;
+            padding: 13px 25px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .save-btn {
+            background: #2563eb;
+            color: white;
+        }
+
+        .save-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .save-btn:disabled {
+            background: #93b4f5;
+            cursor: not-allowed;
+        }
+
+        .back-btn {
+            background: #e2e8f0;
+            color: #243b53;
+        }
+
+        .back-btn:hover {
+            background: #cbd5e1;
+        }
+
+        .loading {
+            color: #64748b;
+            padding: 10px 0;
+        }
+
+        @media (max-width: 800px) {
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .buttons {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="page">
+
+    <h1>Exception Investigation</h1>
+
+    <div class="subtitle">
+        Investigate the exception and identify the root cause
+    </div>
+
+    <div id="errorMessage" class="message error"></div>
+    <div id="successMessage" class="message success"></div>
+
+    <!-- EXCEPTION INFORMATION -->
+    <div class="card">
+        <h2>Exception Information</h2>
+
+        <div class="info-grid">
+            <div class="info-box">
+                <div class="label">Exception ID</div>
+                <div class="value" id="exceptionId">-</div>
+            </div>
+
+            <div class="info-box">
+                <div class="label">Shipment ID</div>
+                <div class="value" id="shipmentId">-</div>
+            </div>
+
+            <div class="info-box">
+                <div class="label">Exception Type</div>
+                <div class="value" id="exceptionType">-</div>
+            </div>
+
+            <div class="info-box">
+                <div class="label">Priority</div>
+                <div class="value" id="priority">-</div>
+            </div>
+
+            <div class="info-box">
+                <div class="label">Status</div>
+                <div class="value">
+                    <span class="status" id="exceptionStatus">-</span>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <div class="label">Reported Date</div>
+                <div class="value" id="reportedDate">-</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TRACKING HISTORY -->
+    <div class="card">
+        <h2>Tracking History</h2>
+        <div id="trackingHistory" class="loading">
+            Loading tracking history...
+        </div>
+    </div>
+
+    <!-- INVESTIGATION FORM -->
+    <div class="card">
+        <h2>Investigation Details</h2>
+
+        <form id="investigationForm">
+
+            <div class="form-group">
+                <label for="investigatedBy">
+                    Assigned Investigator
+                </label>
+                <input
+                    type="text"
+                    id="investigatedBy"
+                    value="Logistics Control Officer"
+                    readonly
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="findings">Findings</label>
+                <textarea
+                    id="findings"
+                    placeholder="Enter investigation findings..."
+                    required
+                ></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="rootCause">Root Cause</label>
+                <input
+                    type="text"
+                    id="rootCause"
+                    placeholder="Example: Vehicle Breakdown"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="evidence">Evidence</label>
+                <textarea
+                    id="evidence"
+                    placeholder="Enter evidence details..."
+                    required
+                ></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="communication">Communication</label>
+                <textarea
+                    id="communication"
+                    placeholder="Enter customer/support communication details..."
+                ></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="notes">Investigation Notes</label>
+                <textarea
+                    id="notes"
+                    placeholder="Enter additional investigation notes..."
+                ></textarea>
+            </div>
+
+            <div class="buttons">
+                <button
+                    type="submit"
+                    class="save-btn"
+                    id="saveButton"
+                >
+                    Save Investigation
+                </button>
+
+                <button
+                    type="button"
+                    class="back-btn"
+                    id="backButton"
+                >
+                    ← Back to Exceptions
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    const API_BASE = "http://127.0.0.1:8080";
+
+    const params = new URLSearchParams(window.location.search);
+    const exceptionId =
+    params.get("exceptionId") || params.get("id");
+
+    let currentException = null;
+    let currentInvestigation = null;
+
+    function showError(message) {
+        const error = document.getElementById("errorMessage");
+        error.textContent = message;
+        error.style.display = "block";
+        document.getElementById("successMessage").style.display = "none";
+    }
+
+    function showSuccess(message) {
+        const success = document.getElementById("successMessage");
+        success.textContent = message;
+        success.style.display = "block";
+        document.getElementById("errorMessage").style.display = "none";
+    }
+
+    function clearMessages() {
+        document.getElementById("errorMessage").style.display = "none";
+        document.getElementById("successMessage").style.display = "none";
+    }
+
+    function formatDate(dateValue) {
+        if (!dateValue) {
+            return "-";
+        }
+
+        const date = new Date(dateValue);
+
+        if (isNaN(date.getTime())) {
+            return dateValue;
+        }
+
+        return date.toLocaleString();
+    }
+
+    async function loadException() {
+        try {
+            const response = await fetch(
+                `${API_BASE}/api/exceptions/${exceptionId}`,
+                { credentials: "include" }
+            );
+
+            if (!response.ok) {
+                throw new Error("Unable to load exception details.");
+            }
+
+            const exception = await response.json();
+            currentException = exception;
+
+            document.getElementById("exceptionId").textContent =
+                exception.exceptionId ?? exception.id ?? "-";
+
+            document.getElementById("shipmentId").textContent =
+                exception.shipmentId ?? "-";
+
+            document.getElementById("exceptionType").textContent =
+                exception.exceptionType ?? "-";
+
+            document.getElementById("priority").textContent =
+                exception.priority ?? "-";
+
+            document.getElementById("exceptionStatus").textContent =
+                exception.status ?? "-";
+
+            document.getElementById("reportedDate").textContent =
+                formatDate(exception.reportedDate);
+
+            return exception;
+        } catch (error) {
+            showError(error.message || "Unable to load exception.");
+            return null;
+        }
+    }
+
+    async function loadTracking(shipmentId) {
+        const container = document.getElementById("trackingHistory");
+
+        try {
+            const response = await fetch(
+                `${API_BASE}/api/tracking/shipment/${shipmentId}`,
+                { credentials: "include" }
+            );
+
+            if (!response.ok) {
+                container.textContent = "No tracking records found.";
+                return;
+            }
+
+            const records = await response.json();
+
+            if (!Array.isArray(records) || records.length === 0) {
+                container.textContent = "No tracking records found.";
+                return;
+            }
+
+            container.innerHTML = "";
+
+            records.forEach(record => {
+                const item = document.createElement("div");
+                item.className = "tracking-item";
+
+                const status = document.createElement("div");
+                status.className = "tracking-status";
+                status.textContent = record.status || "Status unavailable";
+
+                const location = document.createElement("div");
+                location.className = "tracking-location";
+                location.textContent =
+                    record.location || "Location unavailable";
+
+                const date = document.createElement("div");
+                date.className = "tracking-date";
+                date.textContent = formatDate(
+                    record.trackingDate ||
+                    record.updatedAt ||
+                    record.createdAt
+                );
+
+                item.appendChild(status);
+                item.appendChild(location);
+                item.appendChild(date);
+                container.appendChild(item);
+            });
+        } catch (error) {
+            container.textContent = "Unable to load tracking history.";
+            console.error("Tracking history error:", error);
+        }
+    }
+
+    async function loadInvestigation() {
+        try {
+            const response = await fetch(
+                `${API_BASE}/api/investigations/exception/${exceptionId}`,
+                { credentials: "include" }
+            );
+
+            if (!response.ok) {
+                return;
+            }
+
+            const data = await response.json();
+
+            let investigation = null;
+
+            if (Array.isArray(data)) {
+                if (data.length > 0) {
+                    investigation = data[data.length - 1];
+                }
+            } else {
+                investigation = data;
+            }
+
+            if (!investigation) {
+                return;
+            }
+
+            currentInvestigation = investigation;
+
+            document.getElementById("findings").value =
+                investigation.findings || "";
+
+            document.getElementById("rootCause").value =
+                investigation.rootCause || "";
+
+            document.getElementById("evidence").value =
+                investigation.evidence || "";
+
+            // Load the two additional fields from the database.
+            document.getElementById("communication").value =
+                investigation.communication || "";
+
+            document.getElementById("notes").value =
+                investigation.investigationNotes || "";
+
+        } catch (error) {
+            console.error("Unable to load investigation:", error);
+        }
+    }
+
+    document.getElementById("investigationForm")
+        .addEventListener("submit", async function(event) {
+            event.preventDefault();
+            clearMessages();
+
+            if (!exceptionId) {
+                showError("Exception ID is missing from the URL.");
+                return;
+            }
+
+            const findings =
+                document.getElementById("findings").value.trim();
+
+            const rootCause =
+                document.getElementById("rootCause").value.trim();
+
+            const evidence =
+                document.getElementById("evidence").value.trim();
+
+            const communication =
+                document.getElementById("communication").value.trim();
+
+            const investigationNotes =
+                document.getElementById("notes").value.trim();
+
+            if (!findings || !rootCause || !evidence) {
+                showError(
+                    "Please enter Findings, Root Cause and Evidence."
+                );
+                return;
+            }
+
+            const saveButton = document.getElementById("saveButton");
+            saveButton.disabled = true;
+            saveButton.textContent = "Saving...";
+
+            const investigationData = {
+                exceptionId: Number(exceptionId),
+                investigatedBy: currentInvestigation?.investigatedBy ?? 1,
+                findings: findings,
+                rootCause: rootCause,
+                evidence: evidence,
+                communication: communication,
+                investigationNotes: investigationNotes,
+                investigationStatus: "COMPLETED"
+            };
+
+            try {
+                /*
+                 * The existing API uses POST to create investigations.
+                 * This keeps the same save behaviour as your current page.
+                 */
+                const response = await fetch(
+                    `${API_BASE}/api/investigations`,
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        credentials: "include",
+                        body: JSON.stringify(investigationData)
+                    }
+                );
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(
+                        errorText || "Failed to save investigation."
+                    );
+                }
+
+                showSuccess("Investigation saved successfully.");
+
+                // Reload the record from the backend.
+                await loadInvestigation();
+
+            } catch (error) {
+                showError(
+                    error.message || "Unable to save investigation."
+                );
+            } finally {
+                saveButton.disabled = false;
+                saveButton.textContent = "Save Investigation";
+            }
+        });
+
+    document.getElementById("backButton").addEventListener("click", function() {
+        window.location.href = "exceptions.html";
+    });
+
+    async function initializePage() {
+        if (!exceptionId) {
+            showError("Exception ID is missing from the URL.");
+            document.getElementById("trackingHistory").textContent =
+                "No tracking records found.";
+            document.getElementById("saveButton").disabled = true;
+            return;
+        }
+
+        const exception = await loadException();
+
+        if (exception && exception.shipmentId) {
+            await loadTracking(exception.shipmentId);
+        } else {
+            document.getElementById("trackingHistory").textContent =
+                "No tracking records found.";
+        }
+
+        await loadInvestigation();
+    }
+
+    initializePage();
+</script>
+</body>
+</html>

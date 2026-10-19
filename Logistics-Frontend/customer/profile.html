@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Profile | Logistics Platform</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background: #f4f7fb;
+            color: #1f2937;
+        }
+
+        /* ================= SIDEBAR ================= */
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+            background: #111827;
+            color: white;
+            padding: 25px 15px;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+            padding: 0 15px 30px;
+            border-bottom: 1px solid #374151;
+            margin-bottom: 20px;
+        }
+
+        .logo span {
+            color: #60a5fa;
+        }
+
+        .menu {
+            list-style: none;
+        }
+
+        .menu li {
+            margin-bottom: 7px;
+        }
+
+        .menu a {
+            display: block;
+            text-decoration: none;
+            color: #d1d5db;
+            padding: 13px 15px;
+            border-radius: 8px;
+        }
+
+        .menu a:hover,
+        .menu a.active {
+            background: #2563eb;
+            color: white;
+        }
+
+        .logout {
+            position: absolute;
+            bottom: 25px;
+            left: 15px;
+            right: 15px;
+        }
+
+        .logout a {
+            display: block;
+            text-align: center;
+            padding: 12px;
+            border-radius: 8px;
+            background: #dc2626;
+            color: white;
+            text-decoration: none;
+        }
+
+        /* ================= MAIN ================= */
+
+        .main {
+            margin-left: 250px;
+            min-height: 100vh;
+        }
+
+        .topbar {
+            height: 75px;
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 30px;
+        }
+
+        .topbar h2 {
+            font-size: 22px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-details {
+            text-align: right;
+        }
+
+        .user-name {
+            font-weight: bold;
+        }
+
+        .user-role {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: #2563eb;
+            color: white;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-weight: bold;
+        }
+
+        /* ================= CONTENT ================= */
+
+        .content {
+            padding: 30px;
+        }
+
+        .page-header {
+            margin-bottom: 25px;
+        }
+
+        .page-header h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .page-header p {
+            color: #6b7280;
+        }
+
+        /* ================= PROFILE ================= */
+
+        .profile-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04);
+            max-width: 900px;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid #e5e7eb;
+            margin-bottom: 25px;
+        }
+
+        .large-avatar {
+            width: 75px;
+            height: 75px;
+            border-radius: 50%;
+            background: #2563eb;
+            color: white;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .profile-header h2 {
+            margin-bottom: 5px;
+        }
+
+        .profile-header p {
+            color: #6b7280;
+        }
+
+        /* ================= FORM ================= */
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        input {
+            padding: 12px 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 7px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #2563eb;
+        }
+
+        input:disabled {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+
+        .help-text {
+            font-size: 12px;
+            color: #6b7280;
+            margin-top: 5px;
+        }
+
+        /* ================= BUTTONS ================= */
+
+        .actions {
+            margin-top: 25px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            border: none;
+            padding: 12px 20px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .btn-secondary:hover {
+            background: #d1d5db;
+        }
+
+        /* ================= MESSAGE ================= */
+
+        .message {
+            display: none;
+            padding: 14px;
+            border-radius: 7px;
+            margin-bottom: 20px;
+        }
+
+        .success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* ================= LOADING ================= */
+
+        .loading {
+            padding: 30px;
+            text-align: center;
+            color: #6b7280;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 800px) {
+
+            .sidebar {
+                width: 200px;
+            }
+
+            .main {
+                margin-left: 200px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full {
+                grid-column: auto;
+            }
+
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            Logistics <span>Platform</span>
+        </div>
+
+        <ul class="menu">
+
+            <li>
+                <a href="dashboard.html">
+                    Dashboard
+                </a>
+            </li>
+
+            <li>
+                <a href="shipments.html">
+                    My Shipments
+                </a>
+            </li>
+
+            <li>
+                <a href="tracking.html">
+                    Track Shipment
+                </a>
+            </li>
+
+            <li>
+                <a href="packages.html">
+                    Package Details
+                </a>
+            </li>
+
+            <li>
+                <a href="exceptions.html">
+                    My Exceptions
+                </a>
+            </li>
+
+            <li>
+                <a href="resolutions.html">
+                    Resolution Status
+                </a>
+            </li>
+
+            <li>
+                <a href="profile.html" class="active">
+                    My Profile
+                </a>
+            </li>
+
+            <li>
+                <a href="notifications.html">
+                    Notifications
+                </a>
+            </li>
+
+        </ul>
+
+        <div class="logout">
+
+            <a href="#" onclick="logout()">
+                Logout
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <!-- ================= MAIN ================= -->
+
+    <main class="main">
+
+        <!-- TOPBAR -->
+
+        <header class="topbar">
+
+            <h2>
+                My Profile
+            </h2>
+
+            <div class="user-info">
+
+                <div class="user-details">
+
+                    <div class="user-name" id="topUserName">
+                        Customer
+                    </div>
+
+                    <div class="user-role">
+                        Customer
+                    </div>
+
+                </div>
+
+                <div class="avatar" id="topAvatar">
+                    C
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- ================= CONTENT ================= -->
+
+        <section class="content">
+
+            <div class="page-header">
+
+                <h1>
+                    My Profile
+                </h1>
+
+                <p>
+                    View and update your personal information.
+                </p>
+
+            </div>
+
+
+            <!-- SUCCESS MESSAGE -->
+
+            <div id="successMessage" class="message success"></div>
+
+
+            <!-- ERROR MESSAGE -->
+
+            <div id="errorMessage" class="message error"></div>
+
+
+            <!-- LOADING -->
+
+            <div id="loading" class="loading">
+                Loading your profile...
+            </div>
+
+
+            <!-- PROFILE CONTENT -->
+
+            <div id="profileContent" style="display:none;">
+
+                <div class="profile-card">
+
+                    <!-- PROFILE HEADER -->
+
+                    <div class="profile-header">
+
+                        <div class="large-avatar" id="profileAvatar">
+                            C
+                        </div>
+
+                        <div>
+
+                            <h2 id="profileName">
+                                Customer
+                            </h2>
+
+                            <p>
+                                Customer Account
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- PROFILE FORM -->
+
+                    <form id="profileForm">
+
+                        <div class="form-grid">
+
+                            <!-- NAME -->
+
+                            <div class="form-group">
+
+                                <label for="name">
+                                    Full Name
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="name"
+                                    required
+                                >
+
+                            </div>
+
+
+                            <!-- USERNAME -->
+
+                            <div class="form-group">
+
+                                <label for="username">
+                                    Username
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="username"
+                                    disabled
+                                >
+
+                                <div class="help-text">
+                                    Username cannot be changed.
+                                </div>
+
+                            </div>
+
+
+                            <!-- EMAIL -->
+
+                            <div class="form-group">
+
+                                <label for="email">
+                                    Email
+                                </label>
+
+                                <input
+                                    type="email"
+                                    id="email"
+                                    required
+                                >
+
+                            </div>
+
+
+                            <!-- PHONE -->
+
+                            <div class="form-group">
+
+                                <label for="phone">
+                                    Phone
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="phone"
+                                    maxlength="15"
+                                >
+
+                            </div>
+
+
+                            <!-- ADDRESS -->
+
+                            <div class="form-group full">
+
+                                <label for="address">
+                                    Address
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="address"
+                                >
+
+                            </div>
+
+
+                            <!-- CITY -->
+
+                            <div class="form-group">
+
+                                <label for="city">
+                                    City
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="city"
+                                >
+
+                            </div>
+
+
+                            <!-- PINCODE -->
+
+                            <div class="form-group">
+
+                                <label for="pincode">
+                                    Pincode
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="pincode"
+                                    maxlength="10"
+                                >
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- BUTTONS -->
+
+                        <div class="actions">
+
+                            <button
+                                type="submit"
+                                class="btn btn-primary">
+
+                                Save Changes
+
+                            </button>
+
+
+                            <button
+                                type="button"
+                                class="btn btn-secondary"
+                                onclick="loadProfile()">
+
+                                Reset
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <script>
+
+        const API_BASE_URL =
+            "http://127.0.0.1:8080";
+
+
+        /* ================= LOAD USER PROFILE ================= */
+
+        async function loadProfile() {
+
+            document.getElementById(
+                "loading"
+            ).style.display = "block";
+
+            document.getElementById(
+                "profileContent"
+            ).style.display = "none";
+
+            hideMessages();
+
+
+            try {
+
+                /* ================= CUSTOMER ================= */
+
+                const customerResponse =
+                    await fetch(
+                        API_BASE_URL +
+                        "/api/customers/me",
+                        {
+                            method: "GET",
+                            credentials: "include"
+                        }
+                    );
+
+
+                if (!customerResponse.ok) {
+
+                    throw new Error(
+                        "Unable to load customer profile."
+                    );
+
+                }
+
+
+                const customer =
+                    await customerResponse.json();
+
+
+                /* ================= USER ================= */
+
+                const userResponse =
+                    await fetch(
+                        API_BASE_URL +
+                        "/api/users/me",
+                        {
+                            method: "GET",
+                            credentials: "include"
+                        }
+                    );
+
+
+                let user = {};
+
+
+                if (userResponse.ok) {
+
+                    user =
+                        await userResponse.json();
+
+                }
+
+
+                /* ================= SET VALUES ================= */
+
+                /*
+                 * IMPORTANT:
+                 * Backend Customer entity uses customerName.
+                 */
+
+                document.getElementById(
+                    "name"
+                ).value =
+                    customer.customerName || "";
+
+
+                document.getElementById(
+                    "username"
+                ).value =
+                    user.username || "";
+
+
+                document.getElementById(
+                    "email"
+                ).value =
+                    customer.email || "";
+
+
+                document.getElementById(
+                    "phone"
+                ).value =
+                    customer.phone || "";
+
+
+                document.getElementById(
+                    "address"
+                ).value =
+                    customer.address || "";
+
+
+                document.getElementById(
+                    "city"
+                ).value =
+                    customer.city || "";
+
+
+                document.getElementById(
+                    "pincode"
+                ).value =
+                    customer.pincode || "";
+
+
+                /* ================= NAME DISPLAY ================= */
+
+                const displayName =
+                    customer.customerName ||
+                    user.fullName ||
+                    "Customer";
+
+
+                document.getElementById(
+                    "profileName"
+                ).textContent =
+                    displayName;
+
+
+                document.getElementById(
+                    "topUserName"
+                ).textContent =
+                    displayName;
+
+
+                const firstLetter =
+                    displayName
+                        .charAt(0)
+                        .toUpperCase();
+
+
+                document.getElementById(
+                    "profileAvatar"
+                ).textContent =
+                    firstLetter;
+
+
+                document.getElementById(
+                    "topAvatar"
+                ).textContent =
+                    firstLetter;
+
+
+                document.getElementById(
+                    "loading"
+                ).style.display =
+                    "none";
+
+
+                document.getElementById(
+                    "profileContent"
+                ).style.display =
+                    "block";
+
+
+            } catch (error) {
+
+                console.error(
+                    "Profile loading error:",
+                    error
+                );
+
+
+                document.getElementById(
+                    "loading"
+                ).style.display =
+                    "none";
+
+
+                showError(
+                    error.message
+                );
+
+            }
+
+        }
+
+
+        /* ================= SAVE PROFILE ================= */
+
+        document.getElementById(
+            "profileForm"
+        ).addEventListener(
+            "submit",
+            async function(event) {
+
+                event.preventDefault();
+
+                hideMessages();
+
+
+                /*
+                 * IMPORTANT:
+                 * Backend expects customerName,
+                 * not name.
+                 */
+
+                const data = {
+
+                    customerName:
+                        document.getElementById(
+                            "name"
+                        ).value.trim(),
+
+                    email:
+                        document.getElementById(
+                            "email"
+                        ).value.trim(),
+
+                    phone:
+                        document.getElementById(
+                            "phone"
+                        ).value.trim(),
+
+                    address:
+                        document.getElementById(
+                            "address"
+                        ).value.trim(),
+
+                    city:
+                        document.getElementById(
+                            "city"
+                        ).value.trim(),
+
+                    pincode:
+                        document.getElementById(
+                            "pincode"
+                        ).value.trim()
+
+                };
+
+
+                try {
+
+                    const response =
+                        await fetch(
+                            API_BASE_URL +
+                            "/api/customers/me",
+                            {
+                                method: "PUT",
+
+                                headers: {
+                                    "Content-Type":
+                                        "application/json"
+                                },
+
+                                credentials: "include",
+
+                                body:
+                                    JSON.stringify(data)
+                            }
+                        );
+
+
+                    if (!response.ok) {
+
+                        let message =
+                            "Unable to update profile.";
+
+
+                        try {
+
+                            const errorData =
+                                await response.json();
+
+                            message =
+                                errorData.message ||
+                                message;
+
+                        } catch (e) {
+
+                            // Ignore non-JSON error
+
+                        }
+
+
+                        throw new Error(
+                            message
+                        );
+
+                    }
+
+
+                    const updated =
+                        await response.json();
+
+
+                    /*
+                     * Backend returns customerName.
+                     */
+
+                    const displayName =
+                        updated.customerName ||
+                        data.customerName ||
+                        "Customer";
+
+
+                    document.getElementById(
+                        "profileName"
+                    ).textContent =
+                        displayName;
+
+
+                    document.getElementById(
+                        "topUserName"
+                    ).textContent =
+                        displayName;
+
+
+                    const firstLetter =
+                        displayName
+                            .charAt(0)
+                            .toUpperCase();
+
+
+                    document.getElementById(
+                        "profileAvatar"
+                    ).textContent =
+                        firstLetter;
+
+
+                    document.getElementById(
+                        "topAvatar"
+                    ).textContent =
+                        firstLetter;
+
+
+                    /*
+                     * Keep the input synchronized
+                     * with the updated customer name.
+                     */
+
+                    document.getElementById(
+                        "name"
+                    ).value =
+                        updated.customerName ||
+                        data.customerName ||
+                        "";
+
+
+                    showSuccess(
+                        "Profile updated successfully."
+                    );
+
+
+                } catch (error) {
+
+                    console.error(
+                        "Profile update error:",
+                        error
+                    );
+
+
+                    showError(
+                        error.message
+                    );
+
+                }
+
+            }
+        );
+
+
+        /* ================= MESSAGES ================= */
+
+        function showSuccess(message) {
+
+            const box =
+                document.getElementById(
+                    "successMessage"
+                );
+
+
+            box.textContent =
+                message;
+
+
+            box.style.display =
+                "block";
+
+        }
+
+
+        function showError(message) {
+
+            const box =
+                document.getElementById(
+                    "errorMessage"
+                );
+
+
+            box.textContent =
+                message;
+
+
+            box.style.display =
+                "block";
+
+        }
+
+
+        function hideMessages() {
+
+            document.getElementById(
+                "successMessage"
+            ).style.display =
+                "none";
+
+
+            document.getElementById(
+                "errorMessage"
+            ).style.display =
+                "none";
+
+        }
+
+
+        /* ================= LOGOUT ================= */
+
+        async function logout() {
+
+            try {
+
+                await fetch(
+                    API_BASE_URL +
+                    "/api/auth/logout",
+                    {
+                        method: "POST",
+                        credentials: "include"
+                    }
+                );
+
+            } catch (error) {
+
+                console.error(
+                    "Logout error:",
+                    error
+                );
+
+            }
+
+
+            sessionStorage.clear();
+
+
+            window.location.href =
+                "../index.html";
+
+        }
+
+
+        /* ================= START ================= */
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            function() {
+
+                loadProfile();
+
+            }
+        );
+
+    </script>
+
+</body>
+
+</html>

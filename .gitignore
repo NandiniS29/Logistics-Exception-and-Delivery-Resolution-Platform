@@ -1,0 +1,33 @@
+# Secrets and environment files
+.env
+.env.*
+!.env.example
+
+# Java and Maven build files
+**/target/
+**/*.class
+
+# Database credentials and local configuration
+**/application.properties
+**/application.yml
+**/application.yaml
+
+# IDE files
+.vscode/
+.idea/
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Log files
+*.log
+
+# Local project backup
+logistics-backend.zip
+
+# Local VS Code workspace
+Logistics-Workspace.code-workspace
+
+# Local Java classpath
+**/classpath.txt

@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resolution & Compensation | Logistics Platform</title>
+
+    <link rel="stylesheet" href="../css/admin.css">
+
+    <style>
+        body {
+            background: #f4f7fb;
+        }
+
+        .resolution-container {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .page-header {
+            margin-bottom: 25px;
+        }
+
+        .page-header h1 {
+            margin: 0;
+            color: #1e293b;
+            font-size: 30px;
+        }
+
+        .page-header p {
+            margin-top: 8px;
+            color: #64748b;
+        }
+
+        .card {
+            background: white;
+            border-radius: 14px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .card h2 {
+            margin-top: 0;
+            color: #1e293b;
+            font-size: 21px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .info-box {
+            background: #f8fafc;
+            padding: 16px;
+            border-radius: 9px;
+            overflow-wrap: anywhere;
+        }
+
+        .label {
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 6px;
+        }
+
+        .value {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group > label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #334155;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .radio-group {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            cursor: pointer;
+            background: #f8fafc;
+        }
+
+        .radio-option:hover {
+            border-color: #2563eb;
+            background: #eff6ff;
+        }
+
+        .radio-option input {
+            width: auto;
+        }
+
+        .compensation-section {
+            display: none;
+            margin-top: 20px;
+            padding: 18px;
+            border-radius: 10px;
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+        }
+
+        .compensation-section.show {
+            display: block;
+        }
+
+        .amount-input {
+            position: relative;
+        }
+
+        .amount-input span {
+            position: absolute;
+            left: 14px;
+            top: 12px;
+            font-weight: 600;
+            color: #64748b;
+        }
+
+        .amount-input input {
+            padding-left: 32px;
+        }
+
+        .button-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        .process-btn,
+        .back-btn {
+            display: inline-block;
+            padding: 12px 22px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        .process-btn {
+            background: #2563eb;
+            color: white;
+            cursor: pointer;
+        }
+
+        .process-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .process-btn:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        .back-btn {
+            background: #e2e8f0;
+            color: #334155;
+        }
+
+        .message {
+            display: none;
+            padding: 14px 18px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            overflow-wrap: anywhere;
+        }
+
+        .success {
+            display: block;
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .error {
+            display: block;
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .warning {
+            display: block;
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .existing-resolution {
+            display: none;
+            border-left: 5px solid #16a34a;
+        }
+
+        .existing-resolution.show {
+            display: block;
+        }
+
+        .existing-resolution p {
+            color: #334155;
+            line-height: 1.6;
+            overflow-wrap: anywhere;
+        }
+
+        .muted {
+            color: #64748b;
+        }
+
+        @media (max-width: 768px) {
+            .info-grid,
+            .radio-group {
+                grid-template-columns: 1fr;
+            }
+
+            .resolution-container {
+                padding: 12px;
+                margin: 15px auto;
+            }
+
+            .card {
+                padding: 18px;
+            }
+
+            .button-row {
+                flex-direction: column;
+            }
+
+            .process-btn,
+            .back-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="resolution-container">
+
+    <div class="page-header">
+        <h1>Resolution & Compensation</h1>
+        <p>Process and review the resolution for an investigated shipment exception.</p>
+    </div>
+
+    <div id="successMessage" class="message" role="status"></div>
+    <div id="errorMessage" class="message" role="alert"></div>
+    <div id="warningMessage" class="message" role="status"></div>
+
+    <div class="card">
+        <h2>Exception Information</h2>
+
+        <div class="info-grid">
+            <div class="info-box">
+                <div class="label">Exception ID</div>
+                <div class="value" id="exceptionId">Loading...</div>
+            </div>
+
+            <div class="info-box">
+                <div class="label">Shipment ID</div>
+                <div class="value" id="shipmentId">Loading...</div>
+            </div>
+
+            <div class="info-box">
+                <div class="label">Exception Type</div>
+                <div class="value" id="exceptionType">Loading...</div>
+            </div>
+
+            <div class="info-box">
+                <div class="label">Priority</div>
+                <div class="value" id="priority">-</div>
+            </div>
+
+            <div class="info-box">
+                <div class="label">Exception Status</div>
+                <div class="value">
+                    <span id="exceptionStatus" class="status-badge">-</span>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <div class="label">Reported Date</div>
+                <div class="value" id="reportedDate">-</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>Investigation Result</h2>
+
+        <div class="info-grid">
+            <div class="info-box">
+                <div class="label">Root Cause</div>
+                <div class="value" id="rootCause">Loading...</div>
+            </div>
+
+            <div class="info-box">
+                <div class="label">Investigation Status</div>
+                <div class="value" id="investigationStatus">Loading...</div>
+            </div>
+
+            <div class="info-box">
+                <div class="label">Investigator</div>
+                <div class="value" id="investigator">-</div>
+            </div>
+        </div>
+
+        <div style="margin-top:20px;">
+            <div class="label">Findings</div>
+            <div id="findings" style="margin-top:8px;color:#334155;line-height:1.6;">
+                Loading...
+            </div>
+        </div>
+    </div>
+
+    <div id="existingResolutionCard" class="card existing-resolution">
+        <h2>Existing Resolution Found</h2>
+        <p>
+            A resolution record already exists for this exception.
+            To avoid duplicate records, another resolution cannot be submitted here.
+        </p>
+
+        <div class="info-grid">
+            <div class="info-box">
+                <div class="label">Resolution ID</div>
+                <div class="value" id="existingResolutionId">-</div>
+            </div>
+
+            <div class="info-box">
+                <div class="label">Resolution Type</div>
+                <div class="value" id="existingResolutionType">-</div>
+            </div>
+
+            <div class="info-box">
+                <div class="label">Resolution Status</div>
+                <div class="value" id="existingResolutionStatus">-</div>
+            </div>
+
+            <div class="info-box">
+                <div class="label">Compensation</div>
+                <div class="value" id="existingCompensation">-</div>
+            </div>
+
+            <div class="info-box">
+                <div class="label">Resolved At</div>
+                <div class="value" id="existingResolvedAt">-</div>
+            </div>
+        </div>
+
+        <p id="existingResolutionDescription"></p>
+    </div>
+
+    <div class="card" id="resolutionFormCard">
+        <h2>Process Resolution</h2>
+
+        <form id="resolutionForm">
+
+            <div class="form-group">
+                <label>Resolution Type</label>
+
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="resolutionType"
+                               value="RE-DELIVERY" required>
+                        <span>Re-delivery</span>
+                    </label>
+
+                    <label class="radio-option">
+                        <input type="radio" name="resolutionType"
+                               value="REPLACEMENT">
+                        <span>Replacement</span>
+                    </label>
+
+                    <label class="radio-option">
+                        <input type="radio" name="resolutionType"
+                               value="REFUND">
+                        <span>Refund</span>
+                    </label>
+
+                    <label class="radio-option">
+                        <input type="radio" name="resolutionType"
+                               value="CUSTOMER COMMUNICATION">
+                        <span>Customer Communication</span>
+                    </label>
+
+                    <label class="radio-option">
+                        <input type="radio" name="resolutionType"
+                               value="COMPENSATION">
+                        <span>Compensation</span>
+                    </label>
+
+                    <label class="radio-option">
+                        <input type="radio" name="resolutionType"
+                               value="Reroute Shipment">
+                        <span>Reroute Shipment</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="resolutionDescription">Resolution Description</label>
+                <textarea id="resolutionDescription"
+                          placeholder="Describe the action taken to resolve the exception..."
+                          required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Is Compensation Required?</label>
+
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="compensationRequired"
+                               value="false" checked>
+                        <span>No</span>
+                    </label>
+
+                    <label class="radio-option">
+                        <input type="radio" name="compensationRequired"
+                               value="true">
+                        <span>Yes</span>
+                    </label>
+                </div>
+
+                <div id="compensationSection" class="compensation-section">
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label for="compensationAmount">Compensation Amount</label>
+                        <div class="amount-input">
+                            <span>₹</span>
+                            <input type="number" id="compensationAmount"
+                                   min="0.01" step="0.01"
+                                   placeholder="Enter amount">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="resolutionStatus">Resolution Status</label>
+                <select id="resolutionStatus" required>
+                    <option value="RESOLVED">RESOLVED</option>
+                    <option value="PENDING">PENDING</option>
+                </select>
+            </div>
+
+            <div class="button-row">
+                <button type="submit" id="processButton" class="process-btn">
+                    Process Resolution
+                </button>
+
+                <a href="exceptions.html" class="back-btn">
+                    ← Back to Exceptions
+                </a>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+<script>
+    const API_BASE_URL = "http://127.0.0.1:8080";
+
+    const params = new URLSearchParams(window.location.search);
+
+    const exceptionId =
+        params.get("exceptionId") ||
+        params.get("id") ||
+        new URLSearchParams(
+            window.location.hash.includes("?")
+                ? window.location.hash.substring(
+                    window.location.hash.indexOf("?") + 1
+                )
+                : ""
+        ).get("exceptionId");
+
+    let exceptionData = null;
+    let investigationData = null;
+    let existingResolution = null;
+    let isSubmitting = false;
+
+    document.addEventListener("DOMContentLoaded", async function () {
+        if (!exceptionId || !/^\d+$/.test(exceptionId)) {
+            showError("A valid Exception ID is missing from the URL.");
+            document.getElementById("resolutionFormCard").style.display = "none";
+            return;
+        }
+
+        document.getElementById("exceptionId").textContent = exceptionId;
+
+        try {
+            await Promise.all([
+                loadException(),
+                loadInvestigation()
+            ]);
+
+            await checkExistingResolution();
+        } catch (error) {
+            console.error("Initial page load error:", error);
+            showError(error.message || "Unable to load resolution information.");
+        }
+    });
+
+    async function apiFetch(url, options = {}) {
+        const response = await fetch(url, {
+            ...options,
+            credentials: "include",
+            headers: {
+                ...(options.headers || {})
+            }
+        });
+
+        if (!response.ok) {
+            const message = await response.text();
+            throw new Error(
+                message || `Request failed with HTTP ${response.status}.`
+            );
+        }
+
+        return response;
+    }
+
+    async function loadException() {
+        const response = await apiFetch(
+            `${API_BASE_URL}/api/exceptions/${exceptionId}`
+        );
+
+        exceptionData = await response.json();
+
+        document.getElementById("exceptionId").textContent =
+            exceptionData.exceptionId ?? exceptionId;
+
+        document.getElementById("shipmentId").textContent =
+            exceptionData.shipmentId ?? "-";
+
+        document.getElementById("exceptionType").textContent =
+            exceptionData.exceptionType ?? "-";
+
+        document.getElementById("priority").textContent =
+            exceptionData.priority ?? "-";
+
+        document.getElementById("exceptionStatus").textContent =
+            exceptionData.status ?? "-";
+
+        document.getElementById("reportedDate").textContent =
+            formatDate(exceptionData.reportedDate);
+
+        if (
+            String(exceptionData.status || "").toUpperCase() === "CLOSED"
+        ) {
+            showWarning(
+                "This exception is already CLOSED. The resolution form will remain unavailable."
+            );
+            disableResolutionForm(
+                "This exception is already closed."
+            );
+        }
+    }
+
+    async function loadInvestigation() {
+        const response = await apiFetch(
+            `${API_BASE_URL}/api/investigations/exception/${exceptionId}`
+        );
+
+        const result = await response.json();
+
+        const records = Array.isArray(result)
+            ? result
+            : result
+                ? [result]
+                : [];
+
+        if (records.length === 0) {
+            throw new Error(
+                "No investigation exists for this exception. Complete the investigation first."
+            );
+        }
+
+        records.sort((a, b) => {
+            const dateA = new Date(a.investigatedAt || 0).getTime();
+            const dateB = new Date(b.investigatedAt || 0).getTime();
+            return dateB - dateA;
+        });
+
+        investigationData = records[0];
+
+        document.getElementById("rootCause").textContent =
+            investigationData.rootCause || "-";
+
+        document.getElementById("investigationStatus").textContent =
+            investigationData.investigationStatus || "-";
+
+        document.getElementById("findings").textContent =
+            investigationData.findings || "-";
+
+        document.getElementById("investigator").textContent =
+            Number(investigationData.investigatedBy) === 1
+                ? "Logistics Control Officer"
+                : `User ${investigationData.investigatedBy ?? "-"}`;
+
+        if (
+            String(investigationData.investigationStatus || "").toUpperCase()
+            !== "COMPLETED"
+        ) {
+            showWarning(
+                "The investigation is not marked COMPLETED. Complete it before processing the resolution."
+            );
+            disableResolutionForm(
+                "Complete the investigation before processing a resolution."
+            );
+        }
+    }
+
+    async function checkExistingResolution() {
+        const response = await apiFetch(
+            `${API_BASE_URL}/api/resolutions/exception/${exceptionId}`
+        );
+
+        const result = await response.json();
+
+        const records = Array.isArray(result)
+            ? result
+            : result
+                ? [result]
+                : [];
+
+        if (records.length === 0) {
+            existingResolution = null;
+            return;
+        }
+
+        records.sort((a, b) => {
+            return Number(b.resolutionId || 0) -
+                   Number(a.resolutionId || 0);
+        });
+
+        existingResolution = records[0];
+
+        document.getElementById("existingResolutionId").textContent =
+            existingResolution.resolutionId ?? "-";
+
+        document.getElementById("existingResolutionType").textContent =
+            existingResolution.resolutionType ?? "-";
+
+        document.getElementById("existingResolutionStatus").textContent =
+            existingResolution.resolutionStatus ?? "-";
+
+        const amount = Number(existingResolution.compensationAmount || 0);
+
+        document.getElementById("existingCompensation").textContent =
+            existingResolution.compensationRequired
+                ? `₹${amount.toLocaleString("en-IN", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                })}`
+                : "Not required";
+
+        document.getElementById("existingResolvedAt").textContent =
+            formatDate(existingResolution.resolvedAt);
+
+        document.getElementById("existingResolutionDescription").textContent =
+            existingResolution.resolutionDescription || "No description provided.";
+
+        document.getElementById("existingResolutionCard")
+            .classList.add("show");
+
+        showWarning(
+            `Resolution ID ${existingResolution.resolutionId} already exists for Exception ${exceptionId}. No new record will be created.`
+        );
+
+        disableResolutionForm(
+            "A resolution already exists for this exception."
+        );
+    }
+
+    function toggleCompensation(required) {
+        const section = document.getElementById("compensationSection");
+        const amount = document.getElementById("compensationAmount");
+
+        if (required) {
+            section.classList.add("show");
+            amount.required = true;
+        } else {
+            section.classList.remove("show");
+            amount.required = false;
+            amount.value = "";
+        }
+    }
+
+    document.querySelectorAll(
+        'input[name="compensationRequired"]'
+    ).forEach(input => {
+        input.addEventListener("change", function () {
+            toggleCompensation(this.value === "true");
+        });
+    });
+
+    document.getElementById("resolutionForm")
+        .addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            if (isSubmitting) {
+                return;
+            }
+
+            if (existingResolution) {
+                showWarning(
+                    "A resolution already exists for this exception. Duplicate submission was blocked."
+                );
+                disableResolutionForm(
+                    "A resolution already exists for this exception."
+                );
+                return;
+            }
+
+            if (!exceptionData || !investigationData) {
+                showError(
+                    "Exception and investigation details must load before submitting."
+                );
+                return;
+            }
+
+            if (
+                String(exceptionData.status || "").toUpperCase() === "CLOSED"
+            ) {
+                showError(
+                    "This exception is already closed. No new resolution can be submitted."
+                );
+                return;
+            }
+
+            if (
+                String(investigationData.investigationStatus || "").toUpperCase()
+                !== "COMPLETED"
+            ) {
+                showError(
+                    "The investigation must be COMPLETED before processing a resolution."
+                );
+                return;
+            }
+
+            const button = document.getElementById("processButton");
+
+            try {
+                isSubmitting = true;
+                button.disabled = true;
+                button.textContent = "Checking existing records...";
+                hideMessages();
+
+                /*
+                 * Check the backend immediately before POST.
+                 * This reduces accidental duplicate submissions.
+                 */
+                const checkResponse = await apiFetch(
+                    `${API_BASE_URL}/api/resolutions/exception/${exceptionId}`
+                );
+
+                const checkResult = await checkResponse.json();
+
+                const checkRecords = Array.isArray(checkResult)
+                    ? checkResult
+                    : checkResult
+                        ? [checkResult]
+                        : [];
+
+                if (checkRecords.length > 0) {
+                    existingResolution = checkRecords[0];
+
+                    await checkExistingResolution();
+
+                    showWarning(
+                        "A resolution was found when checking the backend. No new record was submitted."
+                    );
+                    return;
+                }
+
+                const selectedType = document.querySelector(
+                    'input[name="resolutionType"]:checked'
+                );
+
+                const selectedCompensation = document.querySelector(
+                    'input[name="compensationRequired"]:checked'
+                );
+
+                if (!selectedType || !selectedCompensation) {
+                    throw new Error(
+                        "Select a resolution type and compensation option."
+                    );
+                }
+
+                const compensationRequired =
+                    selectedCompensation.value === "true";
+
+                const amountText =
+                    document.getElementById("compensationAmount").value;
+
+                const compensationAmount =
+                    compensationRequired ? Number(amountText) : 0;
+
+                if (
+                    compensationRequired &&
+                    (!Number.isFinite(compensationAmount) ||
+                     compensationAmount <= 0)
+                ) {
+                    throw new Error(
+                        "Enter a compensation amount greater than zero."
+                    );
+                }
+
+                const description = document.getElementById(
+                    "resolutionDescription"
+                ).value.trim();
+
+                if (!description) {
+                    throw new Error(
+                        "Enter a resolution description."
+                    );
+                }
+
+                const resolutionData = {
+                    exceptionId: Number(exceptionId),
+                    resolvedBy: 1,
+                    resolutionType: selectedType.value,
+                    resolutionDescription: description,
+                    compensationRequired: compensationRequired,
+                    compensationAmount: compensationAmount,
+                    resolutionStatus: document.getElementById(
+                        "resolutionStatus"
+                    ).value
+                };
+
+                button.textContent = "Processing resolution...";
+
+                const response = await apiFetch(
+                    `${API_BASE_URL}/api/resolutions`,
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(resolutionData)
+                    }
+                );
+
+                const savedResolution = await response.json();
+
+                /*
+                 * The backend service may return an existing record
+                 * rather than create a new one. Show its actual ID.
+                 */
+                existingResolution = savedResolution;
+
+                showSuccess(
+                    `Resolution saved. Resolution ID: ${savedResolution.resolutionId ?? " 확인 backend record"}.`
+                );
+
+                await checkExistingResolution();
+
+            } catch (error) {
+                console.error("Resolution submission error:", error);
+
+                showError(
+                    error.message ||
+                    "Unable to process the resolution."
+                );
+            } finally {
+                isSubmitting = false;
+                button.disabled = Boolean(existingResolution) ||
+                    (
+                        exceptionData &&
+                        String(exceptionData.status || "").toUpperCase() === "CLOSED"
+                    );
+
+                button.textContent = existingResolution
+                    ? "Resolution Already Exists"
+                    : "Process Resolution";
+            }
+        });
+
+    function disableResolutionForm(reason) {
+        const form = document.getElementById("resolutionForm");
+
+        form.querySelectorAll("input, textarea, select, button")
+            .forEach(control => {
+                control.disabled = true;
+            });
+
+        const button = document.getElementById("processButton");
+        button.disabled = true;
+        button.textContent = reason || "Submission Unavailable";
+    }
+
+    function formatDate(value) {
+        if (!value) {
+            return "-";
+        }
+
+        const date = new Date(value);
+
+        if (Number.isNaN(date.getTime())) {
+            return String(value);
+        }
+
+        return date.toLocaleString("en-IN");
+    }
+
+    function showSuccess(message) {
+        showMessage("successMessage", message, "success");
+    }
+
+    function showError(message) {
+        showMessage("errorMessage", message, "error");
+    }
+
+    function showWarning(message) {
+        showMessage("warningMessage", message, "warning");
+    }
+
+    function showMessage(id, message, className) {
+        const box = document.getElementById(id);
+        box.textContent = message;
+        box.className = `message ${className}`;
+        box.style.display = "block";
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+    }
+
+    function hideMessages() {
+        ["successMessage", "errorMessage", "warningMessage"]
+            .forEach(id => {
+                const box = document.getElementById(id);
+                box.textContent = "";
+                box.style.display = "none";
+                box.className = "message";
+            });
+    }
+</script>
+</body>
+</html>

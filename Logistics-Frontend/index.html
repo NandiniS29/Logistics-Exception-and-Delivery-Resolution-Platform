@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Logistics Exception & Delivery Resolution Platform</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --background: #02060d;
+            --navy: #061322;
+            --card: #081523;
+            --cyan: #00d9ff;
+            --teal: #00a9bd;
+            --text: #f3fbff;
+            --muted: #91a9bb;
+            --border: rgba(0, 217, 255, 0.25);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: "Inter", Arial, sans-serif;
+            background: var(--background);
+            color: var(--text);
+        }
+
+        button, input {
+            font: inherit;
+        }
+
+        .login-page {
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 1.12fr 0.88fr;
+            background: var(--background);
+        }
+
+        /* LEFT VIDEO PANEL */
+
+        .visual-panel {
+            position: relative;
+            min-height: 100vh;
+            padding: 30px clamp(22px, 3vw, 45px);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+            isolation: isolate;
+            background:
+                radial-gradient(
+                    ellipse at center,
+                    rgba(0, 174, 205, 0.18),
+                    transparent 65%
+                ),
+                #02060d;
+            border-right: 1px solid var(--border);
+        }
+
+        .truck-video,
+        .blue-video {
+            position: absolute;
+            z-index: -2;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            object-position: center center;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+
+        .truck-video {
+            opacity: 1;
+            filter: brightness(1.45) contrast(1.18) saturate(1.4);
+        }
+
+        .blue-video {
+            opacity: 0.25;
+            mix-blend-mode: screen;
+            filter: brightness(1.2) saturate(1.3);
+        }
+
+        .video-overlay {
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+            background: linear-gradient(
+                180deg,
+                rgba(2, 6, 13, 0.25),
+                transparent 32%,
+                transparent 60%,
+                rgba(2, 6, 13, 0.72)
+            );
+            pointer-events: none;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .brand-icon {
+            width: 48px;
+            height: 48px;
+            display: grid;
+            place-items: center;
+            border: 1px solid rgba(0, 217, 255, 0.55);
+            border-radius: 14px;
+            background: rgba(0, 217, 255, 0.12);
+            box-shadow: 0 0 25px rgba(0, 217, 255, 0.16);
+            font-size: 25px;
+        }
+
+        .brand-name {
+            font-size: 16px;
+            font-weight: 800;
+        }
+
+        .brand-caption {
+            margin-top: 5px;
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .visual-content {
+            position: relative;
+            z-index: 1;
+            max-width: 600px;
+            margin-top: auto;
+            padding-top: 35px;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            padding: 10px 14px;
+            border: 1px solid rgba(0, 217, 255, 0.35);
+            border-radius: 30px;
+            background: rgba(2, 10, 20, 0.78);
+            color: #a7f4ff;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #00edb0;
+            box-shadow: 0 0 12px #00edb0;
+        }
+
+        .visual-content h1 {
+            margin-top: 22px;
+            font-size: clamp(34px, 4vw, 57px);
+            font-weight: 900;
+            line-height: 1.08;
+            letter-spacing: -2px;
+            text-shadow: 0 3px 20px #000;
+        }
+
+        .gradient-text {
+            display: block;
+            color: var(--cyan);
+            text-shadow: 0 0 25px rgba(0, 217, 255, 0.22);
+        }
+
+        .visual-description {
+            max-width: 500px;
+            margin-top: 17px;
+            color: #d3e6ef;
+            font-size: 13px;
+            line-height: 1.8;
+            text-shadow: 0 2px 12px #000;
+        }
+
+        .feature-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 9px;
+            margin-top: 21px;
+        }
+
+        .feature-pill {
+            padding: 10px 12px;
+            border: 1px solid rgba(0, 217, 255, 0.25);
+            border-radius: 30px;
+            background: rgba(3, 13, 24, 0.88);
+            color: #e5faff;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .visual-footer {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin-top: 25px;
+            color: #91a9bb;
+            font-size: 10px;
+        }
+
+        /* RIGHT LOGIN PANEL */
+
+        .login-panel {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 32px clamp(18px, 3vw, 45px);
+            background:
+                radial-gradient(
+                    ellipse at top right,
+                    rgba(0, 180, 210, 0.10),
+                    transparent 45%
+                ),
+                linear-gradient(145deg, #071522, #02060d 85%);
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 450px;
+            padding: clamp(23px, 3vw, 36px);
+            border: 1px solid rgba(0, 217, 255, 0.27);
+            border-radius: 22px;
+            background: linear-gradient(145deg, #0b1c2a, #06101b);
+            box-shadow:
+                0 25px 75px rgba(0, 0, 0, 0.45),
+                0 0 35px rgba(0, 217, 255, 0.055);
+            animation: cardEnter 0.55s ease;
+        }
+
+        @keyframes cardEnter {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-lock {
+            width: 58px;
+            height: 58px;
+            display: grid;
+            place-items: center;
+            border: 1px solid rgba(0, 217, 255, 0.5);
+            border-radius: 17px;
+            background: linear-gradient(135deg, #063449, #075a70);
+            box-shadow: 0 0 25px rgba(0, 217, 255, 0.13);
+            font-size: 26px;
+        }
+
+        .welcome-heading {
+            margin-top: 23px;
+            color: var(--text);
+            font-size: clamp(27px, 2.5vw, 34px);
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        .welcome-description {
+            margin-top: 9px;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.8;
+        }
+
+        .form-heading {
+            margin: 27px 0 12px;
+            color: #cde8f1;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+        }
+
+        .role-selection {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 23px;
+        }
+
+        .role-btn {
+            min-height: 52px;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            border: 1px solid rgba(145, 169, 187, 0.25);
+            border-radius: 11px;
+            background: #06101b;
+            color: #b8ccd8;
+            font-size: 10px;
+            font-weight: 700;
+            line-height: 1.5;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .role-btn:hover {
+            border-color: var(--cyan);
+        }
+
+        .role-btn.active {
+            border-color: var(--cyan);
+            background: rgba(0, 217, 255, 0.12);
+            color: #f4fdff;
+            box-shadow: inset 0 0 0 1px rgba(0, 217, 255, 0.08);
+        }
+
+        .input-group {
+            margin-bottom: 17px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 9px;
+            color: #dcebf2;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 15px;
+            pointer-events: none;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            height: 52px;
+            padding: 0 43px;
+            outline: none;
+            border: 1px solid rgba(145, 169, 187, 0.23);
+            border-radius: 10px;
+            background: #030b14;
+            color: #f3fbff;
+            font-size: 12px;
+            transition: 0.2s;
+        }
+
+        .input-wrapper input::placeholder {
+            color: #718b9c;
+        }
+
+        .input-wrapper input:focus {
+            border-color: var(--cyan);
+            box-shadow: 0 0 0 3px rgba(0, 217, 255, 0.10);
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 11px;
+            top: 50%;
+            transform: translateY(-50%);
+            padding: 5px;
+            border: none;
+            background: transparent;
+            color: #a8c3d1;
+            font-size: 17px;
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin: 3px 0 22px;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            color: #9eb4c2;
+            font-size: 10px;
+            cursor: pointer;
+        }
+
+        .remember-me input {
+            accent-color: var(--cyan);
+        }
+
+        .form-options a {
+            color: var(--cyan);
+            font-size: 10px;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .form-options a:hover {
+            text-decoration: underline;
+        }
+
+        .login-button {
+            width: 100%;
+            min-height: 53px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            border: 1px solid rgba(0, 217, 255, 0.5);
+            border-radius: 11px;
+            background: linear-gradient(105deg, #007e9b, #00b9d4);
+            box-shadow: 0 10px 28px rgba(0, 180, 210, 0.17);
+            color: #02101a;
+            font-size: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .login-button:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.12);
+            box-shadow: 0 14px 32px rgba(0, 217, 255, 0.24);
+        }
+
+        .login-button:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .arrow {
+            font-size: 18px;
+        }
+
+        .login-message {
+            min-height: 18px;
+            margin-top: 12px;
+            text-align: center;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .login-footer {
+            margin-top: 23px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(145, 169, 187, 0.15);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            color: #8199a9;
+            font-size: 9px;
+            text-align: center;
+        }
+
+        .secure-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #00edb0;
+            box-shadow: 0 0 8px rgba(0, 237, 176, 0.55);
+        }
+
+        /* REGISTRATION PANEL */
+
+        .hidden {
+            display: none !important;
+        }
+
+        .registration-panel {
+            max-height: 68vh;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        .registration-panel .input-group {
+            margin-bottom: 12px;
+        }
+
+        .registration-panel .input-wrapper input {
+            height: 45px;
+        }
+
+        .registration-panel .input-wrapper input.password-visible {
+            padding-right: 45px;
+        }
+
+        .registration-message {
+            min-height: 18px;
+            margin-top: 10px;
+            text-align: center;
+            font-size: 11px;
+            font-weight: 600;
+            overflow-wrap: anywhere;
+        }
+
+        .registration-panel::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .registration-panel::-webkit-scrollbar-thumb {
+            background: rgba(0, 217, 255, 0.35);
+            border-radius: 10px;
+        }
+
+        .secondary-button {
+            width: 100%;
+            min-height: 44px;
+            margin-top: 13px;
+            padding: 10px;
+            border: 1px solid rgba(0, 217, 255, 0.35);
+            border-radius: 10px;
+            background: rgba(0, 217, 255, 0.06);
+            color: #bdeefa;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .secondary-button:hover {
+            background: rgba(0, 217, 255, 0.14);
+            border-color: var(--cyan);
+        }
+
+        /* RESPONSIVE DESIGN */
+
+        @media (max-width: 1000px) {
+            .login-page {
+                grid-template-columns: 1fr 0.95fr;
+            }
+
+            .visual-content h1 {
+                font-size: clamp(30px, 4vw, 44px);
+                letter-spacing: -1.5px;
+            }
+
+            .login-card {
+                padding: 24px;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .login-page {
+                grid-template-columns: 1fr;
+            }
+
+            .visual-panel {
+                min-height: 580px;
+                padding: 25px;
+            }
+
+            .truck-video,
+            .blue-video {
+                height: 100%;
+                object-fit: contain;
+            }
+
+            .visual-content h1 {
+                font-size: clamp(35px, 8vw, 49px);
+            }
+
+            .visual-footer {
+                margin-top: 20px;
+            }
+
+            .login-panel {
+                min-height: auto;
+                padding: 28px 18px 38px;
+            }
+
+            .login-card {
+                max-width: 470px;
+            }
+
+            .registration-panel {
+                max-height: 75vh;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .role-selection {
+                grid-template-columns: 1fr;
+            }
+
+            .visual-panel {
+                min-height: 540px;
+            }
+
+            .visual-footer {
+                flex-direction: column;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation: none !important;
+                transition: none !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<main class="login-page">
+
+    <!-- LEFT SIDE -->
+
+    <section class="visual-panel">
+
+        <video class="truck-video" autoplay muted loop playsinline>
+            <source src="assets/truck-bg.mp4" type="video/mp4">
+        </video>
+
+        <video class="blue-video" autoplay muted loop playsinline>
+            <source src="assets/blue-bg.mp4" type="video/mp4">
+        </video>
+
+        <div class="video-overlay"></div>
+
+        <header class="brand">
+            <div class="brand-icon">🚚</div>
+
+            <div>
+                <div class="brand-name">Logistics Platform</div>
+                <div class="brand-caption">Intelligent delivery operations</div>
+            </div>
+        </header>
+
+        <div class="visual-content">
+
+            <div class="eyebrow">
+                <span class="live-dot"></span>
+                Smart Logistics Management
+            </div>
+
+            <h1>
+                Logistics
+                <span class="gradient-text">Exception</span>
+                <span class="gradient-text">Resolution Platform</span>
+            </h1>
+
+            <p class="visual-description">
+                Smart shipment monitoring, intelligent exception detection,
+                and faster delivery resolution — bringing your logistics
+                operations together in one platform.
+            </p>
+
+            <div class="feature-list">
+                <div class="feature-pill">📦 Smart Tracking</div>
+                <div class="feature-pill">⚡ Exception Detection</div>
+                <div class="feature-pill">🛡️ Secure Management</div>
+            </div>
+
+        </div>
+
+        <footer class="visual-footer">
+            <span>Connected operations. Clear visibility.</span>
+            <span>© 2026 Logistics Platform</span>
+        </footer>
+
+    </section>
+
+    <!-- RIGHT SIDE -->
+
+    <section class="login-panel">
+
+        <div class="login-card">
+
+            <div class="login-lock">🔐</div>
+
+            <h2 class="welcome-heading">Welcome Back</h2>
+
+            <p class="welcome-description">
+                Sign in to access your logistics operations dashboard.
+            </p>
+
+            <p class="form-heading">Select your account type</p>
+
+            <div class="role-selection">
+
+                <button
+                    type="button"
+                    class="role-btn active"
+                    id="adminRoleBtn"
+                    onclick="selectRole('admin')">
+                    🚚 Control Officer
+                </button>
+
+                <button
+                    type="button"
+                    class="role-btn"
+                    id="customerRoleBtn"
+                    onclick="selectRole('customer')">
+                    👤 Customer Login
+                </button>
+
+            </div>
+
+            <!-- LOGIN FORM -->
+
+            <form id="loginForm">
+
+                <div class="input-group">
+                    <label for="username">Username or Email</label>
+
+                    <div class="input-wrapper">
+                        <span class="input-icon">👤</span>
+
+                        <input
+                            type="text"
+                            id="username"
+                            name="username"
+                            placeholder="Enter your username or email"
+                            autocomplete="username"
+                            required>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="password">Password</label>
+
+                    <div class="input-wrapper">
+                        <span class="input-icon">🔒</span>
+
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Enter your password"
+                            autocomplete="current-password"
+                            required>
+
+                        <button
+                            type="button"
+                            class="password-toggle"
+                            onclick="togglePassword()"
+                            aria-label="Show or hide password">
+                            👁
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-options">
+
+                    <label class="remember-me">
+                        <input type="checkbox" id="rememberMe">
+                        <span>Remember me</span>
+                    </label>
+
+                    <a href="#" onclick="forgotPassword(event)">
+                        Forgot Password?
+                    </a>
+
+                </div>
+
+                <button type="submit" class="login-button">
+                    <span>Sign In to Platform</span>
+                    <span class="arrow">→</span>
+                </button>
+
+            </form>
+
+            <div
+                id="loginMessage"
+                class="login-message"
+                role="status"
+                aria-live="polite">
+            </div>
+
+            <!-- CREATE ACCOUNT BUTTON -->
+
+            <button
+                type="button"
+                id="showRegisterBtn"
+                class="secondary-button"
+                onclick="showRegistrationPanel()">
+                Create Customer Account
+            </button>
+
+            <!-- CUSTOMER REGISTRATION FORM -->
+
+            <div id="registrationPanel" class="registration-panel hidden">
+
+                <h2 class="welcome-heading" style="font-size:24px; margin-top:20px;">
+                    Create Account
+                </h2>
+
+                <p class="welcome-description">
+                    Register as a customer to manage and track your shipments.
+                </p>
+
+                <form id="registrationForm" style="margin-top:20px;">
+
+                    <div class="input-group">
+                        <label for="regName">Account Name</label>
+
+                        <div class="input-wrapper">
+                            <span class="input-icon">👤</span>
+
+                            <input
+                                type="text"
+                                id="regName"
+                                name="fullName"
+                                placeholder="Enter your full name"
+                                autocomplete="name"
+                                required>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="regPhone">Phone Number</label>
+
+                        <div class="input-wrapper">
+                            <span class="input-icon">📞</span>
+
+                            <input
+                                type="tel"
+                                id="regPhone"
+                                name="phone"
+                                placeholder="Enter phone number"
+                                inputmode="tel"
+                                pattern="[0-9+() -]{7,20}"
+                                required>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="regAlternativePhone">
+                            Alternative Phone Number
+                        </label>
+
+                        <div class="input-wrapper">
+                            <span class="input-icon">📱</span>
+
+                            <input
+                                type="tel"
+                                id="regAlternativePhone"
+                                name="alternativePhone"
+                                placeholder="Enter alternative phone number"
+                                inputmode="tel"
+                                pattern="[0-9+() -]{7,20}">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="regEmail">Email Address</label>
+
+                        <div class="input-wrapper">
+                            <span class="input-icon">✉️</span>
+
+                            <input
+                                type="email"
+                                id="regEmail"
+                                name="email"
+                                placeholder="Enter your email address"
+                                autocomplete="email"
+                                required>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="regAddress">Address</label>
+
+                        <div class="input-wrapper">
+                            <span class="input-icon">🏠</span>
+
+                            <input
+                                type="text"
+                                id="regAddress"
+                                name="address"
+                                placeholder="House number, street, area"
+                                autocomplete="street-address"
+                                required>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="regCity">City</label>
+
+                        <div class="input-wrapper">
+                            <span class="input-icon">🏙️</span>
+
+                            <input
+                                type="text"
+                                id="regCity"
+                                name="city"
+                                placeholder="Enter your city"
+                                autocomplete="address-level2"
+                                required>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="regState">State</label>
+
+                        <div class="input-wrapper">
+                            <span class="input-icon">🗺️</span>
+
+                            <input
+                                type="text"
+                                id="regState"
+                                name="state"
+                                placeholder="Enter your state"
+                                autocomplete="address-level1"
+                                required>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="regPincode">Pincode</label>
+
+                        <div class="input-wrapper">
+                            <span class="input-icon">📍</span>
+
+                            <input
+                                type="text"
+                                id="regPincode"
+                                name="pincode"
+                                placeholder="Enter 6-digit pincode"
+                                inputmode="numeric"
+                                pattern="[0-9]{6}"
+                                maxlength="6"
+                                autocomplete="postal-code"
+                                required>
+                        </div>
+                    </div>
+
+                    <!-- PASSWORD WITH SHOW/HIDE EYE BUTTON -->
+
+                    <div class="input-group">
+                        <label for="regPassword">Create Password</label>
+
+                        <div class="input-wrapper">
+                            <span class="input-icon">🔒</span>
+
+                            <input
+                                type="password"
+                                id="regPassword"
+                                name="password"
+                                placeholder="Create a password (minimum 6 characters)"
+                                minlength="6"
+                                autocomplete="new-password"
+                                class="password-visible"
+                                required>
+
+                            <button
+                                type="button"
+                                id="toggleRegPassword"
+                                class="password-toggle"
+                                onclick="toggleRegistrationPassword()"
+                                aria-label="Show password"
+                                aria-pressed="false">
+                                👁
+                            </button>
+                        </div>
+                    </div>
+
+                    <button
+                        type="submit"
+                        id="createAccountButton"
+                        class="login-button">
+
+                        <span>Create Account</span>
+                        <span class="arrow">→</span>
+
+                    </button>
+
+                    <div
+                        id="registrationMessage"
+                        class="registration-message"
+                        role="status"
+                        aria-live="polite">
+                    </div>
+
+                </form>
+
+                <button
+                    type="button"
+                    id="backToLoginBtn"
+                    class="secondary-button"
+                    onclick="showLoginPanel()">
+                    Back to Login
+                </button>
+
+            </div>
+
+            <footer class="login-footer">
+                <span class="secure-dot"></span>
+                <span>Secure Logistics Access</span>
+                <span>•</span>
+                <span>Role-based sign in</span>
+            </footer>
+
+        </div>
+
+    </section>
+
+</main>
+
+<!-- PAGE SWITCHING AND PASSWORD VISIBILITY -->
+
+<script>
+    function showRegistrationPanel() {
+        document.getElementById("loginForm").classList.add("hidden");
+        document.getElementById("loginMessage").classList.add("hidden");
+        document.getElementById("showRegisterBtn").classList.add("hidden");
+        document.getElementById("registrationPanel").classList.remove("hidden");
+
+        const registrationMessage =
+            document.getElementById("registrationMessage");
+
+        registrationMessage.textContent = "";
+        registrationMessage.style.color = "";
+    }
+
+    function showLoginPanel() {
+        document.getElementById("registrationPanel").classList.add("hidden");
+        document.getElementById("loginForm").classList.remove("hidden");
+        document.getElementById("loginMessage").classList.remove("hidden");
+        document.getElementById("showRegisterBtn").classList.remove("hidden");
+    }
+
+    function toggleRegistrationPassword() {
+        const passwordInput = document.getElementById("regPassword");
+        const toggleButton = document.getElementById("toggleRegPassword");
+
+        if (!passwordInput || !toggleButton) {
+            return;
+        }
+
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            toggleButton.textContent = "🙈";
+            toggleButton.setAttribute("aria-label", "Hide password");
+            toggleButton.setAttribute("aria-pressed", "true");
+        } else {
+            passwordInput.type = "password";
+            toggleButton.textContent = "👁";
+            toggleButton.setAttribute("aria-label", "Show password");
+            toggleButton.setAttribute("aria-pressed", "false");
+        }
+    }
+</script>
+
+<!-- EXISTING AUTHENTICATION FILE -->
+
+<script src="js/auth.js"></script>
+
+</body>
+</html>

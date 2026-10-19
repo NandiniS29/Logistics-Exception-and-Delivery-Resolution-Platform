@@ -1,0 +1,1442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Routes & Delivery | Logistics Platform</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/admin.css">
+
+    <style>
+        /* =====================================
+           ROUTES PAGE
+        ===================================== */
+
+        :root {
+            --page-bg: #f1f6fa;
+            --card-bg: #ffffff;
+            --text-main: #102f46;
+            --text-muted: #71849a;
+            --border-color: #dfe8ef;
+            --teal: #087c91;
+            --teal-dark: #075d70;
+            --input-bg: #ffffff;
+            --table-head: #f3f8fb;
+            --hover-bg: #f1f9fb;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Inter", sans-serif;
+            background: var(--page-bg);
+            color: var(--text-main);
+        }
+
+        /* Sidebar matches Customer Management */
+
+        .sidebar {
+            width: 267px;
+            min-height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            overflow-y: auto;
+            background: linear-gradient(180deg, #061925 0%, #082735 100%);
+            color: #e8f4fa;
+            padding: 0;
+            z-index: 1000;
+        }
+
+        .brand {
+            min-height: 135px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 20px 30px;
+            margin: 0 17px;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+        }
+
+        .brand-title {
+            font-size: 24px;
+            font-weight: 800;
+            line-height: 1.6;
+            color: #ffffff;
+        }
+
+        .brand-title .brand-emoji {
+            margin-right: 8px;
+        }
+
+        .brand-subtitle {
+            font-size: 23px;
+            font-weight: 800;
+            color: #00c7df;
+            line-height: 1.3;
+        }
+
+        .sidebar-nav {
+            padding: 25px 17px 20px;
+        }
+
+        .sidebar .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-height: 62px;
+            padding: 15px 18px;
+            margin-bottom: 8px;
+            border-radius: 11px;
+            text-decoration: none;
+            color: #d9e8f2;
+            font-size: 16px;
+            font-weight: 500;
+            background: transparent;
+            box-shadow: none;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+
+        .sidebar .nav-item span:first-child {
+            width: 22px;
+            text-align: center;
+            font-size: 15px;
+        }
+
+        .sidebar .nav-item:hover {
+            background: rgba(8, 124, 145, 0.25);
+            color: #ffffff;
+        }
+
+        .sidebar .nav-item.active {
+            background: linear-gradient(110deg, #087f95, #075c70);
+            color: #ffffff;
+            box-shadow: none;
+        }
+
+        .sidebar-bottom {
+            padding: 15px 17px 20px;
+            border-top: 1px solid rgba(255,255,255,0.13);
+        }
+
+        .sidebar-bottom .nav-item {
+            min-height: 55px;
+        }
+
+        /* Main page layout */
+
+        .main-content {
+            margin-left: 267px;
+            width: calc(100% - 267px);
+            min-height: 100vh;
+            padding: 32px;
+            background: var(--page-bg);
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 28px;
+        }
+
+        .eyebrow {
+            margin: 0 0 8px;
+            color: #07859d;
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .page-header h1 {
+            margin: 0;
+            color: var(--text-main);
+            font-size: 32px;
+            font-weight: 800;
+        }
+
+        .page-description {
+            margin: 9px 0 0;
+            color: var(--text-muted);
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        button,
+        input,
+        select,
+        textarea {
+            font-family: inherit;
+        }
+
+        .btn {
+            min-height: 45px;
+            padding: 11px 18px;
+            border: 1px solid var(--border-color);
+            border-radius: 9px;
+            background: var(--card-bg);
+            color: var(--text-main);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-primary {
+            background: #00bfd5;
+            border-color: #00bfd5;
+            color: #052d3b;
+        }
+
+        .btn-primary:hover {
+            background: #00abc0;
+        }
+
+        .btn-secondary {
+            background: var(--card-bg);
+            color: var(--text-main);
+        }
+
+        /* Summary cards */
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .summary-card {
+            min-height: 135px;
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 17px;
+            box-shadow: 0 5px 18px rgba(19, 48, 67, 0.035);
+        }
+
+        .summary-icon {
+            width: 52px;
+            height: 52px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 13px;
+            font-size: 21px;
+        }
+
+        .icon-blue {
+            background: #e5f2ff;
+            color: #1976d2;
+        }
+
+        .icon-green {
+            background: #e2f8ed;
+            color: #0c9960;
+        }
+
+        .icon-orange {
+            background: #fff1dc;
+            color: #db850c;
+        }
+
+        .icon-purple {
+            background: #f0e8ff;
+            color: #7951d9;
+        }
+
+        .summary-label {
+            margin: 0 0 9px;
+             color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .summary-value {
+            margin: 0;
+            color: var(--text-main);
+            font-size: 27px;
+            font-weight: 800;
+        }
+
+        .summary-note {
+            margin: 5px 0 0;
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+        /* Panels */
+
+        .panel {
+            margin-bottom: 25px;
+            overflow: hidden;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 17px;
+            box-shadow: 0 5px 18px rgba(19, 48, 67, 0.035);
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 14px;
+            padding: 22px 25px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .panel-header h2 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        .panel-header p {
+            margin: 7px 0 0;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .panel-body {
+            padding: 25px;
+        }
+
+        /* Form */
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            color: var(--text-main);
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            min-height: 49px;
+            padding: 12px 14px;
+            border: 1px solid #d6e2eb;
+            border-radius: 9px;
+            outline: none;
+            background: var(--input-bg);
+            color: var(--text-main);
+            font-size: 14px;
+        }
+
+        .form-group textarea {
+            min-height: 95px;
+            resize: vertical;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #0797ad;
+            box-shadow: 0 0 0 3px rgba(7, 151, 173, 0.12);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 24px;
+        }
+
+        /* Filters */
+
+        .filter-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-row input,
+        .filter-row select {
+            min-height: 43px;
+            padding: 10px 13px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--input-bg);
+            color: var(--text-main);
+            outline: none;
+            font-size: 13px;
+        }
+
+        .filter-row input {
+            min-width: 240px;
+        }
+
+        /* Table */
+
+        .table-scroll {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .routes-table {
+            width: 100%;
+            min-width: 900px;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .routes-table thead {
+            background: var(--table-head);
+        }
+
+        .routes-table th {
+            padding: 17px 20px;
+            text-align: left;
+            color: var(--text-muted);
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border-color);
+            white-space: nowrap;
+        }
+
+        .routes-table td {
+            padding: 18px 20px;
+            color: var(--text-main);
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+
+        .routes-table tbody tr:hover {
+            background: var(--hover-bg);
+        }
+
+        .routes-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .route-id {
+            font-weight: 800;
+            color: #087f95;
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 10px;
+            border-radius: 30px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .status-active {
+            background: #e1f8ed;
+            color: #078450;
+        }
+
+        .status-pending {
+            background: #fff3dc;
+            color: #b86d00;
+        }
+
+        .status-completed {
+            background: #e5f1ff;
+            color: #1a63b5;
+        }
+
+        .status-unassigned {
+            background: #ffe9e9;
+            color: #c12e2e;
+        }
+
+        .action-buttons {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .icon-button {
+            width: 34px;
+            height: 34px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--card-bg);
+            color: var(--text-main);
+            cursor: pointer;
+        }
+
+        .icon-button:hover {
+            background: #e7f7fa;
+            color: #087f95;
+        }
+
+        .empty-state {
+            padding: 35px 20px;
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        .empty-state i {
+            display: block;
+            margin-bottom: 12px;
+            font-size: 28px;
+            color: #0b91a7;
+        }
+
+        .message {
+            display: none;
+            padding: 13px 16px;
+            margin-bottom: 18px;
+            border-radius: 9px;
+            font-size: 13px;
+        }
+
+        .message.success {
+            display: block;
+            background: #e2f8ed;
+            color: #087647;
+            border: 1px solid #b9ebd0;
+        }
+
+        .message.error {
+            display: block;
+            background: #ffe8e8;
+            color: #b91c1c;
+            border: 1px solid #ffcaca;
+        }
+
+        .loading {
+            padding: 28px;
+            text-align: center;
+            color: var(--text-muted);
+        }
+  .loading i {
+            margin-right: 8px;
+        }
+
+        /* Responsive */
+
+        @media (max-width: 1200px) {
+            .summary-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 800px) {
+            .sidebar {
+                width: 75px;
+            }
+
+            .brand {
+                align-items: center;
+                padding: 15px 5px;
+                margin: 0 5px;
+            }
+
+            .brand-title {
+                font-size: 0;
+            }
+
+            .brand-subtitle {
+                display: none;
+            }
+
+            .sidebar-nav {
+                padding: 15px 7px;
+            }
+
+            .sidebar .nav-item {
+                justify-content: center;
+                padding: 12px 5px;
+                font-size: 0;
+            }
+
+            .sidebar .nav-item span:first-child {
+                font-size: 17px;
+            }
+
+            .sidebar-bottom {
+                padding: 10px 7px;
+            }
+
+            .main-content {
+                margin-left: 75px;
+                width: calc(100% - 75px);
+                padding: 20px;
+            }
+
+            .page-header h1 {
+                font-size: 27px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .summary-grid,
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full-width {
+                grid-column: auto;
+            }
+
+            .main-content {
+                padding: 15px;
+            }
+
+            .page-header h1 {
+                font-size: 24px;
+            }
+
+            .panel-header,
+            .panel-body {
+                padding: 17px;
+            }
+
+            .filter-row input {
+                min-width: 100%;
+            }
+
+            .filter-row select,
+            .filter-row button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- =====================================
+     SIDEBAR
+===================================== -->
+
+<aside class="sidebar">
+
+    <div class="brand">
+        <div class="brand-title">
+            <span class="brand-emoji">🚚</span>Logistics
+        </div>
+        <div class="brand-subtitle">Platform</div>
+    </div>
+
+    <nav class="sidebar-nav">
+
+        <a href="dashboard.html" class="nav-item">
+            <span>▦</span><span>Dashboard</span>
+        </a>
+
+        <a href="customers.html" class="nav-item">
+            <span>♙</span><span>Customers</span>
+        </a>
+
+        <a href="shipments.html" class="nav-item">
+            <span>▣</span><span>Shipments</span>
+        </a>
+
+        <a href="packages.html" class="nav-item">
+            <span>▦</span><span>Packages & Items</span>
+        </a>
+
+        <a href="routes.html" class="nav-item active">
+            <span>➜</span><span>Routes & Delivery</span>
+        </a>
+
+        <a href="tracking.html" class="nav-item">
+            <span>⚑</span><span>Shipment Tracking</span>
+        </a>
+
+        <a href="exceptions.html" class="nav-item">
+            <span>⚠</span><span>Exceptions</span>
+        </a>
+
+        <a href="investigation.html" class="nav-item">
+            <span>⌕</span><span>Investigation</span>
+        </a>
+
+        <a href="resolutions.html" class="nav-item">
+            <span>✓</span><span>Resolutions</span>
+        </a>
+
+        <a href="sla-analytics.html" class="nav-item">
+            <span>▥</span><span>SLA & Analytics</span>
+        </a>
+
+    </nav>
+
+    <div class="sidebar-bottom">
+        <a href="#" class="nav-item" id="settingsLink">
+            <span>⚙</span><span>Settings</span>
+        </a>
+
+        <a href="../index.html" class="nav-item logout">
+            <span>▣</span><span>Logout</span>
+        </a>
+    </div>
+
+</aside>
+
+
+<!-- =====================================
+     MAIN CONTENT
+===================================== -->
+
+<main class="main-content">
+
+    <header class="page-header">
+
+        <div>
+            <p class="eyebrow">Logistics Control Officer</p>
+            <h1>Routes & Delivery Management</h1>
+            <p class="page-description">
+                Manage delivery routes, assign shipments and monitor delivery assignments.
+            </p>
+        </div>
+
+        <div class="header-actions">
+            <button class="btn btn-secondary" id="refreshBtn">
+                <i class="fa-solid fa-rotate-right"></i> Refresh
+            </button>
+
+            <button class="btn btn-primary" id="showFormBtn">
+                <i class="fa-solid fa-plus"></i> Add Route
+            </button>
+        </div>
+
+    </header>
+
+
+    <div id="messageBox" class="message"></div>
+
+
+    <!-- SUMMARY CARDS -->
+
+    <section class="summary-grid">
+
+        <article class="summary-card">
+            <div class="summary-icon icon-blue">
+                <i class="fa-solid fa-route"></i>
+            </div>
+            <div>
+                <p class="summary-label">Total Routes</p>
+                <h2 class="summary-value" id="totalRoutes">0</h2>
+                <p class="summary-note">Routes recorded in the system</p>
+            </div>
+        </article>
+
+        <article class="summary-card">
+            <div class="summary-icon icon-green">
+                <i class="fa-solid fa-truck-fast"></i>
+            </div>
+            <div>
+                <p class="summary-label">Active Routes</p>
+                <h2 class="summary-value" id="activeRoutes">0</h2>
+                <p class="summary-note">Currently active assignments</p>
+            </div>
+        </article>
+
+        <article class="summary-card">
+            <div class="summary-icon icon-orange">
+                <i class="fa-solid fa-clock"></i>
+            </div>
+            <div>
+                <p class="summary-label">Pending Routes</p>
+                <h2 class="summary-value" id="pendingRoutes">0</h2>
+                <p class="summary-note">Awaiting delivery progress</p>
+            </div>
+        </article>
+
+        <article class="summary-card">
+            <div class="summary-icon icon-purple">
+                <i class="fa-solid fa-box"></i>
+            </div>
+            <div>
+                <p class="summary-label">Shipments Assigned</p>
+                <h2 class="summary-value" id="assignedShipments">0</h2>
+                <p class="summary-note">Shipments with a route</p>
+            </div>
+        </article>
+
+    </section>
+
+
+    <!-- ADD ROUTE FORM -->
+
+    <section class="panel" id="routeFormPanel" hidden>
+
+        <div class="panel-header">
+            <div>
+                <h2 id="formTitle">Add Delivery Route</h2>
+                <p>Enter the route details below.</p>
+            </div>
+        </div>
+
+        <div class="panel-body">
+
+            <form id="routeForm">
+
+                <input type="hidden" id="routeId">
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        <label for="routeName">Route Name *</label>
+                        <input type="text" id="routeName"
+                               placeholder="Example: Bangalore Central Route"
+                               required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="shipmentId">Shipment ID</label>
+                        <input type="number" id="shipmentId"
+                               min="1" placeholder="Enter shipment ID">
+                                   </div>
+
+                    <div class="form-group">
+                        <label for="origin">Origin *</label>
+                        <input type="text" id="origin"
+                               placeholder="Starting location" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="destination">Destination *</label>
+                        <input type="text" id="destination"
+                               placeholder="Delivery destination" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="deliveryAgent">Delivery Agent</label>
+                        <input type="text" id="deliveryAgent"
+                               placeholder="Agent name or ID">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="routeStatus">Route Status *</label>
+                        <select id="routeStatus" required>
+                            <option value="Pending">Pending</option>
+                            <option value="Active">Active</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Unassigned">Unassigned</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="departureDate">Departure Date</label>
+                        <input type="date" id="departureDate">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="estimatedArrival">Estimated Arrival</label>
+                        <input type="date" id="estimatedArrival">
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="routeNotes">Notes</label>
+                        <textarea id="routeNotes"
+                                  placeholder="Optional route information"></textarea>
+                    </div>
+
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa-solid fa-floppy-disk"></i> Save Route
+                    </button>
+
+                    <button type="button" class="btn btn-secondary"
+                            id="cancelFormBtn">
+                        Cancel
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+
+    </section>
+
+
+    <!-- ROUTES TABLE -->
+
+    <section class="panel">
+
+        <div class="panel-header">
+            <div>
+                <h2>Delivery Routes</h2>
+                <p>View and manage available routes and delivery assignments.</p>
+            </div>
+
+            <div class="filter-row">
+                <input type="search" id="searchInput"
+                       placeholder="Search routes...">
+
+                <select id="statusFilter">
+                    <option value="">All statuses</option>
+                    <option value="Active">Active</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Unassigned">Unassigned</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="table-scroll">
+
+            <table class="routes-table">
+
+                <thead>
+                    <tr>
+                        <th>Route ID</th>
+                        <th>Route Name</th>
+                        <th>Shipment ID</th>
+                        <th>Origin</th>
+                        <th>Destination</th>
+                        <th>Delivery Agent</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody id="routesTableBody">
+                    <tr>
+                        <td colspan="8" class="loading">
+                            <i class="fa-solid fa-spinner fa-spin"></i>
+                            Loading route data...
+                        </td>
+                    </tr>
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<script>
+    /*
+     * IMPORTANT:
+     * Update ROUTES_API only if your existing Spring Boot route
+     * controller uses a different endpoint.
+     */
+    const ROUTES_API = "http://127.0.0.1:8080/api/route-assignments";
+
+    let routes = [];
+    let apiAvailable = false;
+
+    const routeForm = document.getElementById("routeForm");
+    const routeFormPanel = document.getElementById("routeFormPanel");
+    const routesTableBody = document.getElementById("routesTableBody");
+    const messageBox = document.getElementById("messageBox");
+
+    function showMessage(text, type = "success") {
+        messageBox.textContent = text;
+        messageBox.className = "message " + type;
+
+        window.scrollTo({ top: 0, behavior: "smooth" });
+
+        setTimeout(() => {
+            messageBox.className = "message";
+        }, 5000);
+    }
+
+    function getValue(item, keys, fallback = "") {
+        for (const key of keys) {
+            if (item[key] !== undefined && item[key] !== null) {
+                return item[key];
+            }
+        }
+
+        return fallback;
+    }
+
+    function normaliseRoute(item) {
+        const rawStatus = getValue(
+            item,
+            ["assignmentStatus", "status", "routeStatus"],
+            "ASSIGNED"
+        );
+
+        const statusMap = {
+            ASSIGNED: "Pending",
+            PENDING: "Pending",
+            IN_TRANSIT: "Active",
+            ACTIVE: "Active",
+            DELIVERED: "Completed",
+            COMPLETED: "Completed",
+            UNASSIGNED: "Unassigned"
+        };
+
+        const statusKey = String(rawStatus).trim().toUpperCase();
+
+        return {
+            id: getValue(item, ["assignmentId", "routeId", "id", "assignment_id", "route_id"], ""),
+            name: getValue(item, ["routeName", "name", "route_name"], "Unnamed route"),
+            shipmentId: getValue(item, ["shipmentId", "shipment_id"], ""),
+            origin: getValue(item, ["origin", "source", "startLocation"], ""),
+            destination: getValue(item, ["destination", "endLocation"], ""),
+            agent: getValue(item, ["assignedTo", "deliveryAgentName", "agentName", "deliveryAgent", "assigned_to"], ""),
+            status: statusMap[statusKey] || rawStatus,
+            departureDate: getValue(item, ["departureDate"], ""),
+            estimatedArrival: getValue(item, ["estimatedArrival", "estimatedDeliveryDate"], ""),
+            notes: getValue(item, ["notes", "description"], "")
+        };
+    }
+
+    function statusClass(status) {
+        const value = String(status).toLowerCase();
+
+        if (value.includes("active") || value.includes("progress")) {
+            return "status-active";
+        }
+
+        if (value.includes("complete") || value.includes("delivered")) {
+            return "status-completed";
+        }
+
+        if (value.includes("unassigned")) {
+            return "status-unassigned";
+        }
+
+        return "status-pending";
+    }
+
+    function safeText(value) {
+        return String(value ?? "")
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
+    }
+
+    function renderRoutes() {
+    const search = document.getElementById("searchInput").value.toLowerCase().trim();
+    const statusFilter = document.getElementById("statusFilter").value.toLowerCase();
+
+    const filtered = routes.filter(route => {
+        const searchable = [
+            route.routeId,
+            route.routeName,
+            route.shipmentId,
+            route.origin,
+            route.destination,
+            route.assignedTo,
+            route.assignmentStatus
+        ].join(" ").toLowerCase();
+
+        const matchesSearch = searchable.includes(search);
+        const matchesStatus =
+            !statusFilter ||
+            String(route.assignmentStatus).toLowerCase() === statusFilter;
+
+        return matchesSearch && matchesStatus;
+    });
+
+    document.getElementById("totalRoutes").textContent = routes.length;
+
+    document.getElementById("activeRoutes").textContent =
+        routes.filter(route =>
+            ["assigned", "active", "in transit", "in_transit"].includes(
+                String(route.assignmentStatus).toLowerCase()
+            )
+        ).length;
+
+    document.getElementById("pendingRoutes").textContent =
+        routes.filter(route =>
+            String(route.assignmentStatus).toLowerCase() === "pending"
+        ).length;
+
+    document.getElementById("assignedShipments").textContent =
+        new Set(
+            routes
+                .map(route => Number(route.shipmentId))
+                .filter(id => Number.isFinite(id) && id > 0)
+        ).size;
+
+    if (!filtered.length) {
+        routesTableBody.innerHTML = `
+            <tr>
+                <td colspan="8">
+                    <div class="empty-state">
+                        <i class="fa-solid fa-route"></i>
+                        <strong>No routes found</strong>
+                        <p>Try changing your search or add a route.</p>
+                    </div>
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
+    routesTableBody.innerHTML = filtered.map(route => `
+        <tr>
+            <td class="route-id">${safeText(route.routeId ?? "—")}</td>
+            <td>${safeText(route.routeName ?? "—")}</td>
+            <td>${safeText(route.shipmentId ?? "—")}</td>
+            <td>${safeText(route.origin ?? "—")}</td>
+            <td>${safeText(route.destination ?? "—")}</td>
+            <td>${safeText(route.assignedTo ?? "Unassigned")}</td>
+            <td>
+                <span class="status-pill ${statusClass(route.assignmentStatus)}">
+                    ${safeText(route.assignmentStatus ?? "Pending")}
+                </span>
+            </td>
+            <td>
+                <div class="action-buttons">
+                    <button class="icon-button" title="Edit route"
+                            data-edit="${safeText(route.routeId)}">
+                        <i class="fa-solid fa-pen"></i>
+                    </button>
+                    <button class="icon-button" title="Delete route"
+                            data-delete="${safeText(route.routeId)}">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </div>
+            </td>
+        </tr>
+    `).join("");
+}
+
+    async function loadRoutes() {
+    routesTableBody.innerHTML = `
+        <tr>
+            <td colspan="8" style="text-align:center;padding:40px;">
+                Loading route data...
+            </td>
+        </tr>
+    `;
+
+    try {
+        const response = await fetch(ROUTES_API, {
+            method: "GET",
+            credentials: "include",
+            headers: {
+                "Accept": "application/json"
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error("Unable to load routes. HTTP " + response.status);
+        }
+
+        const data = await response.json();
+
+        // The API returns an array of route assignments.
+        const list = Array.isArray(data)
+            ? data
+            : (data.content || data.routes || data.data || []);
+
+        routes = list.map(route => ({
+            ...route,
+
+            // The Java entity uses assignmentId, not routeId.
+            routeId: route.assignmentId ?? route.routeId ?? route.id,
+
+            routeName: route.routeName ?? "",
+            shipmentId: route.shipmentId ?? "",
+            origin: route.origin ?? "",
+            destination: route.destination ?? "",
+            assignedTo: route.assignedTo ?? "",
+            assignmentStatus: route.assignmentStatus ?? "PENDING",
+            vehicleNumber: route.vehicleNumber ?? ""
+        }));
+
+        // Update the four summary cards.
+        const totalRoutes = routes.length;
+
+        const activeRoutes = routes.filter(route => {
+            const status = String(route.assignmentStatus).toUpperCase();
+            return status === "ASSIGNED" ||
+                   status === "IN TRANSIT" ||
+                   status === "IN_TRANSIT" ||
+                   status === "ACTIVE";
+        }).length;
+
+        const pendingRoutes = routes.filter(route =>
+            String(route.assignmentStatus).toUpperCase() === "PENDING"
+        ).length;
+
+        // Count unique shipment IDs that have a route.
+        const assignedShipments = new Set(
+            routes
+                .map(route => Number(route.shipmentId))
+                .filter(id => Number.isFinite(id) && id > 0)
+        ).size;
+
+        // Update these IDs if your HTML uses different card IDs.
+        const totalElement = document.getElementById("totalRoutes");
+        const activeElement = document.getElementById("activeRoutes");
+        const pendingElement = document.getElementById("pendingRoutes");
+        const shipmentElement = document.getElementById("shipmentsAssigned");
+
+        if (totalElement) totalElement.textContent = totalRoutes;
+        if (activeElement) activeElement.textContent = activeRoutes;
+        if (pendingElement) pendingElement.textContent = pendingRoutes;
+        if (shipmentElement) shipmentElement.textContent = assignedShipments;
+
+        // Display the routes in the table.
+        renderRoutes();
+
+    } catch (error) {
+        console.error("Error loading routes:", error);
+
+        routesTableBody.innerHTML = `
+            <tr>
+                <td colspan="8" style="text-align:center;padding:40px;color:#dc3545;">
+                    Failed to load routes: ${error.message}
+                </td>
+            </tr>
+        `;
+    }
+}
+
+    function openForm(route = null) {
+        routeFormPanel.hidden = false;
+
+        document.getElementById("formTitle").textContent =
+            route ? "Edit Delivery Route" : "Add Delivery Route";
+
+        document.getElementById("routeId").value =
+    route?.assignmentId ?? route?.routeId ?? route?.id ?? "";
+        document.getElementById("routeName").value = route?.name ?? "";
+        document.getElementById("shipmentId").value = route?.shipmentId ?? "";
+        document.getElementById("origin").value = route?.origin ?? "";
+        document.getElementById("destination").value = route?.destination ?? "";
+        document.getElementById("deliveryAgent").value = route?.agent ?? "";
+        document.getElementById("routeStatus").value = route?.status ?? "Pending";
+        document.getElementById("departureDate").value = route?.departureDate ?? "";
+        document.getElementById("estimatedArrival").value = route?.estimatedArrival ?? "";
+        document.getElementById("routeNotes").value = route?.notes ?? "";
+
+        routeFormPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function closeForm() {
+        routeForm.reset();
+        document.getElementById("routeId").value = "";
+        routeFormPanel.hidden = true;
+    }
+
+    async function saveRoute(event) {
+    event.preventDefault();
+
+    const id = document.getElementById("routeId").value;
+
+    const shipmentValue = document.getElementById("shipmentId").value.trim();
+
+    const payload = {
+        routeName: document.getElementById("routeName").value.trim(),
+        shipmentId: shipmentValue ? Number(shipmentValue) : null,
+        origin: document.getElementById("origin").value.trim(),
+        destination: document.getElementById("destination").value.trim(),
+
+        // These property names must match RouteAssignment.java
+        assignedTo: document.getElementById("deliveryAgent").value.trim(),
+        assignmentStatus: document.getElementById("routeStatus").value
+    };
+
+    // Validate required fields before sending the request.
+    if (
+        !payload.routeName ||
+        !payload.shipmentId ||
+        !Number.isInteger(payload.shipmentId) ||
+        payload.shipmentId <= 0 ||
+        !payload.origin ||
+        !payload.destination ||
+        !payload.assignedTo ||
+        !payload.assignmentStatus
+    ) {
+        showMessage(
+            "Please enter a valid Shipment ID, route name, origin, destination, delivery agent and status.",
+            "error"
+        );
+        return;
+    }
+
+    const url = id
+        ? `${ROUTES_API}/${encodeURIComponent(id)}`
+        : ROUTES_API;
+
+    const method = id ? "PUT" : "POST";
+
+    try {
+        const response = await fetch(url, {
+            method: method,
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+
+            console.error(
+                "Route save failed:",
+                response.status,
+                errorText
+            );
+
+            throw new Error(
+                `HTTP ${response.status}: ${errorText || "Unable to save route"}`
+            );
+        }
+
+        showMessage(
+            id
+                ? "Route updated successfully."
+                : "Route created successfully."
+        );
+
+        closeForm();
+        await loadRoutes();
+
+    } catch (error) {
+        console.error("Unable to save route:", error);
+
+        showMessage(
+            "Could not save route: " + error.message,
+            "error"
+        );
+    }
+}
+
+    async function deleteRoute(id) {
+        if (!id) {
+            showMessage("This route does not have a route ID.", "error");
+            return;
+        }
+
+        if (!confirm("Are you sure you want to delete this route?")) {
+            return;
+        }
+
+        try {
+            const response = await fetch(
+                `${ROUTES_API}/${encodeURIComponent(id)}`,
+                {
+                    method: "DELETE",
+                    credentials: "include",
+                    headers: {
+                    "Accept": "application/json"
+                }
+            }
+      );
+
+            if (!response.ok) {
+                throw new Error("Delete failed with HTTP " + response.status);
+            }
+
+            showMessage("Route deleted successfully.");
+            await loadRoutes();
+
+        } catch (error) {
+            console.error("Unable to delete route:", error);
+
+            showMessage(
+                "Could not delete the route. Verify that your backend supports DELETE for this route ID.",
+                "error"
+            );
+        }
+    }
+
+    document.getElementById("showFormBtn").addEventListener("click", () => openForm());
+
+    document.getElementById("cancelFormBtn").addEventListener("click", closeForm);
+
+    document.getElementById("refreshBtn").addEventListener("click", loadRoutes);
+
+    document.getElementById("searchInput").addEventListener("input", renderRoutes);
+
+    document.getElementById("statusFilter").addEventListener("change", renderRoutes);
+
+    routeForm.addEventListener("submit", saveRoute);
+
+    routesTableBody.addEventListener("click", event => {
+        const editButton = event.target.closest("[data-edit]");
+        const deleteButton = event.target.closest("[data-delete]");
+
+        if (editButton) {
+            const id = editButton.dataset.edit;
+            const route = routes.find(
+    r => String(r.routeId) === String(id)
+);
+
+            if (route) {
+                openForm(route);
+            }
+        }
+
+        if (deleteButton) {
+            deleteRoute(deleteButton.dataset.delete);
+        }
+    });
+
+    // Automatically highlight the navigation item for this page.
+    document.querySelectorAll(".sidebar .nav-item").forEach(link => {
+        const href = link.getAttribute("href");
+
+        if (href && href.toLowerCase() === "routes.html") {
+            link.classList.add("active");
+        } else if (href && href.endsWith(".html")) {
+            link.classList.remove("active");
+        }
+    });
+
+    // Load actual backend data when the page opens.
+    loadRoutes();
+</script>
+
+</body>
+</html>

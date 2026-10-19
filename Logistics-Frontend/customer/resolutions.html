@@ -1,0 +1,648 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resolution Status | Logistics Platform</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background: #f4f7fb;
+            color: #1f2937;
+        }
+
+        .sidebar {
+            position: fixed;
+            inset: 0 auto 0 0;
+            width: 250px;
+            height: 100vh;
+            background: #111827;
+            color: white;
+            padding: 25px 15px;
+            z-index: 10;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+            padding: 0 15px 30px;
+            border-bottom: 1px solid #374151;
+            margin-bottom: 20px;
+        }
+
+        .logo span { color: #60a5fa; }
+        .menu { list-style: none; }
+        .menu li { margin-bottom: 7px; }
+
+        .menu a {
+            display: block;
+            text-decoration: none;
+            color: #d1d5db;
+            padding: 13px 15px;
+            border-radius: 8px;
+        }
+
+        .menu a:hover, .menu a.active {
+            background: #2563eb;
+            color: white;
+        }
+
+        .logout {
+            position: absolute;
+            bottom: 25px;
+            left: 15px;
+            right: 15px;
+        }
+
+        .logout a {
+            display: block;
+            text-align: center;
+            padding: 12px;
+            border-radius: 8px;
+            background: #dc2626;
+            color: white;
+            text-decoration: none;
+        }
+
+        .main { margin-left: 250px; min-height: 100vh; }
+
+        .topbar {
+            min-height: 75px;
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 15px 30px;
+        }
+
+        .topbar h2 { font-size: 22px; }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-details { text-align: right; }
+        .user-name { font-weight: bold; }
+        .user-role { font-size: 12px; color: #6b7280; }
+
+        .avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: #2563eb;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .content { padding: 30px; }
+
+        .page-header { margin-bottom: 25px; }
+        .page-header h1 { font-size: 28px; margin-bottom: 8px; }
+        .page-header p { color: #6b7280; line-height: 1.5; }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .summary-card, .card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.04);
+        }
+
+        .summary-card { padding: 20px; }
+        .summary-label { color: #6b7280; font-size: 13px; margin-bottom: 8px; }
+        .summary-value { font-size: 28px; font-weight: bold; }
+        .blue { color: #2563eb; }
+        .orange { color: #ea580c; }
+        .green { color: #16a34a; }
+        .red { color: #dc2626; }
+
+        .card { padding: 25px; }
+        .card-header { margin-bottom: 20px; }
+        .card-header h2 { font-size: 20px; }
+
+        .table-container { overflow-x: auto; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 900px;
+        }
+
+        th {
+            background: #f9fafb;
+            color: #6b7280;
+            font-size: 13px;
+            text-align: left;
+            padding: 14px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px 14px;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 14px;
+            line-height: 1.45;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .status-resolved, .status-completed {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-rejected {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .status-other {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        .compensation-yes { color: #15803d; font-weight: bold; }
+        .compensation-no { color: #6b7280; }
+
+        .loading, .empty {
+            text-align: center;
+            padding: 35px;
+            color: #6b7280;
+        }
+
+        .error {
+            display: none;
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .refresh-row {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 15px;
+        }
+
+        .refresh-btn {
+            border: none;
+            background: #2563eb;
+            color: white;
+            padding: 10px 16px;
+            border-radius: 7px;
+            cursor: pointer;
+        }
+
+        .refresh-btn:hover { background: #1d4ed8; }
+
+        @media (max-width: 1100px) {
+            .summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+
+        @media (max-width: 750px) {
+            .sidebar { width: 200px; overflow-y: auto; }
+            .main { margin-left: 200px; }
+            .summary-grid { grid-template-columns: 1fr; }
+            .content { padding: 15px; }
+            .topbar { padding: 15px; }
+        }
+
+        @media (max-width: 480px) {
+            .sidebar { width: 155px; padding: 15px 8px; }
+            .main { margin-left: 155px; }
+            .logo { font-size: 17px; padding: 0 8px 20px; }
+            .menu a { padding: 10px 8px; font-size: 13px; }
+            .logout { left: 8px; right: 8px; }
+            .topbar h2 { font-size: 17px; }
+            .user-role { display: none; }
+            .content { padding: 12px; }
+            .card { padding: 15px; }
+        }
+    </style>
+</head>
+
+<body>
+    <aside class="sidebar">
+        <div class="logo">Logistics <span>Platform</span></div>
+
+        <ul class="menu">
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="shipments.html">My Shipments</a></li>
+            <li><a href="tracking.html">Track Shipment</a></li>
+            <li><a href="packages.html">Package Details</a></li>
+            <li><a href="exceptions.html">My Exceptions</a></li>
+            <li><a href="resolutions.html" class="active">Resolution Status</a></li>
+            <li><a href="profile.html">My Profile</a></li>
+            <li><a href="notifications.html">Notifications</a></li>
+        </ul>
+
+        <div class="logout">
+            <a href="#" onclick="logout(); return false;">Logout</a>
+        </div>
+    </aside>
+
+    <main class="main">
+        <header class="topbar">
+            <h2>Resolution Status</h2>
+            <div class="user-info">
+                <div class="user-details">
+                    <div class="user-name" id="userName">Customer</div>
+                    <div class="user-role">Customer</div>
+                </div>
+                <div class="avatar" id="avatar">C</div>
+            </div>
+        </header>
+
+        <section class="content">
+            <div class="page-header">
+                <h1>Resolution Status</h1>
+                <p>View resolution progress and compensation for exceptions associated with your shipments.</p>
+            </div>
+
+            <div id="errorMessage" class="error"></div>
+
+            <div class="summary-grid">
+                <div class="summary-card">
+                    <div class="summary-label">Total Resolutions</div>
+                    <div class="summary-value blue" id="totalResolutions">0</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-label">Pending</div>
+                    <div class="summary-value orange" id="pendingResolutions">0</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-label">Resolved</div>
+                    <div class="summary-value green" id="resolvedResolutions">0</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-label">Compensation</div>
+                    <div class="summary-value red" id="totalCompensation">₹0</div>
+                </div>
+            </div>
+
+            <div class="refresh-row">
+                <button class="refresh-btn" id="refreshButton" onclick="loadResolutions()">
+                    Refresh Records
+                </button>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2>My Resolution Records</h2>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Resolution ID</th>
+                                <th>Exception ID</th>
+                                <th>Shipment ID</th>
+                                <th>Resolution Type</th>
+                                <th>Description</th>
+                                <th>Compensation</th>
+                                <th>Status</th>
+                                <th>Resolved At</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resolutionTableBody">
+                            <tr>
+                                <td colspan="8" class="loading">Loading resolution records...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const API_BASE_URL = "http://127.0.0.1:8080";
+
+        async function apiGet(path) {
+            const response = await fetch(API_BASE_URL + path, {
+                method: "GET",
+                credentials: "include",
+                headers: { "Accept": "application/json" }
+            });
+
+            if (!response.ok) {
+                throw new Error(
+                    "Request to " + path + " failed with HTTP " + response.status
+                );
+            }
+
+            return response.json();
+        }
+
+        async function loadUser() {
+            try {
+                const user = await apiGet("/api/users/me");
+                const name = user.fullName || user.name || "Customer";
+
+                document.getElementById("userName").textContent = name;
+                document.getElementById("avatar").textContent =
+                    name.charAt(0).toUpperCase();
+            } catch (error) {
+                console.warn("Could not load user details:", error.message);
+            }
+        }
+
+        async function loadResolutions() {
+            const tableBody = document.getElementById("resolutionTableBody");
+            const errorBox = document.getElementById("errorMessage");
+            const refreshButton = document.getElementById("refreshButton");
+
+            errorBox.style.display = "none";
+            refreshButton.disabled = true;
+            tableBody.innerHTML =
+                '<tr><td colspan="8" class="loading">Loading resolution records...</td></tr>';
+
+            try {
+                // Retrieve shipments belonging to the logged-in customer.
+                const shipments = await apiGet("/api/shipments/my");
+
+                const myShipmentIds = new Set(
+                    shipments.map(s => Number(s.shipmentId))
+                );
+
+                // Retrieve exceptions and keep only those belonging to this customer.
+                const allExceptions = await apiGet("/api/exceptions");
+
+                const myExceptions = allExceptions.filter(exception =>
+                    myShipmentIds.has(Number(exception.shipmentId))
+                );
+
+                const exceptionById = new Map(
+                    myExceptions.map(exception => [
+                        Number(exception.exceptionId),
+                        exception
+                    ])
+                );
+
+                const myExceptionIds = new Set(exceptionById.keys());
+
+                // Retrieve resolutions and restrict them to the customer's exceptions.
+                const allResolutions = await apiGet("/api/resolutions");
+
+                const matchingResolutions = allResolutions.filter(resolution =>
+                    myExceptionIds.has(Number(resolution.exceptionId))
+                );
+
+                /*
+                 * If an exception has multiple resolution records, display the
+                 * latest record only. This changes the page display, not the database.
+                 */
+                const latestByException = new Map();
+
+                matchingResolutions.forEach(resolution => {
+                    const exceptionId = Number(resolution.exceptionId);
+                    const existing = latestByException.get(exceptionId);
+
+                    const newDate = Date.parse(resolution.resolvedAt || "") || 0;
+                    const oldDate = existing
+                        ? (Date.parse(existing.resolvedAt || "") || 0)
+                        : -1;
+
+                    if (
+                        !existing ||
+                        newDate > oldDate ||
+                        (newDate === oldDate &&
+                         Number(resolution.resolutionId) >
+                         Number(existing.resolutionId))
+                    ) {
+                        latestByException.set(exceptionId, resolution);
+                    }
+                });
+
+                const displayedResolutions = Array.from(
+                    latestByException.values()
+                ).sort((a, b) =>
+                    Number(b.resolutionId || 0) -
+                    Number(a.resolutionId || 0)
+                );
+
+                updateSummary(displayedResolutions);
+
+                if (displayedResolutions.length === 0) {
+                    tableBody.innerHTML =
+                        '<tr><td colspan="8" class="empty">' +
+                        'No resolution records found for your exceptions.' +
+                        '</td></tr>';
+                    return;
+                }
+
+                tableBody.innerHTML = displayedResolutions.map(resolution => {
+                    const exception = exceptionById.get(
+                        Number(resolution.exceptionId)
+                    );
+
+                    return createResolutionRow(resolution, exception);
+                }).join("");
+
+            } catch (error) {
+                console.error("Resolution loading error:", error);
+
+                tableBody.innerHTML =
+                    '<tr><td colspan="8" class="empty">' +
+                    'Unable to load resolution records. Check that the backend is running ' +
+                    'and your customer session is valid.' +
+                    '</td></tr>';
+
+                errorBox.textContent = error.message;
+                errorBox.style.display = "block";
+
+            } finally {
+                refreshButton.disabled = false;
+            }
+        }
+
+        function updateSummary(resolutions) {
+            let pending = 0;
+            let resolved = 0;
+            let compensation = 0;
+
+            resolutions.forEach(resolution => {
+                const status = String(
+                    resolution.resolutionStatus || ""
+                ).toUpperCase();
+
+                if (status.includes("PENDING") || status.includes("IN_PROGRESS")) {
+                    pending++;
+                }
+
+                if (
+                    status.includes("RESOLVED") ||
+                    status.includes("COMPLETED")
+                ) {
+                    resolved++;
+                }
+
+                if (resolution.compensationRequired === true) {
+                    compensation += Number(
+                        resolution.compensationAmount || 0
+                    );
+                }
+            });
+
+            document.getElementById("totalResolutions").textContent =
+                resolutions.length;
+
+            document.getElementById("pendingResolutions").textContent =
+                pending;
+
+            document.getElementById("resolvedResolutions").textContent =
+                resolved;
+
+            document.getElementById("totalCompensation").textContent =
+                "₹" + compensation.toLocaleString("en-IN", {
+                    maximumFractionDigits: 2
+                });
+        }
+
+        function createResolutionRow(resolution, exception) {
+            const status = String(
+                resolution.resolutionStatus || "UNKNOWN"
+            );
+
+            const shipmentId = exception
+                ? exception.shipmentId
+                : "-";
+
+            const compensationRequired =
+                resolution.compensationRequired === true;
+
+            const compensationText = compensationRequired
+                ? "₹" + Number(
+                    resolution.compensationAmount || 0
+                ).toLocaleString("en-IN", {
+                    maximumFractionDigits: 2
+                })
+                : "No";
+
+            const compensationClass = compensationRequired
+                ? "compensation-yes"
+                : "compensation-no";
+
+            return `
+                <tr>
+                    <td><strong>RES-${escapeHtml(resolution.resolutionId ?? "-")}</strong></td>
+                    <td>EXC-${escapeHtml(resolution.exceptionId ?? "-")}</td>
+                    <td>${escapeHtml(shipmentId)}</td>
+                    <td>${escapeHtml(formatResolutionType(resolution.resolutionType))}</td>
+                    <td>${escapeHtml(resolution.resolutionDescription || "-")}</td>
+                    <td><span class="${compensationClass}">${escapeHtml(compensationText)}</span></td>
+                    <td><span class="badge ${getStatusClass(status)}">${escapeHtml(status)}</span></td>
+                    <td>${escapeHtml(formatDate(resolution.resolvedAt))}</td>
+                </tr>
+            `;
+        }
+
+        function formatResolutionType(value) {
+            if (!value) return "-";
+
+            return String(value)
+                .replaceAll("_", " ")
+                .replace(/\bRE DELIVERY\b/gi, "Re-delivery")
+                .replace(/\bREDELIVERY\b/gi, "Re-delivery")
+                .replace(/\bREROUTE SHIPMENT\b/gi, "Reroute Shipment");
+        }
+
+        function getStatusClass(status) {
+            const value = String(status).toLowerCase();
+
+            if (value.includes("pending") || value.includes("progress")) {
+                return "status-pending";
+            }
+
+            if (value.includes("resolved")) {
+                return "status-resolved";
+            }
+
+            if (value.includes("completed")) {
+                return "status-completed";
+            }
+
+            if (value.includes("rejected") || value.includes("failed")) {
+                return "status-rejected";
+            }
+
+            return "status-other";
+        }
+
+        function formatDate(value) {
+            if (!value) return "-";
+
+            const date = new Date(value);
+
+            if (Number.isNaN(date.getTime())) {
+                return String(value);
+            }
+
+            return date.toLocaleString("en-IN");
+        }
+
+        function escapeHtml(value) {
+            return String(value)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        async function logout() {
+            try {
+                await fetch(API_BASE_URL + "/api/auth/logout", {
+                    method: "POST",
+                    credentials: "include"
+                });
+            } catch (error) {
+                console.warn("Logout request failed:", error.message);
+            }
+
+            sessionStorage.clear();
+            window.location.href = "../index.html";
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            loadUser();
+            loadResolutions();
+        });
+    </script>
+</body>
+</html>

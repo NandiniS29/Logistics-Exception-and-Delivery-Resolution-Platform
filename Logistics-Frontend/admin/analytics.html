@@ -1,0 +1,668 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SLA & Analytics | Logistics Platform</title>
+    <link rel="stylesheet" href="../css/admin.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            background: #f4f7fb;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #172033;
+        }
+
+        .analytics-container {
+            width: 94%;
+            max-width: 1450px;
+            margin: 35px auto;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .page-header h1 {
+            margin: 0;
+            font-size: 30px;
+            color: #102a43;
+        }
+
+        .page-header p {
+            margin-top: 7px;
+            color: #6b7280;
+        }
+
+        .refresh-btn {
+            border: none;
+            background: #2563eb;
+            color: white;
+            padding: 11px 18px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .refresh-btn:hover { opacity: 0.9; }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .metric-card {
+            background: white;
+            border-radius: 14px;
+            padding: 22px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+        }
+
+        .metric-label {
+            color: #64748b;
+            font-size: 13px;
+            margin-bottom: 9px;
+        }
+
+        .metric-value {
+            font-size: 29px;
+            font-weight: 700;
+            color: #102a43;
+        }
+
+        .metric-description {
+            margin-top: 7px;
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .green { color: #16a34a; }
+        .red { color: #dc2626; }
+        .orange { color: #d97706; }
+        .purple { color: #7c3aed; }
+        .blue { color: #2563eb; }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .chart-card {
+            background: white;
+            border-radius: 14px;
+            padding: 22px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+            min-height: 380px;
+        }
+
+        .chart-card h2 {
+            margin: 0;
+            font-size: 18px;
+            color: #102a43;
+        }
+
+        .chart-card p {
+            margin: 6px 0 18px;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .chart-wrapper {
+            height: 280px;
+            position: relative;
+        }
+
+        .sla-card {
+            background: white;
+            border-radius: 14px;
+            padding: 24px;
+            margin-top: 20px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+        }
+
+        .sla-card h2 {
+            margin-top: 0;
+            color: #102a43;
+        }
+
+        .sla-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-top: 18px;
+        }
+
+        .sla-box {
+            background: #f8fafc;
+            padding: 18px;
+            border-radius: 10px;
+        }
+
+        .sla-label {
+            color: #64748b;
+            font-size: 13px;
+            margin-bottom: 7px;
+        }
+
+        .sla-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #102a43;
+        }
+
+        .loading {
+            position: fixed;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.75);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            font-size: 18px;
+            font-weight: 600;
+            color: #2563eb;
+        }
+
+        .error-message {
+            display: none;
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 12px 16px;
+            margin-bottom: 18px;
+            border-radius: 8px;
+        }
+
+        @media (max-width: 1100px) {
+            .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+            .charts-grid { grid-template-columns: 1fr; }
+            .sla-grid { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 650px) {
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .metrics-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+
+<div id="loading" class="loading">Loading analytics...</div>
+
+<div class="analytics-container">
+
+    <div class="page-header">
+        <div>
+            <h1>SLA &amp; Analytics</h1>
+            <p>Monitor delivery performance, exceptions, resolution and compensation.</p>
+        </div>
+
+        <button class="refresh-btn" onclick="loadAnalytics()">
+            ↻ Refresh
+        </button>
+    </div>
+
+    <div id="errorMessage" class="error-message"></div>
+
+    <div class="metrics-grid">
+
+        <div class="metric-card">
+            <div class="metric-label">Total Shipments</div>
+            <div id="totalShipments" class="metric-value blue">0</div>
+            <div class="metric-description">All shipments in the system</div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-label">On-Time Delivery</div>
+            <div id="onTimePercentage" class="metric-value green">0%</div>
+            <div class="metric-description">Based on SLA analytics</div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-label">Delayed</div>
+            <div id="delayedPercentage" class="metric-value red">0%</div>
+            <div class="metric-description">Delayed or overdue shipments</div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-label">Open Exceptions</div>
+            <div id="openExceptions" class="metric-value orange">0</div>
+            <div class="metric-description">Exceptions requiring attention</div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-label">Average Resolution Time</div>
+            <div id="averageResolutionTime" class="metric-value purple">0 days</div>
+            <div class="metric-description">Based on available dates</div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-label">SLA Violations</div>
+            <div id="slaViolations" class="metric-value red">0</div>
+            <div class="metric-description">Current overdue shipments</div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-label">Total Compensation</div>
+            <div id="totalCompensation" class="metric-value purple">₹0</div>
+            <div class="metric-description">Compensation processed</div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-label">Closed Exceptions</div>
+            <div id="closedExceptions" class="metric-value green">0</div>
+            <div class="metric-description">Successfully closed cases</div>
+        </div>
+
+    </div>
+
+    <div class="charts-grid">
+
+        <div class="chart-card">
+            <h2>Shipment Performance</h2>
+            <p>Current shipment status distribution</p>
+            <div class="chart-wrapper">
+                <canvas id="shipmentPerformanceChart"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-card">
+            <h2>Exception Categories</h2>
+            <p>Distribution of exception types</p>
+            <div class="chart-wrapper">
+                <canvas id="exceptionCategoryChart"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-card">
+            <h2>Exception Status</h2>
+            <p>Open, investigating, resolved and closed exceptions</p>
+            <div class="chart-wrapper">
+                <canvas id="exceptionStatusChart"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-card">
+            <h2>Compensation Analysis</h2>
+            <p>Compensation amount by resolution type</p>
+            <div class="chart-wrapper">
+                <canvas id="compensationChart"></canvas>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="sla-card">
+        <h2>SLA Performance Summary</h2>
+
+        <div class="sla-grid">
+            <div class="sla-box">
+                <div class="sla-label">Total SLA Records</div>
+                <div id="totalSlaRecords" class="sla-value">0</div>
+            </div>
+
+            <div class="sla-box">
+                <div class="sla-label">SLA Violations</div>
+                <div id="summarySlaViolations" class="sla-value red">0</div>
+            </div>
+
+            <div class="sla-box">
+                <div class="sla-label">SLA Compliance</div>
+                <div id="slaCompliance" class="sla-value green">0%</div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+const API_BASE_URL = "http://127.0.0.1:8080";
+
+let shipments = [];
+let exceptions = [];
+let resolutions = [];
+let slaData = {};
+
+let shipmentChart = null;
+let exceptionCategoryChart = null;
+let exceptionStatusChart = null;
+let compensationChart = null;
+
+function normalizeList(data) {
+    if (Array.isArray(data)) return data;
+    if (data && Array.isArray(data.content)) return data.content;
+    return [];
+}
+
+async function loadAnalytics() {
+    document.getElementById("loading").style.display = "flex";
+    document.getElementById("errorMessage").style.display = "none";
+
+    try {
+        const responses = await Promise.all([
+            fetch(`${API_BASE_URL}/api/shipments`, {
+                credentials: "include"
+            }),
+            fetch(`${API_BASE_URL}/api/exceptions`, {
+                credentials: "include"
+            }),
+            fetch(`${API_BASE_URL}/api/resolutions`, {
+                credentials: "include"
+            }),
+            fetch(`${API_BASE_URL}/api/sla/analytics`, {
+                credentials: "include"
+            })
+        ]);
+
+        const failedRequest = responses.find(response => !response.ok);
+
+        if (failedRequest) {
+            throw new Error(
+                `API request failed with status ${failedRequest.status}.`
+            );
+        }
+
+        const [shipmentData, exceptionData, resolutionData, sla] =
+            await Promise.all(responses.map(response => response.json()));
+
+        shipments = normalizeList(shipmentData);
+        exceptions = normalizeList(exceptionData);
+        resolutions = normalizeList(resolutionData);
+        slaData = sla || {};
+
+        updateMetrics();
+        updateShipmentChart();
+        updateExceptionCategoryChart();
+        updateExceptionStatusChart();
+        updateCompensationChart();
+        updateSlaSummary();
+
+    } catch (error) {
+        console.error("Analytics loading error:", error);
+
+        const errorMessage = document.getElementById("errorMessage");
+        errorMessage.textContent =
+            "Unable to load all analytics data. Check that the backend is running and the API requests succeed.";
+        errorMessage.style.display = "block";
+
+    } finally {
+        document.getElementById("loading").style.display = "none";
+    }
+}
+
+function updateMetrics() {
+    const total = Number(slaData.totalShipments ?? shipments.length);
+    const overdue = Number(slaData.overdueShipments ?? 0);
+    const compliance = Number(slaData.slaCompliancePercentage ?? 0);
+
+    const delayedPercentage = total > 0
+        ? ((overdue / total) * 100).toFixed(1)
+        : "0.0";
+
+    const openExceptions = Number(
+        slaData.openExceptions ??
+        exceptions.filter(e =>
+            String(e.status || "").toUpperCase() === "OPEN"
+        ).length
+    );
+
+    const closedExceptions = Number(
+        slaData.closedExceptions ??
+        exceptions.filter(e =>
+            String(e.status || "").toUpperCase() === "CLOSED"
+        ).length
+    );
+
+    // Count compensation only when compensation was required.
+    const compensation = resolutions
+        .filter(resolution =>
+            resolution.compensationRequired === true
+        )
+        .reduce((sum, resolution) =>
+            sum + Number(resolution.compensationAmount || 0), 0
+        );
+
+    const violations = Number(
+        slaData.slaViolations ??
+        slaData.totalSlaViolations ??
+        slaData.totalViolations ??
+        overdue
+    );
+
+    document.getElementById("totalShipments").textContent = total;
+    document.getElementById("onTimePercentage").textContent =
+        (total > 0 ? compliance.toFixed(1) : "0.0") + "%";
+    document.getElementById("delayedPercentage").textContent =
+        delayedPercentage + "%";
+    document.getElementById("openExceptions").textContent = openExceptions;
+    document.getElementById("closedExceptions").textContent = closedExceptions;
+    document.getElementById("totalCompensation").textContent =
+        "₹" + compensation.toLocaleString("en-IN");
+    document.getElementById("averageResolutionTime").textContent =
+        calculateAverageResolutionTime() + " days";
+    document.getElementById("slaViolations").textContent = violations;
+}
+
+function calculateAverageResolutionTime() {
+    const durations = [];
+
+    resolutions.forEach(resolution => {
+        const exception = exceptions.find(item =>
+            Number(item.exceptionId) === Number(resolution.exceptionId)
+        );
+
+        if (!exception) return;
+
+        const start = exception.reportedDate;
+        const end = resolution.resolvedAt || resolution.resolvedDate;
+
+        if (!start || !end) return;
+
+        const difference = new Date(end).getTime() -
+            new Date(start).getTime();
+
+        if (difference >= 0) {
+            durations.push(difference / (1000 * 60 * 60 * 24));
+        }
+    });
+
+    if (durations.length === 0) return "0.0";
+
+    const average = durations.reduce((sum, value) =>
+        sum + value, 0
+    ) / durations.length;
+
+    return average.toFixed(1);
+}
+
+function countShipmentStatus(targetStatus) {
+    return shipments.filter(shipment =>
+        String(shipment.status || "").toUpperCase() === targetStatus
+    ).length;
+}
+
+function updateShipmentChart() {
+    const delivered = countShipmentStatus("DELIVERED");
+
+    const inTransit = shipments.filter(shipment => {
+        const status = String(shipment.status || "").toUpperCase();
+
+        return status === "IN TRANSIT" ||
+            status === "IN_TRANSIT" ||
+            status === "DISPATCHED";
+    }).length;
+
+    const delayed = shipments.filter(shipment => {
+        const status = String(shipment.status || "").toUpperCase();
+
+        return status === "DELAYED" || status === "OVERDUE";
+    }).length;
+
+    shipmentChart = createOrReplaceChart(
+        "shipmentPerformanceChart",
+        shipmentChart,
+        "bar",
+        ["Delivered", "In Transit", "Delayed"],
+        [delivered, inTransit, delayed]
+    );
+}
+
+function updateExceptionCategoryChart() {
+    const counts = {};
+
+    exceptions.forEach(exception => {
+        const type = exception.exceptionType || "Other";
+        counts[type] = (counts[type] || 0) + 1;
+    });
+
+    let labels = Object.keys(counts);
+    let values = Object.values(counts);
+
+    if (labels.length === 0) {
+        labels = ["No Exceptions"];
+        values = [0];
+    }
+
+    exceptionCategoryChart = createOrReplaceChart(
+        "exceptionCategoryChart",
+        exceptionCategoryChart,
+        "doughnut",
+        labels,
+        values
+    );
+}
+
+function updateExceptionStatusChart() {
+    const statuses = [
+        "OPEN",
+        "INVESTIGATING",
+        "PENDING",
+        "RESOLVED",
+        "CLOSED"
+    ];
+
+    const values = statuses.map(status =>
+        exceptions.filter(exception =>
+            String(exception.status || "").toUpperCase() === status
+        ).length
+    );
+
+    exceptionStatusChart = createOrReplaceChart(
+        "exceptionStatusChart",
+        exceptionStatusChart,
+        "bar",
+        statuses,
+        values
+    );
+}
+
+function updateCompensationChart() {
+    const counts = {};
+
+    // Include only resolutions that require compensation.
+    resolutions
+        .filter(resolution =>
+            resolution.compensationRequired === true
+        )
+        .forEach(resolution => {
+            const type = resolution.resolutionType || "Other";
+            const amount = Number(resolution.compensationAmount || 0);
+
+            counts[type] = (counts[type] || 0) + amount;
+        });
+
+    let labels = Object.keys(counts);
+    let values = Object.values(counts);
+
+    if (labels.length === 0) {
+        labels = ["No Compensation"];
+        values = [0];
+    }
+
+    compensationChart = createOrReplaceChart(
+        "compensationChart",
+        compensationChart,
+        "bar",
+        labels,
+        values
+    );
+}
+
+function createOrReplaceChart(canvasId, oldChart, type, labels, values) {
+    if (oldChart) oldChart.destroy();
+
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) return null;
+
+    return new Chart(canvas.getContext("2d"), {
+        type: type,
+        data: {
+            labels: labels,
+            datasets: [{
+                label: type === "bar" ? "Amount / Count" : "Exceptions",
+                data: values
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: type === "doughnut",
+                    position: "bottom"
+                }
+            },
+            scales: type === "doughnut" ? {} : {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        precision: 0
+                    }
+                }
+            }
+        }
+    });
+}
+
+function updateSlaSummary() {
+    const totalRecords = Number(slaData.totalShipments ?? 0);
+
+    const violations = Number(
+        slaData.slaViolations ??
+        slaData.totalSlaViolations ??
+        slaData.totalViolations ??
+        slaData.overdueShipments ??
+        0
+    );
+
+    const compliance = Number(
+        slaData.slaCompliancePercentage ?? 0
+    );
+
+    document.getElementById("totalSlaRecords").textContent = totalRecords;
+    document.getElementById("summarySlaViolations").textContent = violations;
+    document.getElementById("slaCompliance").textContent =
+        compliance.toFixed(2) + "%";
+}
+
+document.addEventListener("DOMContentLoaded", loadAnalytics);
+</script>
+
+</body>
+</html>

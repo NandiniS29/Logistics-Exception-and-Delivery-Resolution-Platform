@@ -1,0 +1,1391 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>My Exceptions | Logistics Platform</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background: #f4f7fb;
+            color: #1f2937;
+        }
+
+        /* ================= SIDEBAR ================= */
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+            background: #111827;
+            color: white;
+            padding: 25px 15px;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+            padding: 0 15px 30px;
+            border-bottom: 1px solid #374151;
+            margin-bottom: 20px;
+        }
+
+        .logo span {
+            color: #60a5fa;
+        }
+
+        .menu {
+            list-style: none;
+        }
+
+        .menu li {
+            margin-bottom: 7px;
+        }
+
+        .menu a {
+            display: block;
+            text-decoration: none;
+            color: #d1d5db;
+            padding: 13px 15px;
+            border-radius: 8px;
+        }
+
+        .menu a:hover,
+        .menu a.active {
+            background: #2563eb;
+            color: white;
+        }
+
+        .logout {
+            position: absolute;
+            bottom: 25px;
+            left: 15px;
+            right: 15px;
+        }
+
+        .logout a {
+            display: block;
+            text-align: center;
+            padding: 12px;
+            border-radius: 8px;
+            background: #dc2626;
+            color: white;
+            text-decoration: none;
+        }
+
+        /* ================= MAIN ================= */
+
+        .main {
+            margin-left: 250px;
+            min-height: 100vh;
+        }
+
+        .topbar {
+            height: 75px;
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 30px;
+        }
+
+        .topbar h2 {
+            font-size: 22px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-details {
+            text-align: right;
+        }
+
+        .user-name {
+            font-weight: bold;
+        }
+
+        .user-role {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: #2563eb;
+            color: white;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-weight: bold;
+        }
+
+        /* ================= CONTENT ================= */
+
+        .content {
+            padding: 30px;
+        }
+
+        .page-header {
+            margin-bottom: 25px;
+        }
+
+        .page-header h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .page-header p {
+            color: #6b7280;
+        }
+
+        /* ================= SUMMARY ================= */
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .summary-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.04);
+        }
+
+        .summary-label {
+            color: #6b7280;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .summary-value {
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .red {
+            color: #dc2626;
+        }
+
+        .orange {
+            color: #ea580c;
+        }
+
+        .green {
+            color: #16a34a;
+        }
+
+        .blue {
+            color: #2563eb;
+        }
+
+        /* ================= CARD ================= */
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.04);
+        }
+
+        .card-header {
+            margin-bottom: 20px;
+        }
+
+        .card-header h2 {
+            font-size: 20px;
+        }
+
+        /* ================= TABLE ================= */
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #f9fafb;
+            color: #6b7280;
+            font-size: 13px;
+            text-align: left;
+            padding: 14px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px 14px;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 14px;
+        }
+
+        /* ================= BADGES ================= */
+
+        .badge {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .priority-high {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .priority-medium {
+            background: #ffedd5;
+            color: #c2410c;
+        }
+
+        .priority-low {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .priority-other {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        .status-open {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .status-investigating {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-resolved {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .status-closed {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .status-other {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        /* ================= BUTTON ================= */
+
+        .view-btn {
+            border: none;
+            background: #2563eb;
+            color: white;
+            padding: 8px 13px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .view-btn:hover {
+            background: #1d4ed8;
+        }
+
+        /* ================= MESSAGES ================= */
+
+        .loading {
+            text-align: center;
+            padding: 35px;
+            color: #6b7280;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 45px;
+            color: #6b7280;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 1100px) {
+
+            .summary-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+        }
+
+        @media (max-width: 750px) {
+
+            .sidebar {
+                width: 200px;
+            }
+
+            .main {
+                margin-left: 200px;
+            }
+
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .content {
+                padding: 15px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ================= SIDEBAR ================= -->
+
+<aside class="sidebar">
+
+    <div class="logo">
+        Logistics <span>Platform</span>
+    </div>
+
+    <ul class="menu">
+
+        <li>
+            <a href="dashboard.html">
+                Dashboard
+            </a>
+        </li>
+
+        <li>
+            <a href="shipments.html">
+                My Shipments
+            </a>
+        </li>
+
+        <li>
+            <a href="tracking.html">
+                Track Shipment
+            </a>
+        </li>
+
+        <li>
+            <a href="packages.html">
+                Package Details
+            </a>
+        </li>
+
+        <li>
+            <a href="exceptions.html"
+               class="active">
+                My Exceptions
+            </a>
+        </li>
+
+        <li>
+            <a href="resolutions.html">
+                Resolution Status
+            </a>
+        </li>
+
+        <li>
+            <a href="profile.html">
+                My Profile
+            </a>
+        </li>
+
+        <li>
+            <a href="notifications.html">
+                Notifications
+            </a>
+        </li>
+
+    </ul>
+
+    <div class="logout">
+
+        <a href="#"
+           onclick="logout()">
+
+            Logout
+
+        </a>
+
+    </div>
+
+</aside>
+
+
+<!-- ================= MAIN ================= -->
+
+<main class="main">
+
+
+    <!-- TOPBAR -->
+
+    <header class="topbar">
+
+        <h2>
+            My Exceptions
+        </h2>
+
+        <div class="user-info">
+
+            <div class="user-details">
+
+                <div class="user-name"
+                     id="userName">
+
+                    Customer
+
+                </div>
+
+                <div class="user-role">
+                    Customer
+                </div>
+
+            </div>
+
+            <div class="avatar"
+                 id="avatar">
+
+                C
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- ================= CONTENT ================= -->
+
+    <section class="content">
+
+
+        <div class="page-header">
+
+            <h1>
+                My Delivery Exceptions
+            </h1>
+
+            <p>
+                View delivery issues associated with
+                your shipments and their current status.
+            </p>
+
+        </div>
+
+
+        <div id="errorMessage"
+             class="error">
+        </div>
+
+
+        <!-- SUMMARY -->
+
+        <div class="summary-grid">
+
+            <div class="summary-card">
+
+                <div class="summary-label">
+                    Total Exceptions
+                </div>
+
+                <div
+                    class="summary-value blue"
+                    id="totalExceptions">
+
+                    0
+
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-label">
+                    Open
+                </div>
+
+                <div
+                    class="summary-value red"
+                    id="openExceptions">
+
+                    0
+
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-label">
+                    In Progress
+                </div>
+
+                <div
+                    class="summary-value orange"
+                    id="progressExceptions">
+
+                    0
+
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-label">
+                    Resolved / Closed
+                </div>
+
+                <div
+                    class="summary-value green"
+                    id="closedExceptions">
+
+                    0
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- EXCEPTION TABLE -->
+
+        <div class="card">
+
+            <div class="card-header">
+
+                <h2>
+                    Exception Records
+                </h2>
+
+            </div>
+
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Exception ID
+                            </th>
+
+                            <th>
+                                Shipment ID
+                            </th>
+
+                            <th>
+                                Exception Type
+                            </th>
+
+                            <th>
+                                Description
+                            </th>
+
+                            <th>
+                                Reported Date
+                            </th>
+
+                            <th>
+                                Priority
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th>
+                                Action
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="exceptionTableBody">
+
+                        <tr>
+
+                            <td colspan="8"
+                                class="loading">
+
+                                Loading exceptions...
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+    </section>
+
+</main>
+
+
+<script>
+
+const API_BASE_URL =
+    "http://127.0.0.1:8080";
+
+
+/* ================= LOAD USER ================= */
+
+async function loadUser() {
+
+    try {
+
+        const response =
+            await fetch(
+                API_BASE_URL +
+                "/api/users/me",
+                {
+                    method: "GET",
+                    credentials: "include"
+                }
+            );
+
+        if (!response.ok) {
+            return;
+        }
+
+        const user =
+            await response.json();
+
+        const name =
+            user.fullName ||
+            user.name ||
+            "Customer";
+
+        document.getElementById(
+            "userName"
+        ).textContent = name;
+
+        document.getElementById(
+            "avatar"
+        ).textContent =
+            name.charAt(0).toUpperCase();
+
+    } catch (error) {
+
+        console.error(
+            "User loading error:",
+            error
+        );
+
+    }
+
+}
+
+
+/* ================= LOAD MY EXCEPTIONS ================= */
+
+async function loadExceptions() {
+
+    const tableBody =
+        document.getElementById(
+            "exceptionTableBody"
+        );
+
+
+    try {
+
+        /*
+         * First get the shipments belonging to
+         * the currently logged-in customer.
+         */
+
+        const shipmentResponse =
+            await fetch(
+                API_BASE_URL +
+                "/api/shipments/my",
+                {
+                    method: "GET",
+                    credentials: "include"
+                }
+            );
+
+
+        if (!shipmentResponse.ok) {
+
+            throw new Error(
+                "Unable to load your shipments."
+            );
+
+        }
+
+
+        const shipments =
+            await shipmentResponse.json();
+
+
+        const myShipmentIds =
+            new Set(
+                shipments.map(
+                    shipment =>
+                        Number(
+                            shipment.shipmentId
+                        )
+                )
+            );
+
+
+        /*
+         * Get the exception records and keep only
+         * exceptions belonging to this customer's
+         * shipments.
+         */
+
+        const exceptionResponse =
+            await fetch(
+                API_BASE_URL +
+                "/api/exceptions",
+                {
+                    method: "GET",
+                    credentials: "include"
+                }
+            );
+
+
+        if (!exceptionResponse.ok) {
+
+            throw new Error(
+                "Unable to load exceptions."
+            );
+
+        }
+
+
+        const allExceptions =
+            await exceptionResponse.json();
+
+
+        const myExceptions =
+            allExceptions.filter(
+                exception =>
+                    myShipmentIds.has(
+                        Number(
+                            exception.shipmentId
+                        )
+                    )
+            );
+
+
+        console.log(
+            "Customer exceptions:",
+            myExceptions
+        );
+
+
+        updateSummary(
+            myExceptions
+        );
+
+
+        if (
+            !myExceptions ||
+            myExceptions.length === 0
+        ) {
+
+            tableBody.innerHTML = `
+
+                <tr>
+
+                    <td colspan="8"
+                        class="empty">
+
+                        No delivery exceptions found
+                        for your shipments.
+
+                    </td>
+
+                </tr>
+
+            `;
+
+            return;
+
+        }
+
+
+        tableBody.innerHTML =
+            myExceptions
+                .map(
+                    exception =>
+                        createExceptionRow(
+                            exception
+                        )
+                )
+                .join("");
+
+
+    } catch (error) {
+
+        console.error(
+            "Exception loading error:",
+            error
+        );
+
+
+        tableBody.innerHTML = `
+
+            <tr>
+
+                <td colspan="8"
+                    class="empty">
+
+                    Unable to load exceptions.
+
+                </td>
+
+            </tr>
+
+        `;
+
+
+        showError(
+            error.message
+        );
+
+    }
+
+}
+
+
+/* ================= SUMMARY ================= */
+
+function updateSummary(
+    exceptions
+) {
+
+    let open = 0;
+    let progress = 0;
+    let closed = 0;
+
+
+    exceptions.forEach(
+        exception => {
+
+            const status =
+                (
+                    exception.status ||
+                    ""
+                ).toLowerCase();
+
+
+            if (
+                status === "open"
+            ) {
+
+                open++;
+
+            }
+            else if (
+                status.includes(
+                    "investig"
+                ) ||
+                status.includes(
+                    "pending"
+                )
+            ) {
+
+                progress++;
+
+            }
+            else if (
+                status.includes(
+                    "resolved"
+                ) ||
+                status.includes(
+                    "closed"
+                )
+            ) {
+
+                closed++;
+
+            }
+
+        }
+    );
+
+
+    document.getElementById(
+        "totalExceptions"
+    ).textContent =
+        exceptions.length;
+
+
+    document.getElementById(
+        "openExceptions"
+    ).textContent =
+        open;
+
+
+    document.getElementById(
+        "progressExceptions"
+    ).textContent =
+        progress;
+
+
+    document.getElementById(
+        "closedExceptions"
+    ).textContent =
+        closed;
+
+}
+
+
+/* ================= CREATE ROW ================= */
+
+function createExceptionRow(
+    exception
+) {
+
+    const priority =
+        exception.priority ||
+        "UNKNOWN";
+
+
+    const status =
+        exception.status ||
+        "UNKNOWN";
+
+
+    const priorityClass =
+        getPriorityClass(
+            priority
+        );
+
+
+    const statusClass =
+        getStatusClass(
+            status
+        );
+
+
+    return `
+
+        <tr>
+
+            <td>
+
+                <strong>
+                    EXC-${escapeHtml(
+                        String(
+                            exception.exceptionId ||
+                            "-"
+                        )
+                    )}
+                </strong>
+
+            </td>
+
+
+            <td>
+
+                ${
+                    exception.shipmentId ||
+                    "-"
+                }
+
+            </td>
+
+
+            <td>
+
+                ${
+                    escapeHtml(
+                        exception.exceptionType ||
+                        "-"
+                    )
+                }
+
+            </td>
+
+
+            <td>
+
+                ${
+                    escapeHtml(
+                        exception.description ||
+                        "-"
+                    )
+                }
+
+            </td>
+
+
+            <td>
+
+                ${
+                    formatDate(
+                        exception.reportedDate
+                    )
+                }
+
+            </td>
+
+
+            <td>
+
+                <span
+                    class="badge ${priorityClass}">
+
+                    ${
+                        escapeHtml(
+                            priority
+                        )
+                    }
+
+                </span>
+
+            </td>
+
+
+            <td>
+
+                <span
+                    class="badge ${statusClass}">
+
+                    ${
+                        escapeHtml(
+                            status
+                        )
+                    }
+
+                </span>
+
+            </td>
+
+
+            <td>
+
+                <button
+                    class="view-btn"
+                    onclick="viewException(
+                        ${
+                            exception.exceptionId
+                        }
+                    )">
+
+                    View
+
+                </button>
+
+            </td>
+
+        </tr>
+
+    `;
+
+}
+
+
+/* ================= PRIORITY ================= */
+
+function getPriorityClass(
+    priority
+) {
+
+    const value =
+        priority.toLowerCase();
+
+
+    if (
+        value === "high"
+    ) {
+
+        return "priority-high";
+
+    }
+
+    if (
+        value === "medium"
+    ) {
+
+        return "priority-medium";
+
+    }
+
+    if (
+        value === "low"
+    ) {
+
+        return "priority-low";
+
+    }
+
+    return "priority-other";
+
+}
+
+
+/* ================= STATUS ================= */
+
+function getStatusClass(
+    status
+) {
+
+    const value =
+        status.toLowerCase();
+
+
+    if (
+        value === "open"
+    ) {
+
+        return "status-open";
+
+    }
+
+    if (
+        value.includes(
+            "investig"
+        )
+    ) {
+
+        return "status-investigating";
+
+    }
+
+    if (
+        value.includes(
+            "pending"
+        )
+    ) {
+
+        return "status-pending";
+
+    }
+
+    if (
+        value.includes(
+            "resolved"
+        )
+    ) {
+
+        return "status-resolved";
+
+    }
+
+    if (
+        value.includes(
+            "closed"
+        )
+    ) {
+
+        return "status-closed";
+
+    }
+
+    return "status-other";
+
+}
+
+
+/* ================= DATE ================= */
+
+function formatDate(
+    value
+) {
+
+    if (!value) {
+        return "-";
+    }
+
+
+    try {
+
+        return new Date(
+            value
+        ).toLocaleString();
+
+    } catch (error) {
+
+        return value;
+
+    }
+
+}
+
+
+/* ================= VIEW ================= */
+
+function viewException(
+    exceptionId
+) {
+
+    window.location.href =
+        "exception-details.html?exceptionId=" +
+        exceptionId;
+
+}
+
+
+/* ================= ESCAPE HTML ================= */
+
+function escapeHtml(
+    value
+) {
+
+    return String(value)
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+/* ================= ERROR ================= */
+
+function showError(
+    message
+) {
+
+    const errorBox =
+        document.getElementById(
+            "errorMessage"
+        );
+
+    errorBox.textContent =
+        message;
+
+    errorBox.style.display =
+        "block";
+
+}
+
+
+/* ================= LOGOUT ================= */
+
+async function logout() {
+
+    try {
+
+        await fetch(
+            API_BASE_URL +
+            "/api/auth/logout",
+            {
+                method: "POST",
+                credentials: "include"
+            }
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Logout error:",
+            error
+        );
+
+    }
+
+
+    sessionStorage.clear();
+
+    window.location.href =
+        "../index.html";
+
+}
+
+
+/* ================= INITIALIZE ================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        loadUser();
+
+        loadExceptions();
+
+    }
+);
+
+</script>
+
+
+</body>
+
+</html>

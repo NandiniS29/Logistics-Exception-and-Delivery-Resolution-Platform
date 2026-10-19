@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Customer Dashboard | Logistics Platform</title>
+    <link rel="stylesheet" href="../css/customer.css">
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background: #f4f7fb;
+            color: #1f2937;
+            min-height: 100vh;
+        }
+
+        /* ================= SIDEBAR ================= */
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+            background: #111827;
+            color: white;
+            padding: 25px 15px;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+            padding: 0 15px 30px;
+            border-bottom: 1px solid #374151;
+            margin-bottom: 20px;
+        }
+
+        .logo span {
+            color: #60a5fa;
+        }
+
+        .menu {
+            list-style: none;
+        }
+
+        .menu li {
+            margin-bottom: 7px;
+        }
+
+        .menu a {
+            display: block;
+            text-decoration: none;
+            color: #d1d5db;
+            padding: 13px 15px;
+            border-radius: 8px;
+            transition: 0.2s;
+        }
+
+        .menu a:hover,
+        .menu a.active {
+            background: #60a5fa;
+            color: white;
+        }
+
+        .logout {
+            position: absolute;
+            bottom: 25px;
+            left: 15px;
+            right: 15px;
+        }
+
+        .logout a {
+            display: block;
+            text-align: center;
+            padding: 12px;
+            border-radius: 8px;
+            background: #dc2626;
+            color: white;
+            text-decoration: none;
+        }
+
+        /* ================= MAIN ================= */
+
+        .main {
+            margin-left: 250px;
+            min-height: 100vh;
+        }
+
+        /* ================= TOPBAR ================= */
+
+        .topbar {
+            height: 75px;
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+        }
+
+        .topbar h2 {
+            font-size: 22px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: #2563eb;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .user-details {
+            text-align: right;
+        }
+
+        .user-name {
+            font-weight: bold;
+        }
+
+        .user-role {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        /* ================= CONTENT ================= */
+
+        .content {
+            padding: 30px;
+        }
+
+        .welcome {
+            background: linear-gradient(135deg, #60a5fa, #60a5fa);
+            color: white;
+            padding: 28px;
+            border-radius: 14px;
+            margin-bottom: 25px;
+        }
+
+        .welcome h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .welcome p {
+            opacity: 0.9;
+        }
+
+        /* ================= STAT CARDS ================= */
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.04);
+        }
+
+        .stat-title {
+            color: #6b7280;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .stat-value {
+            font-size: 30px;
+            font-weight: bold;
+        }
+
+        .blue {
+            color: #2563eb;
+        }
+
+        .green {
+            color: #16a34a;
+        }
+
+        .orange {
+            color: #ea580c;
+        }
+
+        .red {
+            color: #dc2626;
+        }
+
+        /* ================= SECTION ================= */
+
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            border: 1px solid #e5e7eb;
+            margin-bottom: 25px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-header h2 {
+            font-size: 20px;
+        }
+
+        /* ================= TABLE ================= */
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #f9fafb;
+            text-align: left;
+            padding: 14px;
+            font-size: 13px;
+            color: #6b7280;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        td {
+            padding: 14px;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 14px;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .status-transit {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .status-delivered {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .status-delayed {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .status-other {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        .view-btn {
+            border: none;
+            background: #2563eb;
+            color: white;
+            padding: 7px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .view-btn:hover {
+            background: #1d4ed8;
+        }
+
+        /* ================= PROFILE ================= */
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .profile-item {
+            background: #f9fafb;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .profile-label {
+            color: #6b7280;
+            font-size: 12px;
+            margin-bottom: 6px;
+        }
+
+        .profile-value {
+            font-weight: bold;
+            word-break: break-word;
+        }
+
+        /* ================= LOADING ================= */
+
+        .loading {
+            text-align: center;
+            padding: 30px;
+            color: #6b7280;
+        }
+
+        .error-message {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 1100px) {
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .profile-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 750px) {
+
+            .sidebar {
+                width: 200px;
+            }
+
+            .main {
+                margin-left: 200px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .profile-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .content {
+                padding: 15px;
+            }
+        }
+
+    </style>
+    <link rel="stylesheet" href="../css/customer.css">
+    </head>
+
+<body>
+
+<!-- ================= SIDEBAR ================= -->
+
+<aside class="sidebar">
+
+    <div class="logo">
+        Logistics <span>Platform</span>
+    </div>
+
+    <ul class="menu">
+
+        <li>
+            <a href="dashboard.html" class="active">
+                Dashboard
+            </a>
+        </li>
+
+        <li>
+            <a href="shipments.html">
+                My Shipments
+            </a>
+        </li>
+
+        <li>
+            <a href="tracking.html">
+                Track Shipment
+            </a>
+        </li>
+
+        <li>
+            <a href="packages.html">
+                Package Details
+            </a>
+        </li>
+
+        <li>
+            <a href="exceptions.html">
+                My Exceptions
+            </a>
+        </li>
+
+        <li>
+            <a href="resolutions.html">
+                Resolution Status
+            </a>
+        </li>
+
+        <li>
+            <a href="profile.html">
+                My Profile
+            </a>
+        </li>
+
+        <li>
+            <a href="notifications.html">
+                Notifications
+            </a>
+        </li>
+
+    </ul>
+
+    <div class="logout">
+        <a href="#" onclick="logout()">
+            Logout
+        </a>
+    </div>
+
+</aside>
+
+
+<!-- ================= MAIN ================= -->
+
+<main class="main">
+
+    <!-- TOPBAR -->
+
+    <header class="topbar">
+
+        <h2>Customer Dashboard</h2>
+
+        <div class="user-info">
+
+            <div class="user-details">
+
+                <div class="user-name" id="topUserName">
+                    Customer
+                </div>
+
+                <div class="user-role">
+                    Customer
+                </div>
+
+            </div>
+
+            <div class="avatar" id="avatar">
+                C
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- CONTENT -->
+
+    <section class="content">
+
+        <div id="errorMessage"
+             class="error-message">
+        </div>
+
+
+        <!-- WELCOME -->
+
+        <div class="welcome">
+
+            <h1>
+                Welcome, <span id="welcomeName">
+                    Customer
+                </span>
+            </h1>
+
+            <p>
+                Track your shipments, monitor delivery status,
+                and manage your delivery exceptions.
+            </p>
+
+        </div>
+
+
+        <!-- STATISTICS -->
+
+        <div class="stats">
+
+            <div class="stat-card">
+
+                <div class="stat-title">
+                    Total Shipments
+                </div>
+
+                <div class="stat-value blue"
+                     id="totalShipments">
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-title">
+                    Delivered
+                </div>
+
+                <div class="stat-value green"
+                     id="deliveredShipments">
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-title">
+                    In Transit
+                </div>
+
+                <div class="stat-value orange"
+                     id="inTransitShipments">
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-title">
+                    Delayed
+                </div>
+
+                <div class="stat-value red"
+                     id="delayedShipments">
+                    0
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- MY SHIPMENTS -->
+
+        <div class="section">
+
+            <div class="section-header">
+
+                <h2>
+                    My Recent Shipments
+                </h2>
+
+            </div>
+
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Tracking Number
+                            </th>
+
+                            <th>
+                                Origin
+                            </th>
+
+                            <th>
+                                Destination
+                            </th>
+
+                            <th>
+                                Expected Delivery
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th>
+                                Action
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="shipmentTableBody">
+
+                        <tr>
+
+                            <td colspan="6"
+                                class="loading">
+
+                                Loading shipments...
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+        <!-- PROFILE -->
+
+        <div class="section">
+
+            <div class="section-header">
+
+                <h2>
+                    My Profile
+                </h2>
+
+            </div>
+
+
+            <div class="profile-grid">
+
+                <div class="profile-item">
+
+                    <div class="profile-label">
+                        Name
+                    </div>
+
+                    <div class="profile-value"
+                         id="profileName">
+                        -
+                    </div>
+
+                </div>
+
+
+                <div class="profile-item">
+
+                    <div class="profile-label">
+                        Username
+                    </div>
+
+                    <div class="profile-value"
+                         id="profileUsername">
+                        -
+                    </div>
+
+                </div>
+
+
+                <div class="profile-item">
+
+                    <div class="profile-label">
+                        Email
+                    </div>
+
+                    <div class="profile-value"
+                         id="profileEmail">
+                        -
+                    </div>
+
+                </div>
+
+
+                <div class="profile-item">
+
+                    <div class="profile-label">
+                        Phone
+                    </div>
+
+                    <div class="profile-value"
+                         id="profilePhone">
+                        -
+                    </div>
+
+                </div>
+
+
+                <div class="profile-item">
+
+                    <div class="profile-label">
+                        City
+                    </div>
+
+                    <div class="profile-value"
+                         id="profileCity">
+                        -
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<script>
+
+const API_BASE_URL =
+    "http://127.0.0.1:8080";
+
+
+/* ================= ERROR ================= */
+
+function showError(message) {
+
+    const errorBox =
+        document.getElementById("errorMessage");
+
+    errorBox.textContent = message;
+
+    errorBox.style.display = "block";
+}
+
+
+/* ================= USER ================= */
+
+async function loadUser() {
+
+    try {
+
+        const response =
+            await fetch(
+                API_BASE_URL + "/api/users/me",
+                {
+                    method: "GET",
+                    credentials: "include"
+                }
+            );
+
+        if (!response.ok) {
+            throw new Error(
+                "Unable to load customer user information."
+            );
+        }
+
+        const user =
+            await response.json();
+
+        const name =
+            user.fullName ||
+            user.name ||
+            "Customer";
+
+        document.getElementById(
+            "welcomeName"
+        ).textContent = name;
+
+        document.getElementById(
+            "topUserName"
+        ).textContent = name;
+
+        document.getElementById(
+            "avatar"
+        ).textContent =
+            name.charAt(0).toUpperCase();
+
+        document.getElementById(
+            "profileName"
+        ).textContent =
+            user.fullName || user.name || "-";
+
+        document.getElementById(
+            "profileUsername"
+        ).textContent =
+            user.username || "-";
+
+        document.getElementById(
+            "profileEmail"
+        ).textContent =
+            user.email || "-";
+
+        document.getElementById(
+            "profilePhone"
+        ).textContent =
+            user.phone || "-";
+
+    } catch (error) {
+
+        console.error(
+            "User loading error:",
+            error
+        );
+
+        /*
+         * The customer dashboard can still
+         * display even if this API is unavailable.
+         */
+
+    }
+
+}
+
+
+/* ================= CUSTOMER PROFILE ================= */
+
+async function loadCustomerProfile() {
+
+    try {
+
+        const response =
+            await fetch(
+                API_BASE_URL + "/api/customers/me",
+                {
+                    method: "GET",
+                    credentials: "include"
+                }
+            );
+
+        if (!response.ok) {
+            return;
+        }
+
+        const customer =
+            await response.json();
+
+        document.getElementById(
+            "profileName"
+        ).textContent =
+            customer.name ||
+            customer.fullName ||
+            "-";
+
+        document.getElementById(
+            "profileEmail"
+        ).textContent =
+            customer.email || "-";
+
+        document.getElementById(
+            "profilePhone"
+        ).textContent =
+            customer.phone || "-";
+
+        document.getElementById(
+            "profileCity"
+        ).textContent =
+            customer.city || "-";
+
+    } catch (error) {
+
+        console.error(
+            "Customer profile error:",
+            error
+        );
+
+    }
+
+}
+
+
+/* ================= SHIPMENTS ================= */
+
+async function loadShipments() {
+
+    const tableBody =
+        document.getElementById(
+            "shipmentTableBody"
+        );
+
+    try {
+
+        const response =
+            await fetch(
+                API_BASE_URL + "/api/shipments/my",
+                {
+                    method: "GET",
+                    credentials: "include"
+                }
+            );
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Unable to load your shipments."
+            );
+
+        }
+
+        const shipments =
+            await response.json();
+
+        console.log(
+            "Customer shipments:",
+            shipments
+        );
+
+        updateStatistics(
+            shipments
+        );
+
+        if (
+            !shipments ||
+            shipments.length === 0
+        ) {
+
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="6"
+                        class="loading">
+                        No shipments found.
+                    </td>
+                </tr>
+            `;
+
+            return;
+        }
+
+
+        tableBody.innerHTML =
+            shipments
+                .map(shipment => {
+
+                    const status =
+                        shipment.status ||
+                        "Unknown";
+
+                    let statusClass =
+                        "status-other";
+
+                    const lowerStatus =
+                        status.toLowerCase();
+
+                    if (
+                        lowerStatus.includes(
+                            "transit"
+                        )
+                    ) {
+
+                        statusClass =
+                            "status-transit";
+
+                    } else if (
+                        lowerStatus.includes(
+                            "deliver"
+                        )
+                    ) {
+
+                        statusClass =
+                            "status-delivered";
+
+                    } else if (
+                        lowerStatus.includes(
+                            "delay"
+                        )
+                    ) {
+
+                        statusClass =
+                            "status-delayed";
+                    }
+
+
+                    return `
+
+                        <tr>
+
+                            <td>
+                                <strong>
+                                    ${
+                                        shipment.trackingNumber ||
+                                        "-"
+                                    }
+                                </strong>
+                            </td>
+
+                            <td>
+                                ${
+                                    shipment.origin ||
+                                    "-"
+                                }
+                            </td>
+
+                            <td>
+                                ${
+                                    shipment.destination ||
+                                    "-"
+                                }
+                            </td>
+
+                            <td>
+                                ${
+                                    shipment.expectedDeliveryDate ||
+                                    "-"
+                                }
+                            </td>
+
+                            <td>
+
+                                <span class="status ${statusClass}">
+                                    ${
+                                        status
+                                    }
+                                </span>
+
+                            </td>
+
+                            <td>
+
+                                <button
+                                    class="view-btn"
+                                    onclick="viewShipment(${
+                                        shipment.shipmentId
+                                    })">
+
+                                    View
+
+                                </button>
+
+                            </td>
+
+                        </tr>
+
+                    `;
+
+                })
+                .join("");
+
+
+    } catch (error) {
+
+        console.error(
+            "Shipment loading error:",
+            error
+        );
+
+        tableBody.innerHTML = `
+
+            <tr>
+
+                <td colspan="6"
+                    class="loading">
+
+                    Unable to load shipments.
+
+                </td>
+
+            </tr>
+
+        `;
+
+        showError(
+            error.message
+        );
+
+    }
+
+}
+
+
+/* ================= STATISTICS ================= */
+
+function updateStatistics(
+    shipments
+) {
+
+    let delivered = 0;
+    let inTransit = 0;
+    let delayed = 0;
+
+    shipments.forEach(
+        shipment => {
+
+            const status =
+                (
+                    shipment.status ||
+                    ""
+                ).toLowerCase();
+
+
+            if (
+                status.includes(
+                    "deliver"
+                )
+            ) {
+
+                delivered++;
+
+            } else if (
+                status.includes(
+                    "delay"
+                )
+            ) {
+
+                delayed++;
+
+            } else if (
+                status.includes(
+                    "transit"
+                )
+            ) {
+
+                inTransit++;
+
+            }
+
+        }
+    );
+
+
+    document.getElementById(
+        "totalShipments"
+    ).textContent =
+        shipments.length;
+
+    document.getElementById(
+        "deliveredShipments"
+    ).textContent =
+        delivered;
+
+    document.getElementById(
+        "inTransitShipments"
+    ).textContent =
+        inTransit;
+
+    document.getElementById(
+        "delayedShipments"
+    ).textContent =
+        delayed;
+
+}
+
+
+/* ================= VIEW SHIPMENT ================= */
+
+function viewShipment(
+    shipmentId
+) {
+
+    window.location.href =
+        "shipment-details.html?shipmentId=" +
+        shipmentId;
+
+}
+
+
+/* ================= LOGOUT ================= */
+
+async function logout() {
+
+    try {
+
+        await fetch(
+            API_BASE_URL +
+            "/api/auth/logout",
+            {
+                method: "POST",
+                credentials: "include"
+            }
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Logout error:",
+            error
+        );
+
+    }
+
+    sessionStorage.clear();
+
+    window.location.href =
+        "../index.html";
+
+}
+
+
+/* ================= INITIALIZE ================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        loadUser();
+
+        loadCustomerProfile();
+
+        loadShipments();
+
+    }
+);
+
+</script>
+
+</body>
+</html>

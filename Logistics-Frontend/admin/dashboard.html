@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Logistics Control Officer Dashboard | Logistics Platform</title>
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="../css/style.css">
+
+    <link rel="stylesheet"
+          href="../css/admin.css">
+
+</head>
+
+
+<body>
+
+<div class="app-container">
+
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="sidebar">
+
+        <div class="brand">
+
+            <div class="brand-icon">
+                🚚
+            </div>
+
+            <div>
+
+                <div class="brand-title">
+                    Logistics
+                </div>
+
+                <div class="brand-subtitle">
+                    Platform
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <nav class="sidebar-nav">
+
+            <a href="dashboard.html"
+               class="nav-item active">
+
+                <span>🏠</span>
+                <span>Dashboard</span>
+
+            </a>
+
+
+            <a href="customers.html"
+               class="nav-item">
+
+                <span>👥</span>
+                <span>Customers</span>
+
+            </a>
+
+
+            <a href="shipments.html"
+               class="nav-item">
+
+                <span>📦</span>
+                <span>Shipments</span>
+
+            </a>
+
+
+            <a href="packages.html"
+               class="nav-item">
+
+                <span>📦</span>
+                <span>Packages & Items</span>
+
+            </a>
+
+
+            <a href="routes.html"
+               class="nav-item">
+
+                <span>🚚</span>
+                <span>Routes & Delivery</span>
+
+            </a>
+
+
+            <a href="tracking.html"
+               class="nav-item">
+
+                <span>📍</span>
+                <span>Shipment Tracking</span>
+
+            </a>
+
+
+            <a href="exceptions.html"
+               class="nav-item">
+
+                <span>⚠️</span>
+                <span>Exceptions</span>
+
+            </a>
+
+
+            <a href="investigation.html"
+               class="nav-item">
+
+                <span>🔎</span>
+                <span>Investigation</span>
+
+            </a>
+
+
+            <a href="resolutions.html"
+               class="nav-item">
+
+                <span>✅</span>
+                <span>Resolutions</span>
+
+            </a>
+
+
+            <a href="analytics.html"
+               class="nav-item">
+
+                <span>📊</span>
+                <span>SLA & Analytics</span>
+
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-bottom">
+
+            <a href="#"
+               class="nav-item">
+
+                <span>⚙️</span>
+                <span>Settings</span>
+
+            </a>
+
+
+            <a href="../index.html"
+               class="nav-item logout">
+
+                <span>🚪</span>
+                <span>Logout</span>
+
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <!-- ================= MAIN CONTENT ================= -->
+
+    <main class="main-content">
+
+
+        <!-- TOP BAR -->
+
+        <header class="topbar">
+
+            <div class="search-box">
+
+                <span>🔍</span>
+
+                <input
+                    type="text"
+                    placeholder="Search shipments, customers...">
+
+            </div>
+
+
+            <div class="topbar-right">
+
+                <button class="notification-btn">
+
+                    🔔
+
+                    <span class="notification-badge">
+                        3
+                    </span>
+
+                </button>
+
+
+                <div class="user-profile">
+
+                    <div class="user-avatar">
+                        A
+                    </div>
+
+                    <div>
+
+                        <div class="user-name">
+                            Control Officer
+                        </div>
+
+                        <div class="user-role">
+                            Control Officer
+                        </div>
+
+                    </div>
+
+                    <span>⌄</span>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- PAGE CONTENT -->
+
+        <section class="dashboard-content">
+
+
+            <div class="page-heading">
+
+                <div>
+
+                    <h1>
+                        Dashboard
+                    </h1>
+
+                    <p>
+                        Overview of your logistics operations
+                    </p>
+
+                </div>
+
+
+                <div class="dashboard-date">
+
+                    📅
+
+                    <span id="currentDate">
+                        Loading...
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================= STAT CARDS ================= -->
+
+            <div class="stats-grid">
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon blue">
+                        📦
+                    </div>
+
+                    <div>
+
+                        <p>
+                            Total Shipments
+                        </p>
+
+                        <h2 id="totalShipments">
+                            1,240
+                        </h2>
+
+                        <span class="stat-info">
+                            All shipments
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon green">
+                        ✓
+                    </div>
+
+                    <div>
+
+                        <p>
+                            Delivered
+                        </p>
+
+                        <h2 id="deliveredShipments">
+                            860
+                        </h2>
+
+                        <span class="stat-success">
+                            On delivery
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon purple">
+                        🚚
+                    </div>
+
+                    <div>
+
+                        <p>
+                            In Transit
+                        </p>
+
+                        <h2 id="inTransitShipments">
+                            268
+                        </h2>
+
+                        <span class="stat-info">
+                            Currently moving
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon orange">
+                        ⏱
+                    </div>
+
+                    <div>
+
+                        <p>
+                            Delayed
+                        </p>
+
+                        <h2 id="delayedShipments">
+                            32
+                        </h2>
+
+                        <span class="stat-warning">
+                            Requires attention
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon red">
+                        ⚠
+                    </div>
+
+                    <div>
+
+                        <p>
+                            Open Exceptions
+                        </p>
+
+                        <h2 id="openExceptions">
+                            18
+                        </h2>
+
+                        <span class="stat-danger">
+                            Need investigation
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon green">
+                        ✓
+                    </div>
+
+                    <div>
+
+                        <p>
+                            Resolved
+                        </p>
+
+                        <h2 id="resolvedExceptions">
+                            15
+                        </h2>
+
+                        <span class="stat-success">
+                            Successfully resolved
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon orange">
+                        !
+                    </div>
+
+                    <div>
+
+                        <p>
+                            SLA Violations
+                        </p>
+
+                        <h2 id="slaViolations">
+                            7
+                        </h2>
+
+                        <span class="stat-warning">
+                            Monitor closely
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon purple">
+                        ₹
+                    </div>
+
+                    <div>
+
+                        <p>
+                            Compensation
+                        </p>
+
+                        <h2 id="compensation">
+                            ₹45,000
+                        </h2>
+
+                        <span class="stat-info">
+                            Total amount
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- ================= CHARTS ================= -->
+
+            <div class="dashboard-grid">
+
+
+                <div class="panel">
+
+                    <div class="panel-header">
+
+                        <div>
+
+                            <h3>
+                                Shipment Performance
+                            </h3>
+
+                            <p>
+                                Delivery status overview
+                            </p>
+
+                        </div>
+
+
+                        <select id="performanceFilter">
+
+                            <option>
+                                This Year
+                            </option>
+
+                            <option>
+                                This Month
+                            </option>
+
+                            <option>
+                                This Week
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="chart-container">
+
+                        <canvas id="shipmentChart"></canvas>
+
+                    </div>
+
+                </div>
+
+
+                <div class="panel">
+
+                    <div class="panel-header">
+
+                        <div>
+
+                            <h3>
+                                Exception Categories
+                            </h3>
+
+                            <p>
+                                Current exception distribution
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="chart-container pie-chart">
+
+                        <canvas id="exceptionChart"></canvas>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- ================= TABLES ================= -->
+
+            <div class="dashboard-grid">
+
+
+                <!-- RECENT SHIPMENTS -->
+
+                <div class="panel">
+
+                    <div class="panel-header">
+
+                        <div>
+
+                            <h3>
+                                Recent Shipments
+                            </h3>
+
+                            <p>
+                                Latest shipment activity
+                            </p>
+
+                        </div>
+
+                        <a href="shipments.html">
+                            View All
+                        </a>
+
+                    </div>
+
+
+                    <div class="table-wrapper">
+
+                        <!-- IMPORTANT:
+                             ID IS ON TABLE, NOT TBODY -->
+
+                        <table id="recentShipmentsTable">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        Tracking No.
+                                    </th>
+
+                                    <th>
+                                        Destination
+                                    </th>
+
+                                    <th>
+                                        Expected Date
+                                    </th>
+
+                                    <th>
+                                        Status
+                                    </th>
+
+                                    <th>
+                                        Action
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                                <tr>
+
+                                    <td>
+                                        SHP10001
+                                    </td>
+
+                                    <td>
+                                        Bangalore
+                                    </td>
+
+                                    <td>
+                                        10 Oct 2026
+                                    </td>
+
+                                    <td>
+
+                                        <span class="status-badge transit">
+                                            In Transit
+                                        </span>
+
+                                    </td>
+
+                                    <td>
+
+                                        <a
+                                            href="tracking.html"
+                                            class="table-action">
+
+                                            Track
+
+                                        </a>
+
+                                    </td>
+
+                                </tr>
+
+
+                                <tr>
+
+                                    <td>
+                                        SHP10002
+                                    </td>
+
+                                    <td>
+                                        Mysore
+                                    </td>
+
+                                    <td>
+                                        09 Oct 2026
+                                    </td>
+
+                                    <td>
+
+                                        <span class="status-badge delivered">
+                                            Delivered
+                                        </span>
+
+                                    </td>
+
+                                    <td>
+
+                                        <a
+                                            href="shipment-details.html"
+                                            class="table-action">
+
+                                            View
+
+                                        </a>
+
+                                    </td>
+
+                                </tr>
+
+
+                                <tr>
+
+                                    <td>
+                                        SHP10003
+                                    </td>
+
+                                    <td>
+                                        Hubli
+                                    </td>
+
+                                    <td>
+                                        08 Oct 2026
+                                    </td>
+
+                                    <td>
+
+                                        <span class="status-badge delayed">
+                                            Delayed
+                                        </span>
+
+                                    </td>
+
+                                    <td>
+
+                                        <a
+                                            href="exception-details.html"
+                                            class="table-action danger-action">
+
+                                            Exception
+
+                                        </a>
+
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+
+                <!-- RECENT EXCEPTIONS -->
+
+                <div class="panel">
+
+                    <div class="panel-header">
+
+                        <div>
+
+                            <h3>
+                                Recent Exceptions
+                            </h3>
+
+                            <p>
+                                Cases requiring attention
+                            </p>
+
+                        </div>
+
+                        <a href="exceptions.html">
+                            View All
+                        </a>
+
+                    </div>
+
+
+                    <div class="table-wrapper">
+
+                        <!-- IMPORTANT:
+                             ID IS ON TABLE -->
+
+                        <table id="recentExceptionsTable">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        Exception
+                                    </th>
+
+                                    <th>
+                                        Shipment
+                                    </th>
+
+                                    <th>
+                                        Type
+                                    </th>
+
+                                    <th>
+                                        Priority
+                                    </th>
+
+                                    <th>
+                                        Status
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                                <tr>
+
+                                    <td>
+                                        EXC1001
+                                    </td>
+
+                                    <td>
+                                        SHP10001
+                                    </td>
+
+                                    <td>
+                                        Overdue Delivery
+                                    </td>
+
+                                    <td>
+
+                                        <span class="priority high">
+                                            HIGH
+                                        </span>
+
+                                    </td>
+
+                                    <td>
+
+                                        <span class="status-badge open">
+                                            OPEN
+                                        </span>
+
+                                    </td>
+
+                                </tr>
+
+
+                                <tr>
+
+                                    <td>
+                                        EXC1002
+                                    </td>
+
+                                    <td>
+                                        SHP10005
+                                    </td>
+
+                                    <td>
+                                        Damage
+                                    </td>
+
+                                    <td>
+
+                                        <span class="priority medium">
+                                            MEDIUM
+                                        </span>
+
+                                    </td>
+
+                                    <td>
+
+                                        <span class="status-badge investigating">
+                                            Investigating
+                                        </span>
+
+                                    </td>
+
+                                </tr>
+
+
+                                <tr>
+
+                                    <td>
+                                        EXC1003
+                                    </td>
+
+                                    <td>
+                                        SHP10003
+                                    </td>
+
+                                    <td>
+                                        Failed Delivery
+                                    </td>
+
+                                    <td>
+
+                                        <span class="priority high">
+                                            HIGH
+                                        </span>
+
+                                    </td>
+
+                                    <td>
+
+                                        <span class="status-badge pending">
+                                            Pending
+                                        </span>
+
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- ================= QUICK ACTIONS ================= -->
+
+            <div class="panel quick-actions-panel">
+
+                <div class="panel-header">
+
+                    <div>
+
+                        <h3>
+                            Quick Actions
+                        </h3>
+
+                        <p>
+                            Frequently used operations
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="quick-actions">
+
+
+                    <a href="shipments.html"
+                       class="quick-action">
+
+                        <span>➕</span>
+
+                        <div>
+
+                            <strong>
+                                Create Shipment
+                            </strong>
+
+                            <small>
+                                Add a new shipment
+                            </small>
+
+                        </div>
+
+                    </a>
+
+
+                    <a href="exceptions.html"
+                       class="quick-action">
+
+                        <span>⚠️</span>
+
+                        <div>
+
+                            <strong>
+                                Manage Exceptions
+                            </strong>
+
+                            <small>
+                                Review open cases
+                            </small>
+
+                        </div>
+
+                    </a>
+
+
+                    <a href="routes.html"
+                       class="quick-action">
+
+                        <span>🚚</span>
+
+                        <div>
+
+                            <strong>
+                                Assign Delivery
+                            </strong>
+
+                            <small>
+                                Manage routes and agents
+                            </small>
+
+                        </div>
+
+                    </a>
+
+
+                    <a href="analytics.html"
+                       class="quick-action">
+
+                        <span>📊</span>
+
+                        <div>
+
+                            <strong>
+                                View Analytics
+                            </strong>
+
+                            <small>
+                                Monitor SLA performance
+                            </small>
+
+                        </div>
+
+                    </a>
+
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+    </main>
+
+
+</div>
+
+
+<!-- Chart Library -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+<!-- Dashboard JavaScript -->
+
+<script src="../js/dashboard.js"></script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Notifications | Logistics Platform</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f7fb;
+            color: #172033;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* ================= SIDEBAR ================= */
+
+        .sidebar {
+            width: 273px;
+            background: #111827;
+            color: white;
+            padding: 25px 20px;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            line-height: 1.1;
+            padding: 0 17px 32px;
+            border-bottom: 1px solid #374151;
+            margin-bottom: 20px;
+        }
+
+        .logo span {
+            color: #4f8df7;
+        }
+
+        .nav {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .nav a {
+            text-decoration: none;
+            color: #f3f4f6;
+            padding: 14px 16px;
+            border-radius: 9px;
+            font-size: 16px;
+            transition: 0.2s;
+        }
+
+        .nav a:hover {
+            background: #1f2937;
+        }
+
+        .nav a.active {
+            background: #2864e8;
+            color: white;
+        }
+
+        .logout {
+            margin-top: auto;
+        }
+
+        .logout a {
+            display: block;
+            text-align: center;
+            background: #e92525;
+            color: white;
+            text-decoration: none;
+            padding: 14px;
+            border-radius: 9px;
+            font-size: 16px;
+        }
+
+        .logout a:hover {
+            background: #c91d1d;
+        }
+
+        /* ================= MAIN ================= */
+
+        .main {
+            margin-left: 273px;
+            width: calc(100% - 273px);
+            min-height: 100vh;
+        }
+
+        .topbar {
+            height: 80px;
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 0 32px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-text {
+            text-align: right;
+        }
+
+        .user-name {
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .user-role {
+            color: #6b7280;
+            font-size: 13px;
+            margin-top: 2px;
+        }
+
+        .avatar {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: #2864e8;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        /* ================= CONTENT ================= */
+
+        .content {
+            padding: 36px 32px;
+        }
+
+        .page-heading {
+            margin-bottom: 25px;
+        }
+
+        .page-heading h1 {
+            font-size: 30px;
+            margin-bottom: 7px;
+        }
+
+        .page-heading p {
+            color: #64748b;
+            font-size: 16px;
+        }
+
+        .notification-card {
+            background: white;
+            border-radius: 14px;
+            border: 1px solid #e5e7eb;
+            overflow: hidden;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+        }
+
+        .notification-header {
+            padding: 22px 25px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .notification-header h2 {
+            font-size: 20px;
+        }
+
+        .mark-read {
+            border: none;
+            background: transparent;
+            color: #2864e8;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .notification-item {
+            display: flex;
+            gap: 18px;
+            padding: 22px 25px;
+            border-bottom: 1px solid #edf0f4;
+            transition: 0.2s;
+        }
+
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+
+        .notification-item:hover {
+            background: #f8fafc;
+        }
+
+        .notification-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 21px;
+            flex-shrink: 0;
+        }
+
+        .blue {
+            background: #e0edff;
+        }
+
+        .orange {
+            background: #fff0d6;
+        }
+
+        .green {
+            background: #dcfce7;
+        }
+
+        .red {
+            background: #fee2e2;
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 6px;
+        }
+
+        .notification-message {
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .notification-time {
+            color: #94a3b8;
+            font-size: 12px;
+            margin-top: 8px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 70px 20px;
+            color: #64748b;
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .empty-state h3 {
+            color: #172033;
+            margin-bottom: 8px;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 800px) {
+
+            .sidebar {
+                width: 220px;
+            }
+
+            .main {
+                margin-left: 220px;
+                width: calc(100% - 220px);
+            }
+
+            .content {
+                padding: 25px 18px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="layout">
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            Logistics<br>
+            <span>Platform</span>
+        </div>
+
+        <nav class="nav">
+
+            <a href="dashboard.html">
+                Dashboard
+            </a>
+
+            <a href="shipments.html">
+                My Shipments
+            </a>
+
+            <a href="tracking.html">
+                Track Shipment
+            </a>
+
+            <a href="packages.html">
+                Package Details
+            </a>
+
+            <a href="exceptions.html">
+                My Exceptions
+            </a>
+
+            <a href="resolutions.html">
+                Resolution Status
+            </a>
+
+            <a href="profile.html">
+                My Profile
+            </a>
+
+            <a href="notifications.html" class="active">
+                Notifications
+            </a>
+
+        </nav>
+
+        <div class="logout">
+
+            <a href="../index.html">
+                Logout
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <!-- ================= MAIN ================= -->
+
+    <main class="main">
+
+        <!-- TOP BAR -->
+
+        <header class="topbar">
+
+            <div class="user-info">
+
+                <div class="user-text">
+
+                    <div class="user-name" id="userName">
+                        Customer
+                    </div>
+
+                    <div class="user-role">
+                        Customer
+                    </div>
+
+                </div>
+
+                <div class="avatar" id="avatar">
+                    C
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- ================= CONTENT ================= -->
+
+        <section class="content">
+
+            <div class="page-heading">
+
+                <h1>
+                    Notifications
+                </h1>
+
+                <p>
+                    Stay updated about your shipments, exceptions and resolutions.
+                </p>
+
+            </div>
+
+
+            <div class="notification-card">
+
+                <div class="notification-header">
+
+                    <h2>
+                        Recent Notifications
+                    </h2>
+
+                    <button
+                        class="mark-read"
+                        onclick="markAllRead()">
+
+                        Mark all as read
+
+                    </button>
+
+                </div>
+
+
+                <!-- Notification 1 -->
+
+                <div class="notification-item">
+
+                    <div class="notification-icon orange">
+                        ⚠️
+                    </div>
+
+                    <div class="notification-content">
+
+                        <div class="notification-title">
+                            Delivery Exception
+                        </div>
+
+                        <div class="notification-message">
+                            Shipment LS10002 has encountered a delayed delivery exception.
+                        </div>
+
+                        <div class="notification-time">
+                            Recent
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Notification 2 -->
+
+                <div class="notification-item">
+
+                    <div class="notification-icon green">
+                        ✓
+                    </div>
+
+                    <div class="notification-content">
+
+                        <div class="notification-title">
+                            Resolution Completed
+                        </div>
+
+                        <div class="notification-message">
+                            The resolution for exception EXC-3 has been completed successfully.
+                        </div>
+
+                        <div class="notification-time">
+                            Recent
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Notification 3 -->
+
+                <div class="notification-item">
+
+                    <div class="notification-icon blue">
+                        📦
+                    </div>
+
+                    <div class="notification-content">
+
+                        <div class="notification-title">
+                            Shipment Update
+                        </div>
+
+                        <div class="notification-message">
+                            Shipment LS10001 is currently in transit from Bengaluru to Mysuru.
+                        </div>
+
+                        <div class="notification-time">
+                            Recent
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Notification 4 -->
+
+                <div class="notification-item">
+
+                    <div class="notification-icon red">
+                        🚚
+                    </div>
+
+                    <div class="notification-content">
+
+                        <div class="notification-title">
+                            Shipment Tracking Update
+                        </div>
+
+                        <div class="notification-message">
+                            Tracking information has been updated for your shipment.
+                        </div>
+
+                        <div class="notification-time">
+                            Recent
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<script>
+
+    // =====================================================
+    // LOAD CUSTOMER NAME
+    // =====================================================
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        try {
+
+            const storedUser =
+                sessionStorage.getItem("loggedInUser");
+
+            if (storedUser) {
+
+                const user =
+                    JSON.parse(storedUser);
+
+                const name =
+                    user.fullName || "Customer";
+
+                document.getElementById("userName")
+                    .textContent = name;
+
+                document.getElementById("avatar")
+                    .textContent =
+                    name.charAt(0).toUpperCase();
+            }
+
+        } catch (error) {
+
+            console.error(
+                "Unable to load user information:",
+                error
+            );
+        }
+
+    });
+
+
+    // =====================================================
+    // MARK ALL AS READ
+    // =====================================================
+
+    function markAllRead() {
+
+        const notifications =
+            document.querySelectorAll(
+                ".notification-item"
+            );
+
+        notifications.forEach(
+            notification => {
+
+                notification.style.opacity = "0.65";
+
+            }
+        );
+
+        alert(
+            "All notifications marked as read."
+        );
+    }
+
+</script>
+
+</body>
+
+</html>

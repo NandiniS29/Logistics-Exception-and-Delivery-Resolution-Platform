@@ -1,0 +1,1561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Package & Item Management | Logistics Platform</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        :root {
+            --sidebar-bg: #071d2a;
+            --sidebar-active: #08758a;
+            --sidebar-hover: #103746;
+            --page-bg: #f1f6fa;
+            --card-bg: #ffffff;
+            --text-main: #17334a;
+            --text-muted: #71859a;
+            --border: #dce7ef;
+            --accent: #08bfd5;
+            --accent-dark: #087f96;
+            --table-head: #f3f7fa;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Inter", sans-serif;
+            background: var(--page-bg);
+            color: var(--text-main);
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            width: 267px;
+            min-height: 100vh;
+            padding: 22px 17px 12px;
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(180deg, #061925 0%, #092532 100%);
+            color: white;
+            z-index: 100;
+            overflow-y: auto;
+        }
+
+        .brand {
+            padding: 4px 13px 25px;
+            margin-bottom: 18px;
+            border-bottom: 1px solid rgba(255,255,255,0.13);
+        }
+
+        .brand-title {
+            margin: 0;
+            font-size: 23px;
+            line-height: 1.55;
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        .brand-title .platform {
+            display: block;
+            color: #00c7e2;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            min-height: 54px;
+            margin-bottom: 8px;
+            padding: 13px 17px;
+            border-radius: 11px;
+            color: #d4e2eb;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+
+        .nav-link:hover {
+            background: var(--sidebar-hover);
+            color: #ffffff;
+        }
+
+        .nav-link.active {
+            background: linear-gradient(110deg, #087f96, #07596d);
+            color: #ffffff;
+            font-weight: 700;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.12);
+        }
+
+        .nav-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 19px;
+            min-width: 19px;
+            font-size: 15px;
+        }
+
+        .sidebar-bottom {
+            padding-top: 14px;
+            margin-top: 15px;
+            border-top: 1px solid rgba(255,255,255,0.13);
+        }
+
+        .main-content {
+            margin-left: 267px;
+            min-height: 100vh;
+            padding: 30px 32px 45px;
+        }
+
+        .page-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .eyebrow {
+            margin: 0 0 8px;
+            color: #07869e;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+        }
+
+        .page-title {
+            margin: 0;
+            color: #17334a;
+            font-size: 30px;
+            font-weight: 800;
+        }
+
+        .page-description {
+            margin: 9px 0 0;
+            color: var(--text-muted);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .btn {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 7px;
+            padding: 12px 17px;
+            border: 1px solid #d0dfe9;
+            border-radius: 9px;
+            background: #ffffff;
+            color: #24455e;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+
+        .btn:hover {
+            background: #f0f7fa;
+            border-color: #91bacb;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #062b38;
+        }
+
+        .btn-primary:hover {
+            background: #00aec5;
+            border-color: #00aec5;
+        }
+
+        .btn-danger {
+            background: #fff1f2;
+            border-color: #fecdd3;
+            color: #be123c;
+        }
+
+        .btn-danger:hover {
+            background: #ffe4e6;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 17px;
+            margin-bottom: 26px;
+        }
+
+        .summary-card {
+            min-height: 120px;
+            padding: 24px 22px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 17px;
+            box-shadow: 0 5px 20px rgba(22, 55, 79, 0.035);
+        }
+
+        .summary-label {
+            margin: 0 0 13px;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .summary-value {
+            margin: 0;
+            color: #078ba5;
+            font-size: 27px;
+            font-weight: 800;
+            overflow-wrap: anywhere;
+        }
+
+        .summary-value.green {
+            color: #119b70;
+            font-size: 20px;
+        }
+
+        .summary-value.orange {
+            color: #d97706;
+            font-size: 20px;
+        }
+
+        .panel {
+            margin-bottom: 25px;
+            padding: 25px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 17px;
+            box-shadow: 0 5px 20px rgba(22, 55, 79, 0.035);
+        }
+
+        .panel-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 23px;
+        }
+
+        .panel-heading h2,
+        .table-toolbar h2 {
+            margin: 0;
+            font-size: 21px;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        .panel-heading p {
+            margin: 7px 0 0;
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px 17px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            color: #213e54;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .form-control {
+            width: 100%;
+            min-height: 46px;
+            padding: 12px 14px;
+            border: 1px solid #d5e2ec;
+            border-radius: 9px;
+            background: #ffffff;
+            color: #213e54;
+            font-family: inherit;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-control:focus {
+            border-color: #0bbbd1;
+            box-shadow: 0 0 0 3px rgba(8, 191, 213, 0.12);
+        }
+
+        textarea.form-control {
+            min-height: 90px;
+            resize: vertical;
+        }
+
+        .field-help {
+            color: #71859a;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .form-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 23px;
+        }
+
+        .table-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 13px;
+            margin-bottom: 19px;
+        }
+
+        .search-input {
+            width: 280px;
+            max-width: 100%;
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            border: 1px solid #e2eaf0;
+            border-radius: 11px;
+        }
+
+        table {
+            width: 100%;
+            min-width: 1050px;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        thead {
+            background: var(--table-head);
+        }
+
+        th {
+            padding: 15px 14px;
+            text-align: left;
+            color: #587087;
+            font-size: 12px;
+            font-weight: 800;
+            white-space: nowrap;
+            border-bottom: 1px solid #dfe8ef;
+        }
+
+        td {
+            padding: 15px 14px;
+            color: #38536a;
+            border-bottom: 1px solid #edf1f5;
+            white-space: nowrap;
+        }
+
+        tbody tr:hover {
+            background: #f6fbfd;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .status.active {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status.pending {
+            background: #fff0d2;
+            color: #9a5b00;
+        }
+
+        .status.inactive {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .small-action {
+            padding: 7px 10px;
+            border: 1px solid #d5e2ec;
+            border-radius: 7px;
+            background: #ffffff;
+            color: #087f96;
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .small-action:hover {
+            background: #eaf8fb;
+        }
+
+        .small-action.delete {
+            color: #be123c;
+            margin-left: 5px;
+        }
+
+        .empty-state {
+            padding: 35px 15px;
+            text-align: center;
+            color: var(--text-muted);
+            white-space: normal;
+        }
+
+        .message {
+            display: none;
+            margin-bottom: 18px;
+            padding: 13px 16px;
+            border-radius: 9px;
+            font-size: 13px;
+            line-height: 1.5;
+            overflow-wrap: anywhere;
+        }
+
+        .message.success {
+            display: block;
+            color: #166534;
+            background: #dcfce7;
+            border: 1px solid #bbf7d0;
+        }
+
+        .message.error {
+            display: block;
+            color: #991b1b;
+            background: #fee2e2;
+            border: 1px solid #fecaca;
+        }
+
+        .message.info {
+            display: block;
+            color: #075985;
+            background: #e0f2fe;
+            border: 1px solid #bae6fd;
+        }
+
+        .footer-note {
+            padding: 3px 0 0;
+            color: #8394a5;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 1050px) {
+            .sidebar {
+                width: 230px;
+            }
+
+            .main-content {
+                margin-left: 230px;
+                padding: 25px 22px;
+            }
+
+            .summary-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 700px) {
+            .sidebar {
+                position: relative;
+                width: 100%;
+                min-height: auto;
+                max-height: none;
+            }
+
+            .brand {
+                padding-bottom: 15px;
+            }
+
+            .sidebar-nav {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 5px;
+            }
+
+            .nav-link {
+                margin-bottom: 0;
+                padding: 10px;
+                min-height: 44px;
+                font-size: 12px;
+            }
+
+            .sidebar-bottom {
+                display: flex;
+                gap: 8px;
+            }
+
+            .sidebar-bottom .nav-link {
+                flex: 1;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 22px 15px;
+            }
+
+            .page-top {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .page-title {
+                font-size: 25px;
+            }
+
+            .summary-grid,
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full-width {
+                grid-column: auto;
+            }
+
+            .panel {
+                padding: 18px;
+            }
+
+            .search-input {
+                width: 100%;
+            }
+
+            .table-toolbar {
+                align-items: stretch;
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<aside class="sidebar">
+    <div class="brand">
+        <h1 class="brand-title">
+            <span>🚚 Logistics</span>
+            <span class="platform">Platform</span>
+        </h1>
+    </div>
+
+    <nav class="sidebar-nav">
+        <a href="dashboard.html" class="nav-link">
+            <span class="nav-icon">▦</span> Dashboard
+        </a>
+
+        <a href="customers.html" class="nav-link">
+            <span class="nav-icon">♙</span> Customers
+        </a>
+
+        <a href="shipments.html" class="nav-link">
+            <span class="nav-icon">▣</span> Shipments
+        </a>
+
+        <a href="packages.html" class="nav-link active">
+            <span class="nav-icon">▦</span> Packages &amp; Items
+        </a>
+
+        <a href="routes.html" class="nav-link">
+            <span class="nav-icon">➜</span> Routes &amp; Delivery
+        </a>
+
+        <a href="tracking.html" class="nav-link">
+            <span class="nav-icon">⌖</span> Shipment Tracking
+        </a>
+
+        <a href="exceptions.html" class="nav-link">
+            <span class="nav-icon">⚠</span> Exceptions
+        </a>
+
+        <a href="investigation.html" class="nav-link">
+            <span class="nav-icon">⌕</span> Investigation
+        </a>
+
+        <a href="resolutions.html" class="nav-link">
+            <span class="nav-icon">✓</span> Resolutions
+        </a>
+
+        <a href="sla-analytics.html" class="nav-link">
+            <span class="nav-icon">▥</span> SLA &amp; Analytics
+        </a>
+    </nav>
+
+    <div class="sidebar-bottom">
+        <a href="#" class="nav-link" id="settingsLink">
+            <span class="nav-icon">⚙</span> Settings
+        </a>
+
+        <a href="../index.html" class="nav-link" id="logoutLink">
+            <span class="nav-icon">⇥</span> Logout
+        </a>
+    </div>
+</aside>
+
+<main class="main-content">
+
+    <header class="page-top">
+        <div>
+            <p class="eyebrow">LOGISTICS CONTROL OFFICER</p>
+            <h1 class="page-title">Package &amp; Item Management</h1>
+            <p class="page-description">
+                Create, view, update and manage package records linked to shipments.
+            </p>
+        </div>
+
+        <button class="btn" id="refreshButton" type="button">
+            ↻ Refresh
+        </button>
+    </header>
+
+    <div id="messageBox" class="message" role="status" aria-live="polite"></div>
+
+    <section class="summary-grid">
+        <article class="summary-card">
+            <p class="summary-label">Total Packages</p>
+            <h2 class="summary-value" id="totalPackages">0</h2>
+        </article>
+
+        <article class="summary-card">
+            <p class="summary-label">Backend Connection</p>
+            <h2 class="summary-value green" id="recordsStatus">Connecting...</h2>
+        </article>
+
+        <article class="summary-card">
+            <p class="summary-label">Total Item Quantity</p>
+            <h2 class="summary-value orange" id="totalQuantity">0</h2>
+        </article>
+    </section>
+
+    <section class="panel">
+        <div class="panel-heading">
+            <div>
+                <h2 id="formHeading">Add Package / Item</h2>
+                <p>Create a package record using the fields supported by the Java backend.</p>
+            </div>
+        </div>
+
+        <form id="packageForm">
+            <input type="hidden" id="editingPackageId">
+
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label for="shipmentId">Shipment ID *</label>
+                    <input
+                        class="form-control"
+                        type="number"
+                        id="shipmentId"
+                        min="1"
+                        step="1"
+                        placeholder="Enter an existing shipment ID"
+                        required>
+                    <span class="field-help">
+                        Enter a shipment ID that already exists in your database.
+                    </span>
+                </div>
+
+                <div class="form-group">
+                    <label for="packageNumber">Package Number *</label>
+                    <input
+                        class="form-control"
+                        type="text"
+                        id="packageNumber"
+                        maxlength="50"
+                        placeholder="Automatically generated"
+                        required>
+                    <span class="field-help">
+                        A unique package number is required by your backend.
+                        You can edit it before saving.
+                    </span>
+                </div>
+
+                <div class="form-group">
+                    <label for="packageType">Package Type</label>
+                    <input
+                        class="form-control"
+                        type="text"
+                        id="packageType"
+                        maxlength="50"
+                        placeholder="e.g. Electronics, Documents">
+                </div>
+
+                <div class="form-group">
+                    <label for="quantity">Quantity *</label>
+                    <input
+                        class="form-control"
+                        type="number"
+                        id="quantity"
+                        min="1"
+                        step="1"
+                        value="1"
+                        required>
+                </div>
+
+                <div class="form-group">
+                    <label for="weight">Weight (kg)</label>
+                    <input
+                        class="form-control"
+                        type="number"
+                        id="weight"
+                        min="0"
+                        step="0.01"
+                        placeholder="e.g. 2.50">
+                </div>
+
+                <div class="form-group">
+                    <label for="packageStatus">Package Status *</label>
+                    <select class="form-control" id="packageStatus" required>
+                        <option value="PACKED">Packed</option>
+                        <option value="PENDING">Pending</option>
+                        <option value="IN_TRANSIT">In Transit</option>
+                        <option value="DELIVERED">Delivered</option>
+                    </select>
+                    <span class="field-help">
+                        The status is saved to the packageStatus field.
+                    </span>
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="description">Item Description</label>
+                    <textarea
+                        class="form-control"
+                        id="description"
+                        maxlength="255"
+                        placeholder="Describe the contents of this package"></textarea>
+                    <span class="field-help">
+                        Your current PackageItem entity does not contain a notes field.
+                        This description is saved to the description field.
+                    </span>
+                </div>
+
+            </div>
+
+            <div class="form-actions">
+                <button class="btn btn-primary" type="submit" id="saveButton">
+                    + Save Package
+                </button>
+
+                <button class="btn" type="button" id="clearButton">
+                    Clear Form
+                </button>
+
+                <button class="btn btn-danger" type="button" id="cancelEditButton" hidden>
+                    Cancel Edit
+                </button>
+            </div>
+        </form>
+    </section>
+
+    <section class="panel">
+        <div class="table-toolbar">
+            <div>
+                <h2>Package Records</h2>
+                <p class="page-description">
+                    Package information retrieved from the Spring Boot API.
+                </p>
+            </div>
+
+            <input
+                class="form-control search-input"
+                type="search"
+                id="packageSearch"
+                placeholder="Search by package, shipment, type or status...">
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                <tr>
+                    <th>Package ID</th>
+                    <th>Package Number</th>
+                    <th>Shipment ID</th>
+                    <th>Package Type</th>
+                    <th>Description</th>
+                    <th>Quantity</th>
+                    <th>Weight (kg)</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+
+                <tbody id="packageTableBody">
+                <tr>
+                    <td colspan="9" class="empty-state">Loading package records...</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <p class="footer-note">
+        Logistics Exception &amp; Delivery Resolution Platform · Package Management
+    </p>
+
+</main>
+
+<script>
+    "use strict";
+
+    /*
+     * Logistics Platform — Package & Item Management
+     *
+     * Backend: Spring Boot
+     * Authentication: HTTP session
+     *
+     * API endpoints:
+     * GET    /api/packages
+     * GET    /api/packages/{packageId}
+     * GET    /api/packages/shipment/{shipmentId}
+     * POST   /api/packages
+     * PUT    /api/packages/{packageId}
+     * DELETE /api/packages/{packageId}
+     */
+
+    const API_BASE = "http://127.0.0.1:8080";
+    const PACKAGES_API = `${API_BASE}/api/packages`;
+
+    let packageRecords = [];
+    let isEditing = false;
+
+    const form = document.getElementById("packageForm");
+    const tableBody = document.getElementById("packageTableBody");
+    const messageBox = document.getElementById("messageBox");
+    const saveButton = document.getElementById("saveButton");
+    const cancelEditButton = document.getElementById("cancelEditButton");
+
+    // Display a message to the user.
+    function showMessage(message, type = "info") {
+        messageBox.textContent = message;
+        messageBox.className = `message ${type}`;
+        messageBox.style.display = "block";
+    }
+
+    // Clear the current message.
+    function clearMessage() {
+        messageBox.textContent = "";
+        messageBox.className = "message";
+        messageBox.style.display = "none";
+    }
+
+    // Escape values before inserting them into HTML.
+    function escapeHtml(value) {
+        return String(value ?? "")
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
+    }
+
+    function getPackageNumber(record) {
+        return record.packageNumber ?? "—";
+    }
+
+    function getStatus(record) {
+        return String(record.packageStatus ?? "PACKED");
+    }
+
+    function getStatusLabel(status) {
+        return String(status)
+            .replaceAll("_", " ")
+            .toLowerCase()
+            .replace(/\b\w/g, character => character.toUpperCase());
+    }
+
+    function getStatusClass(status) {
+        const value = String(status).toLowerCase();
+
+        if (value.includes("deliver") || value.includes("pack")) {
+            return "active";
+        }
+
+        if (value.includes("pending") || value.includes("transit")) {
+            return "pending";
+        }
+
+        return "inactive";
+    }
+
+    // Generate a package number for new records.
+    function generatePackageNumber() {
+        const timestamp = Date.now().toString();
+        const randomPart = Math.floor(
+            Math.random() * 9000 + 1000
+        ).toString();
+
+        return `PKG-${timestamp}-${randomPart}`;
+    }
+
+    function setDefaultPackageNumber() {
+        const input = document.getElementById("packageNumber");
+
+        if (!isEditing && !input.value.trim()) {
+            input.value = generatePackageNumber();
+        }
+    }
+
+    // Reset the package form.
+    function resetForm() {
+        form.reset();
+
+        document.getElementById("editingPackageId").value = "";
+        document.getElementById("quantity").value = "1";
+        document.getElementById("packageStatus").value = "PACKED";
+
+        isEditing = false;
+
+        document.getElementById("formHeading").textContent =
+            "Add Package / Item";
+
+        saveButton.textContent = "+ Save Package";
+        cancelEditButton.hidden = true;
+
+        document.getElementById("packageNumber").value =
+            generatePackageNumber();
+
+        clearMessage();
+    }
+
+    /*
+     * Common API request function.
+     *
+     * credentials: "include" sends the browser's session cookie.
+     * No Bearer token is added because this application uses
+     * Spring Security HTTP-session authentication.
+     */
+    async function requestJson(url, options = {}) {
+        const requestOptions = {
+            ...options,
+            credentials: "include",
+            headers: {
+                ...(options.headers || {})
+            }
+        };
+
+        if (
+            options.body &&
+            !requestOptions.headers["Content-Type"]
+        ) {
+            requestOptions.headers["Content-Type"] =
+                "application/json";
+        }
+
+        let response;
+
+        try {
+            response = await fetch(url, requestOptions);
+        } catch (error) {
+            throw new Error(
+                "Cannot connect to the backend. " +
+                "Check that Spring Boot is running and that " +
+                "the frontend URL matches the configured CORS origin."
+            );
+        }
+
+        const responseText = await response.text();
+
+        let result = null;
+
+        if (responseText) {
+            try {
+                result = JSON.parse(responseText);
+            } catch {
+                result = responseText;
+            }
+        }
+
+        if (!response.ok) {
+            let errorMessage = "";
+
+            if (result && typeof result === "object") {
+                errorMessage =
+                    result.message ||
+                    result.error ||
+                    JSON.stringify(result);
+            } else {
+                errorMessage =
+                    result || response.statusText;
+            }
+
+            if (response.status === 401) {
+                throw new Error(
+                    "HTTP 401: You are not authenticated. " +
+                    "Please log in again."
+                );
+            }
+
+            if (response.status === 403) {
+                throw new Error(
+                    "HTTP 403: The backend refused this request. " +
+                    "Check your session and Spring Security authorization. " +
+                    "Details: " + errorMessage
+                );
+            }
+
+            throw new Error(
+                `HTTP ${response.status}: ${errorMessage}`
+            );
+        }
+
+        return result;
+    }
+
+    // Normalize the possible package-list response formats.
+    function normalizePackageList(result) {
+        if (Array.isArray(result)) {
+            return result;
+        }
+
+        if (result && Array.isArray(result.content)) {
+            return result.content;
+        }
+
+        if (result && Array.isArray(result.data)) {
+            return result.data;
+        }
+
+        if (result && Array.isArray(result.packages)) {
+            return result.packages;
+        }
+
+        if (result == null) {
+            return [];
+        }
+
+        throw new Error(
+            "The package API returned an unexpected response format."
+        );
+    }
+
+    // Render package records in the table.
+    function renderPackages() {
+        const searchTerm = document
+            .getElementById("packageSearch")
+            .value
+            .trim()
+            .toLowerCase();
+
+        const filtered = packageRecords.filter(record => {
+            const searchable = [
+                record.packageId,
+                record.packageNumber,
+                record.shipmentId,
+                record.packageType,
+                record.description,
+                record.quantity,
+                record.weight,
+                getStatusLabel(getStatus(record))
+            ].join(" ").toLowerCase();
+
+            return searchable.includes(searchTerm);
+        });
+
+        document.getElementById("totalPackages").textContent =
+            packageRecords.length;
+
+        document.getElementById("totalQuantity").textContent =
+            packageRecords.reduce(
+                (sum, record) =>
+                    sum + (Number(record.quantity) || 0),
+                0
+            );
+
+        if (filtered.length === 0) {
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="9" class="empty-state">
+                        ${
+                            packageRecords.length === 0
+                                ? "No package records are available yet."
+                                : "No packages match your search."
+                        }
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        tableBody.innerHTML = filtered.map(record => {
+            const status = getStatus(record);
+
+            return `
+                <tr>
+                    <td>${escapeHtml(record.packageId ?? "—")}</td>
+
+                    <td>
+                        ${escapeHtml(getPackageNumber(record))}
+                    </td>
+
+                    <td>${escapeHtml(record.shipmentId ?? "—")}</td>
+
+                    <td>${escapeHtml(record.packageType ?? "—")}</td>
+
+                    <td>${escapeHtml(record.description ?? "—")}</td>
+
+                    <td>${escapeHtml(record.quantity ?? 1)}</td>
+
+                    <td>${escapeHtml(record.weight ?? "—")}</td>
+
+                    <td>
+                        <span class="status ${getStatusClass(status)}">
+                            ${escapeHtml(getStatusLabel(status))}
+                        </span>
+                    </td>
+
+                    <td>
+                        <button
+                            class="small-action"
+                            type="button"
+                            data-action="edit"
+                            data-id="${escapeHtml(record.packageId)}">
+                            Edit
+                        </button>
+
+                        <button
+                            class="small-action delete"
+                            type="button"
+                            data-action="delete"
+                            data-id="${escapeHtml(record.packageId)}">
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+            `;
+        }).join("");
+    }
+
+    // Load all packages from the backend.
+    async function loadPackages() {
+        clearMessage();
+
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="9" class="empty-state">
+                    Loading package records...
+                </td>
+            </tr>
+        `;
+
+        document.getElementById("recordsStatus").textContent =
+            "Connecting...";
+
+        try {
+            const result = await requestJson(PACKAGES_API);
+
+            packageRecords = normalizePackageList(result);
+
+            document.getElementById("recordsStatus").textContent =
+                "Connected";
+
+            renderPackages();
+
+        } catch (error) {
+            packageRecords = [];
+
+            document.getElementById("recordsStatus").textContent =
+                "Not connected";
+
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="9" class="empty-state">
+                        Could not load packages.
+                        Check the backend response and authentication.
+                    </td>
+                </tr>
+            `;
+
+            renderPackages();
+
+            showMessage(
+                "Could not load packages. " + error.message,
+                "error"
+            );
+        }
+    }
+
+    // Collect and validate form values.
+    function collectFormData() {
+        const shipmentId = Number(
+            document.getElementById("shipmentId").value
+        );
+
+        const packageNumber = document
+            .getElementById("packageNumber")
+            .value
+            .trim();
+
+        const packageType = document
+            .getElementById("packageType")
+            .value
+            .trim();
+
+        const description = document
+            .getElementById("description")
+            .value
+            .trim();
+
+        const quantity = Number(
+            document.getElementById("quantity").value
+        );
+
+        const weightText =
+            document.getElementById("weight").value;
+
+        const weight =
+            weightText === "" ? null : Number(weightText);
+
+        const packageStatus =
+            document.getElementById("packageStatus").value;
+
+        if (!Number.isInteger(shipmentId) || shipmentId < 1) {
+            throw new Error(
+                "Enter a valid positive Shipment ID."
+            );
+        }
+
+        if (!packageNumber) {
+            throw new Error("Package Number is required.");
+        }
+
+        if (packageNumber.length > 50) {
+            throw new Error(
+                "Package Number cannot exceed 50 characters."
+            );
+        }
+
+        if (!Number.isInteger(quantity) || quantity < 1) {
+            throw new Error(
+                "Quantity must be a whole number greater than zero."
+            );
+        }
+
+        if (
+            weight !== null &&
+            (!Number.isFinite(weight) || weight < 0)
+        ) {
+            throw new Error(
+                "Weight must be a valid non-negative number."
+            );
+        }
+
+        return {
+            shipmentId: shipmentId,
+            packageNumber: packageNumber,
+            packageType: packageType || null,
+            description: description || null,
+            weight: weight,
+            quantity: quantity,
+            packageStatus: packageStatus
+        };
+    }
+
+    // Create a package or update an existing package.
+    async function savePackage(event) {
+        event.preventDefault();
+        clearMessage();
+
+        let payload;
+
+        try {
+            payload = collectFormData();
+        } catch (error) {
+            showMessage(error.message, "error");
+            return;
+        }
+
+        const editingId =
+            document.getElementById("editingPackageId").value;
+
+        const editing = Boolean(editingId);
+
+        const url = editing
+            ? `${PACKAGES_API}/${encodeURIComponent(editingId)}`
+            : PACKAGES_API;
+
+        const method = editing ? "PUT" : "POST";
+
+        saveButton.disabled = true;
+        saveButton.textContent =
+            editing ? "Updating..." : "Saving...";
+
+        try {
+            await requestJson(url, {
+                method: method,
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
+            });
+
+            resetForm();
+
+            showMessage(
+                editing
+                    ? "Package updated successfully."
+                    : "Package created successfully.",
+                "success"
+            );
+
+            await loadPackages();
+
+        } catch (error) {
+            showMessage(
+                "Unable to save the package. " + error.message,
+                "error"
+            );
+        } finally {
+            saveButton.disabled = false;
+
+            saveButton.textContent = isEditing
+                ? "Update Package"
+                : "+ Save Package";
+        }
+    }
+
+    // Populate the form with the selected package.
+    function startEdit(packageId) {
+        const record = packageRecords.find(
+            item =>
+                String(item.packageId) === String(packageId)
+        );
+
+        if (!record) {
+            showMessage(
+                "The selected package could not be found.",
+                "error"
+            );
+            return;
+        }
+
+        isEditing = true;
+
+        document.getElementById("editingPackageId").value =
+            record.packageId;
+
+        document.getElementById("shipmentId").value =
+            record.shipmentId ?? "";
+
+        document.getElementById("packageNumber").value =
+            record.packageNumber ?? "";
+
+        document.getElementById("packageType").value =
+            record.packageType ?? "";
+
+        document.getElementById("description").value =
+            record.description ?? "";
+
+        document.getElementById("quantity").value =
+            record.quantity ?? 1;
+
+        document.getElementById("weight").value =
+            record.weight ?? "";
+
+        const allowedStatuses = [
+            "PACKED",
+            "PENDING",
+            "IN_TRANSIT",
+            "DELIVERED"
+        ];
+
+        const currentStatus = String(
+            record.packageStatus ?? "PACKED"
+        ).toUpperCase();
+
+        document.getElementById("packageStatus").value =
+            allowedStatuses.includes(currentStatus)
+                ? currentStatus
+                : "PACKED";
+
+        document.getElementById("formHeading").textContent =
+            `Edit Package #${record.packageId}`;
+
+        saveButton.textContent = "Update Package";
+        cancelEditButton.hidden = false;
+
+        clearMessage();
+
+        document.getElementById("formHeading").scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
+    }
+
+    // Delete a package after confirmation.
+    async function deletePackage(packageId) {
+        const record = packageRecords.find(
+            item =>
+                String(item.packageId) === String(packageId)
+        );
+
+        if (!record) {
+            showMessage(
+                "The selected package could not be found.",
+                "error"
+            );
+            return;
+        }
+
+        const confirmed = window.confirm(
+            `Are you sure you want to delete package ${
+                record.packageNumber || record.packageId
+            }?`
+        );
+
+        if (!confirmed) {
+            return;
+        }
+
+        clearMessage();
+
+        try {
+            await requestJson(
+                `${PACKAGES_API}/${encodeURIComponent(packageId)}`,
+                { method: "DELETE" }
+            );
+
+            if (
+                String(
+                    document.getElementById("editingPackageId").value
+                ) === String(packageId)
+            ) {
+                resetForm();
+            }
+
+            showMessage(
+                "Package deleted successfully.",
+                "success"
+            );
+
+            await loadPackages();
+
+        } catch (error) {
+            showMessage(
+                "Unable to delete the package. " + error.message,
+                "error"
+            );
+        }
+    }
+
+    // Handle Edit and Delete button clicks.
+    tableBody.addEventListener("click", event => {
+        const button = event.target.closest(
+            "button[data-action]"
+        );
+
+        if (!button) {
+            return;
+        }
+
+        const action = button.dataset.action;
+        const packageId = button.dataset.id;
+
+        if (action === "edit") {
+            startEdit(packageId);
+        } else if (action === "delete") {
+            deletePackage(packageId);
+        }
+    });
+
+    // Register form and page events.
+    form.addEventListener("submit", savePackage);
+
+    document.getElementById("packageSearch").addEventListener(
+        "input",
+        renderPackages
+    );
+
+    document.getElementById("refreshButton").addEventListener(
+        "click",
+        loadPackages
+    );
+
+    document.getElementById("clearButton").addEventListener(
+        "click",
+        resetForm
+    );
+
+    cancelEditButton.addEventListener(
+        "click",
+        resetForm
+    );
+
+    document.getElementById("packageNumber").addEventListener(
+        "focus",
+        setDefaultPackageNumber
+    );
+
+    document.getElementById("settingsLink").addEventListener(
+        "click",
+        event => {
+            event.preventDefault();
+
+            showMessage(
+                "Settings are not configured on this page yet.",
+                "info"
+            );
+        }
+    );
+
+    // Logout through the existing Spring Security logout endpoint.
+    document.getElementById("logoutLink").addEventListener(
+        "click",
+        async event => {
+            event.preventDefault();
+
+            try {
+                await requestJson(
+                    `${API_BASE}/api/auth/logout`,
+                    { method: "POST" }
+                );
+            } catch (error) {
+                console.error("Logout request failed:", error);
+            } finally {
+                window.location.href = "../index.html";
+            }
+        }
+    );
+
+    // Initialize the page.
+    resetForm();
+    loadPackages();
+</script>

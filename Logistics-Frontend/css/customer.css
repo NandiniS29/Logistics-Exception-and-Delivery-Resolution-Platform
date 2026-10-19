@@ -1,0 +1,155 @@
+/* =========================================
+   CUSTOMER DASHBOARD — LOGISTICS PLATFORM
+   Matching Control Officer Dashboard
+   ========================================= */
+
+:root {
+    --customer-bg: #f0f5fa;
+    --customer-card: #ffffff;
+    --customer-heading: #163047;
+    --customer-text: #657f94;
+    --customer-border: #dce7ef;
+    --customer-sidebar: #071a27;
+    --customer-accent: #087f9b;
+}
+
+/* Page background and font */
+body {
+    background-color: var(--customer-bg) !important;
+    color: var(--customer-heading);
+    font-family: "Segoe UI", Arial, sans-serif !important;
+}
+
+/* Sidebar */
+.sidebar {
+    background: linear-gradient(
+        180deg,
+        #061722 0%,
+        #0b2635 100%
+    ) !important;
+    color: #eaf4fc;
+}
+
+.sidebar .logo {
+    color: #ffffff;
+    font-weight: 700;
+    border-bottom: 1px solid #263d4a;
+}
+
+.sidebar .logo span {
+    color: #00c7e8;
+}
+
+.sidebar a {
+    transition: background-color 0.2s ease;
+}
+
+.sidebar a:hover {
+    background-color: rgba(8, 127, 155, 0.3);
+}
+
+.sidebar a.active {
+    background-color: var(--customer-accent);
+    color: #ffffff;
+}
+
+/* Main content area */
+.main-content,
+.content {
+    background-color: var(--customer-bg);
+}
+
+/* Dashboard cards and sections */
+.card,
+.stat-card,
+.dashboard-card,
+.content-section,
+.profile-section,
+.shipments-section,
+.exceptions-section {
+    background-color: var(--customer-card);
+    border: 1px solid var(--customer-border);
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(23, 54, 78, 0.06);
+}
+
+/* Headings */
+h1,
+h2,
+h3,
+h4 {
+    color: var(--customer-heading);
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-weight: 700;
+}
+
+/* Secondary text */
+p,
+small,
+.text-muted {
+    color: var(--customer-text);
+}
+
+/* Tables */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead th {
+    background-color: #f4f7fa;
+    color: #526b80;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 14px 12px;
+    border-bottom: 1px solid var(--customer-border);
+}
+
+tbody td {
+    padding: 14px 12px;
+    border-bottom: 1px solid #edf1f5;
+}
+
+tbody tr:hover {
+    background-color: #f6f9fc;
+}
+
+/* Profile details */
+.profile-item {
+    background-color: #f6f8fa;
+    border-radius: 8px;
+    padding: 14px;
+}
+
+.profile-item label {
+    color: var(--customer-text);
+}
+
+.profile-item strong {
+    color: var(--customer-heading);
+}
+
+/* Buttons */
+button,
+.btn {
+    font-family: "Segoe UI", Arial, sans-serif;
+    border-radius: 8px;
+}
+
+.btn-primary {
+    background-color: var(--customer-accent);
+    border-color: var(--customer-accent);
+}
+
+.btn-primary:hover {
+    background-color: #075d78;
+    border-color: #075d78;
+}
+
+/* Input fields */
+input,
+select,
+textarea {
+    font-family: "Segoe UI", Arial, sans-serif;
+    border-radius: 8px;
+}

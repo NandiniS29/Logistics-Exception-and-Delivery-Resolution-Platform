@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>My Shipments | Logistics Platform</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background: #f4f7fb;
+            color: #1f2937;
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+            background: #111827;
+            color: white;
+            padding: 25px 15px;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+            padding: 0 15px 30px;
+            border-bottom: 1px solid #374151;
+            margin-bottom: 20px;
+        }
+
+        .logo span {
+            color: #60a5fa;
+        }
+
+        .menu {
+            list-style: none;
+        }
+
+        .menu li {
+            margin-bottom: 7px;
+        }
+
+        .menu a {
+            display: block;
+            text-decoration: none;
+            color: #d1d5db;
+            padding: 13px 15px;
+            border-radius: 8px;
+        }
+
+        .menu a:hover,
+        .menu a.active {
+            background: #2563eb;
+            color: white;
+        }
+
+        .logout {
+            position: absolute;
+            bottom: 25px;
+            left: 15px;
+            right: 15px;
+        }
+
+        .logout a {
+            display: block;
+            text-align: center;
+            padding: 12px;
+            border-radius: 8px;
+            background: #dc2626;
+            color: white;
+            text-decoration: none;
+        }
+
+        /* MAIN */
+
+        .main {
+            margin-left: 250px;
+            min-height: 100vh;
+        }
+
+        .topbar {
+            height: 75px;
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 30px;
+        }
+
+        .topbar h2 {
+            font-size: 22px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-details {
+            text-align: right;
+        }
+
+        .user-name {
+            font-weight: bold;
+        }
+
+        .user-role {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: #2563eb;
+            color: white;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-weight: bold;
+        }
+
+        /* CONTENT */
+
+        .content {
+            padding: 30px;
+        }
+
+        .page-header {
+            margin-bottom: 25px;
+        }
+
+        .page-header h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .page-header p {
+            color: #6b7280;
+        }
+
+        /* CARD */
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.04);
+        }
+
+        /* TABLE */
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #f9fafb;
+            color: #6b7280;
+            font-size: 13px;
+            text-align: left;
+            padding: 14px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px 14px;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 14px;
+        }
+
+        /* STATUS */
+
+        .status {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .transit {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .delivered {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .delayed {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .other {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        /* BUTTON */
+
+        .view-btn {
+            border: none;
+            background: #2563eb;
+            color: white;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .view-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 30px;
+            color: #6b7280;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+
+<!-- SIDEBAR -->
+
+<aside class="sidebar">
+
+    <div class="logo">
+        Logistics <span>Platform</span>
+    </div>
+
+    <ul class="menu">
+
+        <li>
+            <a href="dashboard.html">
+                Dashboard
+            </a>
+        </li>
+
+        <li>
+            <a href="shipments.html"
+               class="active">
+                My Shipments
+            </a>
+        </li>
+
+        <li>
+            <a href="tracking.html">
+                Track Shipment
+            </a>
+        </li>
+
+        <li>
+            <a href="packages.html">
+                Package Details
+            </a>
+        </li>
+
+        <li>
+            <a href="exceptions.html">
+                My Exceptions
+            </a>
+        </li>
+
+        <li>
+            <a href="resolutions.html">
+                Resolution Status
+            </a>
+        </li>
+
+        <li>
+            <a href="profile.html">
+                My Profile
+            </a>
+        </li>
+
+        <li>
+            <a href="notifications.html">
+                Notifications
+            </a>
+        </li>
+
+    </ul>
+
+    <div class="logout">
+
+        <a href="#"
+           onclick="logout()">
+
+            Logout
+
+        </a>
+
+    </div>
+
+</aside>
+
+
+<!-- MAIN -->
+
+<main class="main">
+
+
+    <!-- TOPBAR -->
+
+    <header class="topbar">
+
+        <h2>
+            My Shipments
+        </h2>
+
+        <div class="user-info">
+
+            <div class="user-details">
+
+                <div class="user-name"
+                     id="userName">
+
+                    Customer
+
+                </div>
+
+                <div class="user-role">
+
+                    Customer
+
+                </div>
+
+            </div>
+
+            <div class="avatar"
+                 id="avatar">
+
+                C
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- CONTENT -->
+
+    <section class="content">
+
+
+        <div class="page-header">
+
+            <h1>
+                My Shipments
+            </h1>
+
+            <p>
+                View and track all shipments associated
+                with your customer account.
+            </p>
+
+        </div>
+
+
+        <div id="errorMessage"
+             class="error">
+        </div>
+
+
+        <div class="card">
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Shipment ID
+                            </th>
+
+                            <th>
+                                Tracking Number
+                            </th>
+
+                            <th>
+                                Origin
+                            </th>
+
+                            <th>
+                                Destination
+                            </th>
+
+                            <th>
+                                Shipment Date
+                            </th>
+
+                            <th>
+                                Expected Delivery
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th>
+                                Action
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="shipmentTableBody">
+
+                        <tr>
+
+                            <td colspan="8"
+                                class="loading">
+
+                                Loading shipments...
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+    </section>
+
+</main>
+
+
+<script>
+
+const API_BASE_URL =
+    "http://127.0.0.1:8080";
+
+
+/* LOAD USER */
+
+async function loadUser() {
+
+    try {
+
+        const response =
+            await fetch(
+                API_BASE_URL + "/api/users/me",
+                {
+                    method: "GET",
+                    credentials: "include"
+                }
+            );
+
+        if (!response.ok) {
+            return;
+        }
+
+        const user =
+            await response.json();
+
+        const name =
+            user.fullName ||
+            user.name ||
+            "Customer";
+
+        document.getElementById(
+            "userName"
+        ).textContent = name;
+
+        document.getElementById(
+            "avatar"
+        ).textContent =
+            name.charAt(0).toUpperCase();
+
+    } catch (error) {
+
+        console.error(
+            "User loading error:",
+            error
+        );
+
+    }
+
+}
+
+
+/* LOAD CUSTOMER SHIPMENTS */
+
+async function loadShipments() {
+
+    const tableBody =
+        document.getElementById(
+            "shipmentTableBody"
+        );
+
+    try {
+
+        const response =
+            await fetch(
+                API_BASE_URL +
+                "/api/shipments/my",
+                {
+                    method: "GET",
+                    credentials: "include"
+                }
+            );
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Unable to load your shipments."
+            );
+
+        }
+
+        const shipments =
+            await response.json();
+
+        console.log(
+            "My Shipments:",
+            shipments
+        );
+
+
+        if (
+            !shipments ||
+            shipments.length === 0
+        ) {
+
+            tableBody.innerHTML = `
+
+                <tr>
+
+                    <td colspan="8"
+                        class="loading">
+
+                        No shipments found.
+
+                    </td>
+
+                </tr>
+
+            `;
+
+            return;
+
+        }
+
+
+        tableBody.innerHTML =
+            shipments.map(
+                shipment => {
+
+                    const status =
+                        shipment.status ||
+                        "Unknown";
+
+                    let statusClass =
+                        "other";
+
+                    const lowerStatus =
+                        status.toLowerCase();
+
+
+                    if (
+                        lowerStatus.includes(
+                            "transit"
+                        )
+                    ) {
+
+                        statusClass =
+                            "transit";
+
+                    }
+                    else if (
+                        lowerStatus.includes(
+                            "deliver"
+                        )
+                    ) {
+
+                        statusClass =
+                            "delivered";
+
+                    }
+                    else if (
+                        lowerStatus.includes(
+                            "delay"
+                        )
+                    ) {
+
+                        statusClass =
+                            "delayed";
+
+                    }
+
+
+                    return `
+
+                        <tr>
+
+                            <td>
+                                ${
+                                    shipment.shipmentId ||
+                                    "-"
+                                }
+                            </td>
+
+                            <td>
+
+                                <strong>
+                                    ${
+                                        shipment.trackingNumber ||
+                                        "-"
+                                    }
+                                </strong>
+
+                            </td>
+
+                            <td>
+                                ${
+                                    shipment.origin ||
+                                    "-"
+                                }
+                            </td>
+
+                            <td>
+                                ${
+                                    shipment.destination ||
+                                    "-"
+                                }
+                            </td>
+
+                            <td>
+                                ${
+                                    shipment.shipmentDate ||
+                                    "-"
+                                }
+                            </td>
+
+                            <td>
+                                ${
+                                    shipment.expectedDeliveryDate ||
+                                    "-"
+                                }
+                            </td>
+
+                            <td>
+
+                                <span
+                                    class="status ${statusClass}">
+
+                                    ${
+                                        status
+                                    }
+
+                                </span>
+
+                            </td>
+
+                            <td>
+
+                                <button
+                                    class="view-btn"
+                                    onclick="viewShipment(
+                                        ${
+                                            shipment.shipmentId
+                                        }
+                                    )">
+
+                                    View
+
+                                </button>
+
+                            </td>
+
+                        </tr>
+
+                    `;
+
+                }
+            ).join("");
+
+
+    } catch (error) {
+
+        console.error(
+            "Shipment loading error:",
+            error
+        );
+
+        tableBody.innerHTML = `
+
+            <tr>
+
+                <td colspan="8"
+                    class="loading">
+
+                    Unable to load shipments.
+
+                </td>
+
+            </tr>
+
+        `;
+
+        const errorBox =
+            document.getElementById(
+                "errorMessage"
+            );
+
+        errorBox.textContent =
+            error.message;
+
+        errorBox.style.display =
+            "block";
+
+    }
+
+}
+
+
+/* VIEW SHIPMENT */
+
+function viewShipment(
+    shipmentId
+) {
+
+    window.location.href =
+        "shipment-details.html?shipmentId=" +
+        shipmentId;
+
+}
+
+
+/* LOGOUT */
+
+async function logout() {
+
+    try {
+
+        await fetch(
+            API_BASE_URL +
+            "/api/auth/logout",
+            {
+                method: "POST",
+                credentials: "include"
+            }
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Logout error:",
+            error
+        );
+
+    }
+
+    sessionStorage.clear();
+
+    window.location.href =
+        "../index.html";
+
+}
+
+
+/* INITIALIZE */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        loadUser();
+
+        loadShipments();
+
+    }
+);
+
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Create Shipment | Logistics Platform</title>
+
+    <link rel="stylesheet"
+          href="../css/admin.css">
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+
+            margin: 0;
+
+            background: #f1f5f9;
+
+            font-family: Arial, sans-serif;
+
+            color: #0f172a;
+
+        }
+
+
+        .page-content {
+
+            padding: 35px;
+
+            min-height: 100vh;
+
+        }
+
+
+        .page-header {
+
+            margin-bottom: 25px;
+
+        }
+
+
+        .page-header h1 {
+
+            margin: 0;
+
+            font-size: 30px;
+
+            color: #0f172a;
+
+        }
+
+
+        .page-header p {
+
+            margin-top: 8px;
+
+            color: #64748b;
+
+            font-size: 15px;
+
+        }
+
+
+        /* ==========================================
+           MAIN CARD
+        ========================================== */
+
+        .form-card {
+
+            background: white;
+
+            border-radius: 16px;
+
+            padding: 35px;
+
+            max-width: 850px;
+
+            box-shadow:
+                0 4px 20px rgba(0,0,0,0.07);
+
+        }
+
+
+        .form-title {
+
+            margin-top: 0;
+
+            margin-bottom: 30px;
+
+            font-size: 21px;
+
+            color: #1e293b;
+
+        }
+
+
+        /* ==========================================
+           FIELD CONTAINER
+        ========================================== */
+
+        .field-wrapper {
+
+            max-height: 0;
+
+            opacity: 0;
+
+            overflow: hidden;
+
+            transform: translateY(-10px);
+
+            transition:
+                max-height 0.45s ease,
+                opacity 0.35s ease,
+                transform 0.35s ease,
+                margin 0.35s ease;
+
+            margin: 0;
+
+        }
+
+
+        .field-wrapper.visible {
+
+            max-height: 180px;
+
+            opacity: 1;
+
+            transform: translateY(0);
+
+            margin-bottom: 22px;
+
+        }
+
+
+        /* ==========================================
+           LABEL
+        ========================================== */
+
+        .field-wrapper label {
+
+            display: block;
+
+            margin-bottom: 8px;
+
+            font-size: 14px;
+
+            font-weight: 600;
+
+            color: #334155;
+
+        }
+
+
+        /* ==========================================
+           INPUTS
+        ========================================== */
+
+        .field-wrapper input,
+        .field-wrapper select {
+
+            width: 100%;
+
+            padding: 13px 15px;
+
+            border: 1px solid #cbd5e1;
+
+            border-radius: 8px;
+
+            font-size: 14px;
+
+            background: white;
+
+            color: #0f172a;
+
+            outline: none;
+
+            transition:
+                border-color 0.2s ease,
+                box-shadow 0.2s ease;
+
+        }
+
+
+        .field-wrapper input:focus,
+        .field-wrapper select:focus {
+
+            border-color: #2563eb;
+
+            box-shadow:
+                0 0 0 3px rgba(
+                    37,
+                    99,
+                    235,
+                    0.10
+                );
+
+        }
+
+
+        .help-text {
+
+            display: block;
+
+            margin-top: 6px;
+
+            font-size: 12px;
+
+            color: #64748b;
+
+        }
+
+
+        /* ==========================================
+           BUTTON AREA
+        ========================================== */
+
+        .button-area {
+
+            display: none;
+
+            margin-top: 30px;
+
+            gap: 12px;
+
+            opacity: 0;
+
+            transform: translateY(10px);
+
+            transition:
+                opacity 0.4s ease,
+                transform 0.4s ease;
+
+        }
+
+
+        .button-area.visible {
+
+            display: flex;
+
+            opacity: 1;
+
+            transform: translateY(0);
+
+        }
+
+
+        .create-btn {
+
+            border: none;
+
+            background: #2563eb;
+
+            color: white;
+
+            padding: 13px 24px;
+
+            border-radius: 8px;
+
+            font-size: 14px;
+
+            font-weight: 600;
+
+            cursor: pointer;
+
+        }
+
+
+        .create-btn:hover {
+
+            background: #1d4ed8;
+
+        }
+
+
+        .create-btn:disabled {
+
+            background: #94a3b8;
+
+            cursor: not-allowed;
+
+        }
+
+
+        .cancel-btn {
+
+            border: none;
+
+            background: #e2e8f0;
+
+            color: #334155;
+
+            padding: 13px 24px;
+
+            border-radius: 8px;
+
+            font-size: 14px;
+
+            font-weight: 600;
+
+            cursor: pointer;
+
+        }
+
+
+        .cancel-btn:hover {
+
+            background: #cbd5e1;
+
+        }
+
+
+        /* ==========================================
+           SUCCESS / ERROR MESSAGE
+        ========================================== */
+
+        .message {
+
+            display: none;
+
+            margin-top: 22px;
+
+            padding: 14px 16px;
+
+            border-radius: 8px;
+
+            font-size: 14px;
+
+            font-weight: 500;
+
+        }
+
+
+        .success-message {
+
+            display: block;
+
+            background: #dcfce7;
+
+            color: #166534;
+
+            border: 1px solid #bbf7d0;
+
+        }
+
+
+        .error-message {
+
+            display: block;
+
+            background: #fee2e2;
+
+            color: #991b1b;
+
+            border: 1px solid #fecaca;
+
+        }
+
+
+        /* ==========================================
+           MOBILE
+        ========================================== */
+
+        @media (max-width: 700px) {
+
+            .page-content {
+
+                padding: 20px;
+
+            }
+
+
+            .form-card {
+
+                padding: 22px;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="page-content">
+
+
+    <!-- ==========================================
+         HEADER
+    ========================================== -->
+
+    <div class="page-header">
+
+        <h1>
+            Create Shipment
+        </h1>
+
+        <p>
+            Create a new shipment in the logistics system.
+        </p>
+
+    </div>
+
+
+    <!-- ==========================================
+         SINGLE FORM CARD
+    ========================================== -->
+
+    <div class="form-card">
+
+
+        <h2 class="form-title">
+            Shipment Information
+        </h2>
+
+
+        <form id="shipmentForm">
+
+
+            <!-- ==================================
+                 CUSTOMER ID
+            ================================== -->
+
+            <div
+                class="field-wrapper visible"
+                id="customerField">
+
+                <label for="customerId">
+                    Customer ID
+                </label>
+
+                <input
+                    type="number"
+                    id="customerId"
+                    placeholder="Enter customer ID"
+                    min="1"
+                    required
+                >
+
+                <span class="help-text">
+                    Enter the existing customer ID.
+                </span>
+
+            </div>
+
+
+            <!-- ==================================
+                 TRACKING NUMBER
+            ================================== -->
+
+            <div
+                class="field-wrapper"
+                id="trackingField">
+
+                <label for="trackingNumber">
+                    Tracking Number
+                </label>
+
+                <input
+                    type="text"
+                    id="trackingNumber"
+                    placeholder="Example: LS10003"
+                    required
+                >
+
+                <span class="help-text">
+                    Use a unique tracking number.
+                </span>
+
+            </div>
+
+
+            <!-- ==================================
+                 ORIGIN
+            ================================== -->
+
+            <div
+                class="field-wrapper"
+                id="originField">
+
+                <label for="origin">
+                    Origin
+                </label>
+
+                <input
+                    type="text"
+                    id="origin"
+                    placeholder="Example: Bengaluru"
+                    required
+                >
+
+            </div>
+
+
+            <!-- ==================================
+                 DESTINATION
+            ================================== -->
+
+            <div
+                class="field-wrapper"
+                id="destinationField">
+
+                <label for="destination">
+                    Destination
+                </label>
+
+                <input
+                    type="text"
+                    id="destination"
+                    placeholder="Example: Mysuru"
+                    required
+                >
+
+            </div>
+
+
+            <!-- ==================================
+                 SHIPMENT DATE
+            ================================== -->
+
+            <div
+                class="field-wrapper"
+                id="shipmentDateField">
+
+                <label for="shipmentDate">
+                    Shipment Date
+                </label>
+
+                <input
+                    type="date"
+                    id="shipmentDate"
+                    required
+                >
+
+            </div>
+
+
+            <!-- ==================================
+                 EXPECTED DELIVERY
+            ================================== -->
+
+            <div
+                class="field-wrapper"
+                id="expectedDeliveryField">
+
+                <label for="expectedDeliveryDate">
+                    Expected Delivery Date
+                </label>
+
+                <input
+                    type="date"
+                    id="expectedDeliveryDate"
+                    required
+                >
+
+            </div>
+
+
+            <!-- ==================================
+                 STATUS
+            ================================== -->
+
+            <div
+                class="field-wrapper"
+                id="statusField">
+
+                <label for="status">
+                    Shipment Status
+                </label>
+
+                <select
+                    id="status"
+                    required>
+
+                    <option value="">
+                        Select shipment status
+                    </option>
+
+                    <option value="In Transit">
+                        In Transit
+                    </option>
+
+                    <option value="Delivered">
+                        Delivered
+                    </option>
+
+                    <option value="Delayed">
+                        Delayed
+                    </option>
+
+                    <option value="Cancelled">
+                        Cancelled
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- ==================================
+                 BUTTONS
+            ================================== -->
+
+            <div
+                class="button-area"
+                id="buttonArea">
+
+                <button
+                    type="submit"
+                    id="createButton"
+                    class="create-btn">
+
+                    Create Shipment
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="cancel-btn"
+                    onclick="goBack()">
+
+                    Cancel
+
+                </button>
+
+            </div>
+
+
+        </form>
+
+
+        <!-- ==================================
+             MESSAGE
+        ================================== -->
+
+        <div
+            id="message"
+            class="message">
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+<script>
+
+
+    // =========================================
+    // BACKEND
+    // =========================================
+
+    const API_BASE_URL =
+        "http://127.0.0.1:8080";
+
+
+    // =========================================
+    // FIELD ELEMENTS
+    // =========================================
+
+    const customerId =
+        document.getElementById(
+            "customerId"
+        );
+
+    const trackingNumber =
+        document.getElementById(
+            "trackingNumber"
+        );
+
+    const origin =
+        document.getElementById(
+            "origin"
+        );
+
+    const destination =
+        document.getElementById(
+            "destination"
+        );
+
+    const shipmentDate =
+        document.getElementById(
+            "shipmentDate"
+        );
+
+    const expectedDeliveryDate =
+        document.getElementById(
+            "expectedDeliveryDate"
+        );
+
+    const status =
+        document.getElementById(
+            "status"
+        );
+
+
+    // =========================================
+    // FIELD CONTAINERS
+    // =========================================
+
+    const trackingField =
+        document.getElementById(
+            "trackingField"
+        );
+
+    const originField =
+        document.getElementById(
+            "originField"
+        );
+
+    const destinationField =
+        document.getElementById(
+            "destinationField"
+        );
+
+    const shipmentDateField =
+        document.getElementById(
+            "shipmentDateField"
+        );
+
+    const expectedDeliveryField =
+        document.getElementById(
+            "expectedDeliveryField"
+        );
+
+    const statusField =
+        document.getElementById(
+            "statusField"
+        );
+
+    const buttonArea =
+        document.getElementById(
+            "buttonArea"
+        );
+
+
+    // =========================================
+    // SHOW NEXT FIELD
+    // =========================================
+
+    function showField(
+        field
+    ) {
+
+        field.classList.add(
+            "visible"
+        );
+
+    }
+
+
+    // =========================================
+    // CUSTOMER ID → TRACKING NUMBER
+    // =========================================
+
+    customerId.addEventListener(
+        "input",
+        function() {
+
+            if (
+                customerId.value.trim() !== ""
+            ) {
+
+                showField(
+                    trackingField
+                );
+
+            }
+
+        }
+    );
+
+
+    // =========================================
+    // TRACKING → ORIGIN
+    // =========================================
+
+    trackingNumber.addEventListener(
+        "input",
+        function() {
+
+            if (
+                trackingNumber.value.trim() !== ""
+            ) {
+
+                showField(
+                    originField
+                );
+
+            }
+
+        }
+    );
+
+
+    // =========================================
+    // ORIGIN → DESTINATION
+    // =========================================
+
+    origin.addEventListener(
+        "input",
+        function() {
+
+            if (
+                origin.value.trim() !== ""
+            ) {
+
+                showField(
+                    destinationField
+                );
+
+            }
+
+        }
+    );
+
+
+    // =========================================
+    // DESTINATION → SHIPMENT DATE
+    // =========================================
+
+    destination.addEventListener(
+        "input",
+        function() {
+
+            if (
+                destination.value.trim() !== ""
+            ) {
+
+                showField(
+                    shipmentDateField
+                );
+
+            }
+
+        }
+    );
+
+
+    // =========================================
+    // SHIPMENT DATE → EXPECTED DELIVERY
+    // =========================================
+
+    shipmentDate.addEventListener(
+        "change",
+        function() {
+
+            if (
+                shipmentDate.value !== ""
+            ) {
+
+                showField(
+                    expectedDeliveryField
+                );
+
+            }
+
+        }
+    );
+
+
+    // =========================================
+    // EXPECTED DELIVERY → STATUS
+    // =========================================
+
+    expectedDeliveryDate.addEventListener(
+        "change",
+        function() {
+
+            if (
+                expectedDeliveryDate.value !== ""
+            ) {
+
+                showField(
+                    statusField
+                );
+
+            }
+
+        }
+    );
+
+
+    // =========================================
+    // STATUS → BUTTONS
+    // =========================================
+
+    status.addEventListener(
+        "change",
+        function() {
+
+            if (
+                status.value !== ""
+            ) {
+
+                buttonArea.classList.add(
+                    "visible"
+                );
+
+            }
+
+        }
+    );
+
+
+    // =========================================
+    // DEFAULT SHIPMENT DATE
+    // =========================================
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function() {
+
+            const today =
+                new Date()
+                    .toISOString()
+                    .split("T")[0];
+
+
+            shipmentDate.value =
+                today;
+
+        }
+    );
+
+
+    // =========================================
+    // CREATE SHIPMENT
+    // =========================================
+
+    document
+        .getElementById(
+            "shipmentForm"
+        )
+        .addEventListener(
+            "submit",
+            async function(event) {
+
+                event.preventDefault();
+
+
+                const message =
+                    document.getElementById(
+                        "message"
+                    );
+
+                const createButton =
+                    document.getElementById(
+                        "createButton"
+                    );
+
+
+                message.style.display =
+                    "none";
+
+
+                message.className =
+                    "message";
+
+
+                const shipmentData = {
+
+                    customerId:
+                        Number(
+                            customerId.value
+                        ),
+
+                    trackingNumber:
+                        trackingNumber
+                            .value
+                            .trim(),
+
+                    origin:
+                        origin
+                            .value
+                            .trim(),
+
+                    destination:
+                        destination
+                            .value
+                            .trim(),
+
+                    shipmentDate:
+                        shipmentDate.value,
+
+                    expectedDeliveryDate:
+                        expectedDeliveryDate
+                            .value,
+
+                    status:
+                        status.value
+
+                };
+
+
+                console.log(
+                    "Sending shipment:",
+                    shipmentData
+                );
+
+
+                createButton.disabled =
+                    true;
+
+
+                createButton.textContent =
+                    "Creating...";
+
+
+                try {
+
+
+                    const response =
+                        await fetch(
+
+                            API_BASE_URL +
+                            "/api/shipments",
+
+                            {
+
+                                method: "POST",
+
+                                headers: {
+
+                                    "Content-Type":
+                                        "application/json"
+
+                                },
+
+                                credentials:
+                                    "include",
+
+                                body:
+                                    JSON.stringify(
+                                        shipmentData
+                                    )
+
+                            }
+
+                        );
+
+
+                    let result = {};
+
+
+                    try {
+
+                        result =
+                            await response.json();
+
+                    }
+
+                    catch (jsonError) {
+
+                        result = {};
+
+                    }
+
+
+                    console.log(
+                        "Backend response:",
+                        result
+                    );
+
+
+                    if (!response.ok) {
+
+                        throw new Error(
+
+                            result.message
+                            ||
+                            result.error
+                            ||
+                            "Shipment creation failed. HTTP status: "
+                            +
+                            response.status
+
+                        );
+
+                    }
+
+
+                    message.className =
+                        "message success-message";
+
+
+                    message.textContent =
+                        "Shipment created successfully!";
+
+
+                    message.style.display =
+                        "block";
+
+
+                    setTimeout(
+                        function() {
+
+                            window.location.href =
+                                "shipments.html";
+
+                        },
+                        1200
+                    );
+
+
+                }
+
+                catch (error) {
+
+
+                    console.error(
+                        "Create shipment error:",
+                        error
+                    );
+
+
+                    message.className =
+                        "message error-message";
+
+
+                    message.textContent =
+                        error.message
+                        ||
+                        "Unable to create shipment.";
+
+
+                    message.style.display =
+                        "block";
+
+
+                    createButton.disabled =
+                        false;
+
+
+                    createButton.textContent =
+                        "Create Shipment";
+
+                }
+
+            }
+        );
+
+
+    // =========================================
+    // CANCEL
+    // =========================================
+
+    function goBack() {
+
+        window.location.href =
+            "shipments.html";
+
+    }
+
+
+</script>
+
+
+</body>
+
+</html>

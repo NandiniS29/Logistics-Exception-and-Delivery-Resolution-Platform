@@ -1,0 +1,1376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Exception Details | Logistics Platform</title>
+
+    <!-- Fonts and Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <!-- Existing application styles -->
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/admin.css">
+
+    <style>
+        body {
+            background: #f1f5f9;
+            font-family: "Inter", sans-serif;
+        }
+
+        .details-content {
+            padding: 28px;
+        }
+
+        .page-heading {
+            margin-bottom: 24px;
+        }
+
+        .page-heading h1 {
+            color: #12345a;
+            font-size: 27px;
+            font-weight: 800;
+        }
+
+        .page-heading p {
+            font-size: 13px;
+            color: #718096;
+        }
+
+        .eyebrow {
+            color: #07869e;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            margin-bottom: 8px;
+        }
+
+        .back-button,
+        .secondary-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 11px 16px;
+            border: 1px solid #d5e0ea;
+            border-radius: 9px;
+            background: white;
+            color: #24466a;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .back-button:hover,
+        .secondary-button:hover {
+            background: #f0f9ff;
+        }
+
+        .primary-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 11px 17px;
+            border: none;
+            border-radius: 9px;
+            background: #07869e;
+            color: white;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .primary-button:hover {
+            background: #066b80;
+        }
+
+        .exception-banner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            padding: 22px;
+            margin-bottom: 22px;
+            background: linear-gradient(120deg, #062f42, #0b5267);
+            color: white;
+            border-radius: 14px;
+            box-shadow: 0 5px 18px rgba(10, 42, 60, 0.12);
+        }
+
+        .exception-banner h2 {
+            margin: 0 0 8px;
+            font-size: 22px;
+        }
+
+        .exception-banner p {
+            margin: 0;
+            color: #d5edf5;
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .exception-id {
+            color: #9deaf5;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .banner-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .banner-badge {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.13);
+            color: white;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px;
+            margin-bottom: 22px;
+        }
+
+        .detail-card {
+            background: white;
+            border: 1px solid #e0e8f0;
+            border-radius: 13px;
+            overflow: hidden;
+            box-shadow: 0 3px 12px rgba(15, 35, 60, 0.035);
+        }
+
+        .detail-card.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .card-heading {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px 20px;
+            border-bottom: 1px solid #e9eef4;
+        }
+
+        .card-icon {
+            width: 39px;
+            height: 39px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            background: #e4f7fb;
+            color: #07869e;
+            font-size: 16px;
+        }
+
+        .card-heading h3 {
+            margin: 0;
+            color: #173b62;
+            font-size: 15px;
+            font-weight: 800;
+        }
+
+        .card-heading p {
+            margin: 4px 0 0;
+            color: #8593a3;
+            font-size: 11px;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .info-item label {
+            display: block;
+            margin-bottom: 7px;
+            color: #8491a2;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .info-item p {
+            margin: 0;
+            color: #263f59;
+            font-size: 13px;
+            font-weight: 700;
+            overflow-wrap: anywhere;
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 10px;
+            border-radius: 20px;
+            background: #fff2d9;
+            color: #a66300;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .priority-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 10px;
+            border-radius: 20px;
+            background: #ffe7e7;
+            color: #c62828;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .description-box {
+            padding: 15px;
+            background: #f7fafc;
+            border: 1px solid #e6edf4;
+            border-radius: 9px;
+            color: #425466;
+            font-size: 13px;
+            line-height: 1.8;
+            overflow-wrap: anywhere;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            color: #29445f;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px 13px;
+            border: 1px solid #d6e1eb;
+            border-radius: 8px;
+            background: white;
+            color: #263f59;
+            font-family: inherit;
+            font-size: 13px;
+            outline: none;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #07869e;
+            box-shadow: 0 0 0 3px rgba(7, 134, 158, 0.10);
+        }
+
+        .form-group textarea {
+            min-height: 110px;
+            resize: vertical;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 27px;
+        }
+
+        .timeline::before {
+            content: "";
+            position: absolute;
+            left: 7px;
+            top: 8px;
+            bottom: 8px;
+            width: 2px;
+            background: #dce8ef;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: 23px;
+        }
+
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -27px;
+            top: 3px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #07869e;
+            border: 3px solid #dff6fa;
+            box-sizing: border-box;
+        }
+
+        .timeline-item h4 {
+            margin: 0 0 5px;
+            color: #24466a;
+            font-size: 13px;
+        }
+
+        .timeline-item p {
+            margin: 0;
+            color: #77879a;
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        .notice {
+            display: none;
+            padding: 13px 15px;
+            margin-bottom: 18px;
+            border-radius: 8px;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .notice.success {
+            display: block;
+            background: #e7f8ee;
+            border: 1px solid #b8e7ca;
+            color: #167342;
+        }
+
+        .notice.error {
+            display: block;
+            background: #fff0f0;
+            border: 1px solid #f4caca;
+            color: #b42323;
+        }
+
+        .loading-message {
+            color: #718096;
+            font-size: 13px;
+        }
+
+        .empty-message {
+            color: #718096;
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        @media (max-width: 900px) {
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .detail-card.full-width {
+                grid-column: auto;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .details-content {
+                padding: 16px;
+            }
+
+            .exception-banner {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .info-grid,
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full-width {
+                grid-column: auto;
+            }
+
+            .page-heading h1 {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="app-container">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="brand">
+            <div class="brand-icon">🚚</div>
+
+            <div>
+                <div class="brand-title">Logistics</div>
+                <div class="brand-subtitle">Platform</div>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+
+            <a href="dashboard.html" class="nav-item">
+                <span>🏠</span><span>Dashboard</span>
+            </a>
+
+            <a href="customers.html" class="nav-item">
+                <span>👥</span><span>Customers</span>
+            </a>
+
+            <a href="shipments.html" class="nav-item">
+                <span>📦</span><span>Shipments</span>
+            </a>
+
+            <a href="packages.html" class="nav-item">
+                <span>📦</span><span>Packages &amp; Items</span>
+            </a>
+
+            <a href="routes.html" class="nav-item">
+                <span>🚚</span><span>Routes &amp; Delivery</span>
+            </a>
+
+            <a href="tracking.html" class="nav-item">
+                <span>📍</span><span>Shipment Tracking</span>
+            </a>
+
+            <a href="exceptions.html" class="nav-item active">
+                <span>⚠️</span><span>Exceptions</span>
+            </a>
+
+            <a href="investigation.html" class="nav-item">
+                <span>🔎</span><span>Investigation</span>
+            </a>
+
+            <a href="resolutions.html" class="nav-item">
+                <span>✅</span><span>Resolutions</span>
+            </a>
+
+            <a href="sla-analytics.html" class="nav-item">
+                <span>📊</span><span>SLA &amp; Analytics</span>
+            </a>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+            <a href="#" class="nav-item" id="settingsLink">
+                <span>⚙️</span><span>Settings</span>
+            </a>
+
+            <a href="../index.html" class="nav-item logout">
+                <span>🚪</span><span>Logout</span>
+            </a>
+        </div>
+
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        <header class="topbar">
+
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+
+                <input
+                    type="search"
+                    id="globalSearch"
+                    placeholder="Search exceptions..."
+                    aria-label="Search exceptions">
+            </div>
+
+            <div class="topbar-right">
+                <a href="exceptions.html"
+                   class="secondary-button"
+                   title="Return to exceptions">
+                    <i class="fa-solid fa-list"></i>
+                    Exceptions
+                </a>
+            </div>
+
+        </header>
+
+        <section class="details-content">
+
+            <div class="page-heading">
+
+                <div>
+                    <div class="eyebrow">LOGISTICS CONTROL OFFICER</div>
+                    <h1>Exception Details</h1>
+                    <p>Review the exception, shipment information, investigation and resolution.</p>
+                </div>
+
+                <a href="exceptions.html" class="back-button">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    Back to Exceptions
+                </a>
+
+            </div>
+
+            <div id="notice" class="notice" role="status"></div>
+
+            <!-- EXCEPTION SUMMARY -->
+            <section class="exception-banner">
+
+                <div>
+                    <div class="exception-id" id="exceptionId">Exception ID: Loading...</div>
+
+                    <h2 id="exceptionTitle">Loading exception details...</h2>
+
+                    <p id="exceptionSummary">
+                        Retrieving exception information from the backend.
+                    </p>
+
+                    <div class="banner-badges">
+                        <span class="banner-badge" id="bannerStatus">Status: Loading</span>
+                        <span class="banner-badge" id="bannerPriority">Priority: Loading</span>
+                    </div>
+                </div>
+
+                <div>
+                    <button class="primary-button" id="reloadButton" type="button">
+                        <i class="fa-solid fa-rotate"></i>
+                        Refresh Details
+                    </button>
+                </div>
+
+            </section>
+
+            <!-- DETAIL CARDS -->
+            <div class="details-grid">
+
+                <!-- EXCEPTION INFORMATION -->
+                <section class="detail-card">
+
+                    <div class="card-heading">
+                        <div class="card-icon">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                        </div>
+
+                        <div>
+                            <h3>Exception Information</h3>
+                            <p>Issue details and current status</p>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="info-grid">
+
+                            <div class="info-item">
+                                <label>Exception ID</label>
+                                <p id="infoExceptionId">—</p>
+                            </div>
+
+                            <div class="info-item">
+                                <label>Exception Type</label>
+                                <p id="infoExceptionType">—</p>
+                            </div>
+
+                            <div class="info-item">
+                                <label>Priority</label>
+                                <p id="infoPriority">—</p>
+                            </div>
+
+                            <div class="info-item">
+                                <label>Status</label>
+                                <p id="infoStatus">—</p>
+                            </div>
+
+                            <div class="info-item">
+                                <label>Reported Date</label>
+                                <p id="infoReportedDate">—</p>
+                            </div>
+
+                            <div class="info-item">
+                                <label>Shipment ID</label>
+                                <p id="infoShipmentId">—</p>
+                            </div>
+
+                        </div>
+
+                        <div style="margin-top:20px;">
+                            <label style="display:block;margin-bottom:8px;color:#8491a2;font-size:11px;font-weight:600;">
+                                Description
+                            </label>
+
+                            <div class="description-box" id="infoDescription">
+                                Loading description...
+                            </div>
+                        </div>
+                    </div>
+
+                </section>
+
+                <!-- SHIPMENT INFORMATION -->
+                <section class="detail-card">
+
+                    <div class="card-heading">
+                        <div class="card-icon">
+                            <i class="fa-solid fa-box"></i>
+                        </div>
+
+                        <div>
+                            <h3>Related Shipment</h3>
+                            <p>Shipment associated with this exception</p>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+
+                        <div id="shipmentLoading" class="loading-message">
+                            Loading shipment information...
+                        </div>
+
+                        <div class="info-grid" id="shipmentInformation">
+
+                            <div class="info-item">
+                                <label>Shipment ID</label>
+                                <p id="shipmentId">—</p>
+                            </div>
+
+                            <div class="info-item">
+                                <label>Shipment Status</label>
+                                <p id="shipmentStatus">—</p>
+                            </div>
+
+                            <div class="info-item">
+                                <label>Origin</label>
+                                <p id="shipmentOrigin">—</p>
+                            </div>
+
+                            <div class="info-item">
+                                <label>Destination</label>
+                                <p id="shipmentDestination">—</p>
+                            </div>
+
+                            <div class="info-item">
+                                <label>Expected Delivery</label>
+                                <p id="shipmentExpectedDate">—</p>
+                            </div>
+
+                            <div class="info-item">
+                                <label>Actual Delivery</label>
+                                <p id="shipmentActualDate">—</p>
+                            </div>
+
+                        </div>
+
+                        <p class="empty-message" id="shipmentUnavailable" hidden>
+                            Shipment information could not be loaded. The exception details are still available above.
+                        </p>
+
+                    </div>
+
+                </section>
+
+                <!-- INVESTIGATION -->
+                <section class="detail-card">
+
+                    <div class="card-heading">
+                        <div class="card-icon">
+                            <i class="fa-solid fa-magnifying-glass-chart"></i>
+                        </div>
+
+                        <div>
+                            <h3>Investigation</h3>
+                            <p>Investigation findings and root cause</p>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="info-grid">
+
+                            <div class="info-item">
+                                <label>Investigation Status</label>
+                                <p id="investigationStatus">Not available</p>
+                            </div>
+
+                            <div class="info-item">
+                                <label>Root Cause</label>
+                                <p id="investigationRootCause">Not recorded</p>
+                            </div>
+
+                        </div>
+
+                        <div style="margin-top:20px;">
+                            <label style="display:block;margin-bottom:8px;color:#8491a2;font-size:11px;font-weight:600;">
+                                Findings
+                            </label>
+
+                            <div class="description-box" id="investigationFindings">
+                                No investigation findings are available in the exception response.
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <a href="investigation.html" class="primary-button">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                Open Investigation
+                            </a>
+                        </div>
+
+                    </div>
+
+                </section>
+
+                <!-- RESOLUTION -->
+                <section class="detail-card">
+
+                    <div class="card-heading">
+                        <div class="card-icon">
+                            <i class="fa-solid fa-clipboard-check"></i>
+                        </div>
+
+                        <div>
+                            <h3>Resolution Information</h3>
+                            <p>Resolution and compensation details</p>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="info-grid">
+
+                            <div class="info-item">
+                                <label>Resolution Status</label>
+                                <p id="resolutionStatus">Not available</p>
+                            </div>
+
+                            <div class="info-item">
+                                <label>Compensation Amount</label>
+                                <p id="compensationAmount">Not recorded</p>
+                            </div>
+
+                        </div>
+
+                        <div style="margin-top:20px;">
+                            <label style="display:block;margin-bottom:8px;color:#8491a2;font-size:11px;font-weight:600;">
+                                Resolution Notes
+                            </label>
+
+                            <div class="description-box" id="resolutionNotes">
+                                No resolution notes are available in the exception response.
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <a href="resolutions.html" class="primary-button">
+                                <i class="fa-solid fa-clipboard-check"></i>
+                                Open Resolutions
+                            </a>
+                        </div>
+
+                    </div>
+
+                </section>
+
+                <!-- UPDATE EXCEPTION -->
+                <section class="detail-card full-width">
+
+                    <div class="card-heading">
+                        <div class="card-icon">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </div>
+
+                        <div>
+                            <h3>Update Exception</h3>
+                            <p>Update the exception status and record an administrative note</p>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+
+                        <form id="updateExceptionForm">
+
+                            <div class="form-grid">
+
+                                <div class="form-group">
+                                    <label for="newStatus">Exception Status</label>
+
+                                    <select id="newStatus" name="status">
+                                        <option value="">Keep current status</option>
+                                        <option value="Open">Open</option>
+                                        <option value="Investigating">Investigating</option>
+                                        <option value="Resolved">Resolved</option>
+                                        <option value="Closed">Closed</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="newPriority">Priority</label>
+
+                                    <select id="newPriority" name="priority">
+                                        <option value="">Keep current priority</option>
+                                        <option value="Low">Low</option>
+                                        <option value="Medium">Medium</option>
+                                        <option value="High">High</option>
+                                        <option value="Critical">Critical</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group full-width">
+                                    <label for="adminNote">Administrative Note</label>
+
+                                    <textarea
+                                        id="adminNote"
+                                        name="note"
+                                        placeholder="Enter your investigation update or administrative note..."></textarea>
+                                </div>
+
+                            </div>
+
+                            <div class="form-actions">
+
+                                <button type="button" class="secondary-button" id="clearUpdateButton">
+                                    Clear Form
+                                </button>
+
+                                <button type="submit" class="primary-button" id="saveUpdateButton">
+                                    <i class="fa-solid fa-floppy-disk"></i>
+                                    Save Update
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                        <p class="empty-message" style="margin-top:15px;">
+                            Saving changes requires a matching backend update endpoint. This page will not assume an endpoint or change the database without one.
+                        </p>
+
+                    </div>
+
+                </section>
+
+                <!-- TIMELINE -->
+                <section class="detail-card full-width">
+
+                    <div class="card-heading">
+                        <div class="card-icon">
+                            <i class="fa-solid fa-clock-rotate-left"></i>
+                        </div>
+
+                        <div>
+                            <h3>Exception Overview</h3>
+                            <p>Available information about this exception</p>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="timeline" id="exceptionTimeline">
+
+                            <div class="timeline-item">
+                                <span class="timeline-dot"></span>
+
+                                <h4>Exception Details Requested</h4>
+
+                                <p id="timelineRequested">
+                                    Waiting for the backend response.
+                                </p>
+                            </div>
+
+                            <div class="timeline-item">
+                                <span class="timeline-dot"></span>
+
+                                <h4>Current Exception Status</h4>
+
+                                <p id="timelineCurrentStatus">
+                                    Status will appear after the exception loads.
+                                </p>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </section>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script>
+    /*
+     * Exception Details Page
+     *
+     * Default API:
+     * GET http://localhost:8080/api/exceptions/{id}
+     *
+     * This page reads exception data.
+     * It does not assume an update API exists.
+     */
+
+    const API_BASE = "http://localhost:8080/api";
+
+    const params = new URLSearchParams(window.location.search);
+
+    const exceptionId =
+        params.get("id") ||
+        params.get("exceptionId");
+
+    const notice = document.getElementById("notice");
+
+    let currentException = null;
+
+    function showNotice(message, type) {
+        notice.textContent = message;
+        notice.className = "notice " + type;
+    }
+
+    function clearNotice() {
+        notice.textContent = "";
+        notice.className = "notice";
+    }
+
+    function safeText(value, fallback = "Not available") {
+        if (value === null || value === undefined || value === "") {
+            return fallback;
+        }
+
+        return String(value);
+    }
+
+    function setText(id, value, fallback = "Not available") {
+        const element = document.getElementById(id);
+
+        if (element) {
+            element.textContent = safeText(value, fallback);
+        }
+    }
+
+    function formatDate(value) {
+        if (!value) {
+            return "Not available";
+        }
+
+        const date = new Date(value);
+
+        if (Number.isNaN(date.getTime())) {
+            return String(value);
+        }
+
+        return date.toLocaleDateString("en-IN", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric"
+        });
+    }
+
+    function normalizeStatus(value) {
+        if (!value) {
+            return "Not available";
+        }
+
+        return String(value)
+            .replaceAll("_", " ")
+            .replace(/\b\w/g, character => character.toUpperCase());
+    }
+
+    function formatCurrency(value) {
+        if (value === null || value === undefined || value === "") {
+            return "Not recorded";
+        }
+
+        const amount = Number(value);
+
+        if (!Number.isFinite(amount)) {
+            return String(value);
+        }
+
+        return new Intl.NumberFormat("en-IN", {
+            style: "currency",
+            currency: "INR",
+            maximumFractionDigits: 2
+        }).format(amount);
+    }
+
+    function renderException(exception) {
+        currentException = exception;
+
+        const id =
+            exception.exceptionId ??
+            exception.id ??
+            exception.idException;
+
+        const type =
+            exception.exceptionType ??
+            exception.type ??
+            exception.exceptionCategory;
+
+        const status =
+            exception.status ??
+            exception.exceptionStatus;
+
+        const priority =
+            exception.priority ??
+            exception.severity;
+
+        const shipmentId =
+            exception.shipmentId ??
+            exception.shipment?.shipmentId ??
+            exception.shipment?.id;
+
+        const reportedDate =
+            exception.reportedDate ??
+            exception.createdAt ??
+            exception.createdDate;
+
+        const description =
+            exception.description ??
+            exception.details ??
+            exception.reason;
+
+        setText("exceptionId", "Exception ID: " + safeText(id, exceptionId));
+        setText("exceptionTitle", safeText(type, "Delivery Exception"));
+        setText("exceptionSummary", safeText(description, "No description was provided."));
+        setText("bannerStatus", "Status: " + normalizeStatus(status));
+        setText("bannerPriority", "Priority: " + normalizeStatus(priority));
+
+        setText("infoExceptionId", id);
+        setText("infoExceptionType", type);
+        setText("infoPriority", normalizeStatus(priority));
+        setText("infoStatus", normalizeStatus(status));
+        setText("infoReportedDate", formatDate(reportedDate));
+        setText("infoShipmentId", shipmentId);
+        setText("infoDescription", description, "No description was provided.");
+
+        setText("timelineRequested",
+            "Exception details were loaded on " +
+            new Date().toLocaleString("en-IN") + ".");
+
+        setText("timelineCurrentStatus",
+            "Current status: " + normalizeStatus(status) +
+            ". Priority: " + normalizeStatus(priority) + ".");
+
+        document.getElementById("newStatus").value = "";
+        document.getElementById("newPriority").value = "";
+
+        // Populate fields if investigation and resolution information
+        // is included in the exception API response.
+        const investigation =
+            exception.investigation ??
+            exception.investigationDetails ??
+            {};
+
+        setText(
+            "investigationStatus",
+            investigation.status ?? exception.investigationStatus,
+            "Not available"
+        );
+
+        setText(
+            "investigationRootCause",
+            investigation.rootCause ?? exception.rootCause,
+            "Not recorded"
+        );
+
+        setText(
+            "investigationFindings",
+            investigation.findings ?? exception.findings,
+            "No investigation findings are available in the exception response."
+        );
+
+        const resolution =
+            exception.resolution ??
+            exception.resolutionDetails ??
+            {};
+
+        setText(
+            "resolutionStatus",
+            resolution.status ?? exception.resolutionStatus,
+            "Not available"
+        );
+
+        setText(
+            "compensationAmount",
+            formatCurrency(
+                resolution.compensationAmount ??
+                resolution.compensation ??
+                exception.compensationAmount
+            )
+        );
+
+        setText(
+            "resolutionNotes",
+            resolution.notes ?? resolution.description ?? exception.resolutionNotes,
+            "No resolution notes are available in the exception response."
+        );
+
+        // Load related shipment information if it is embedded
+        // in the exception response.
+        const shipment = exception.shipment;
+
+        if (shipment && typeof shipment === "object") {
+            renderShipment(shipment);
+        } else if (shipmentId !== null && shipmentId !== undefined) {
+            loadShipment(shipmentId);
+        } else {
+            showShipmentUnavailable();
+        }
+    }
+
+    function renderShipment(shipment) {
+        document.getElementById("shipmentLoading").hidden = true;
+        document.getElementById("shipmentInformation").hidden = false;
+        document.getElementById("shipmentUnavailable").hidden = true;
+
+        setText(
+            "shipmentId",
+            shipment.shipmentId ?? shipment.id
+        );
+
+        setText(
+            "shipmentStatus",
+            normalizeStatus(shipment.status ?? shipment.shipmentStatus)
+        );
+
+        setText(
+            "shipmentOrigin",
+            shipment.origin ?? shipment.source ?? shipment.pickupAddress
+        );
+
+        setText(
+            "shipmentDestination",
+            shipment.destination ?? shipment.destinationAddress ?? shipment.deliveryAddress
+        );
+
+        setText(
+            "shipmentExpectedDate",
+            formatDate(
+                shipment.expectedDeliveryDate ??
+                shipment.expectedDelivery ??
+                shipment.deliveryDate
+            )
+        );
+
+        setText(
+            "shipmentActualDate",
+            formatDate(
+                shipment.actualDeliveryDate ??
+                shipment.deliveredAt
+            )
+        );
+    }
+
+    function showShipmentUnavailable() {
+        document.getElementById("shipmentLoading").hidden = true;
+        document.getElementById("shipmentInformation").hidden = true;
+        document.getElementById("shipmentUnavailable").hidden = false;
+    }
+
+    async function loadShipment(shipmentId) {
+        try {
+            /*
+             * If your backend uses a different shipment endpoint,
+             * update this URL to match your existing API.
+             */
+            const response = await fetch(
+                `${API_BASE}/shipments/${encodeURIComponent(shipmentId)}`
+            );
+
+            if (!response.ok) {
+                throw new Error("Shipment endpoint returned HTTP " + response.status);
+            }
+
+            const shipment = await response.json();
+
+            renderShipment(shipment);
+
+        } catch (error) {
+            console.warn("Related shipment details could not be loaded:", error);
+            showShipmentUnavailable();
+        }
+    }
+
+    async function loadExceptionDetails() {
+        clearNotice();
+
+        if (!exceptionId) {
+            setText("exceptionTitle", "No Exception Selected");
+            setText(
+                "exceptionSummary",
+                "Open this page from the Exceptions list by selecting an exception."
+            );
+
+            setText("exceptionId", "Exception ID: Not provided");
+            setText("infoDescription", "No exception ID was supplied.");
+
+            showShipmentUnavailable();
+
+            showNotice(
+                "No exception ID was found in the page URL. Open an exception from exceptions.html to view its details.",
+                "error"
+            );
+
+            return;
+        }
+
+        try {
+            /*
+             * The exception list endpoint in this project is:
+             * GET /api/exceptions
+             *
+             * The single-record endpoint is tried first.
+             * If it does not exist, the list is used as a fallback.
+             */
+            let exception = null;
+
+            const singleResponse = await fetch(
+                `${API_BASE}/exceptions/${encodeURIComponent(exceptionId)}`
+            );
+
+            if (singleResponse.ok) {
+                exception = await singleResponse.json();
+            } else if (singleResponse.status === 404 ||
+                       singleResponse.status === 405) {
+
+                const listResponse = await fetch(`${API_BASE}/exceptions`);
+
+                if (!listResponse.ok) {
+                    throw new Error(
+                        "Could not load exceptions. HTTP " + listResponse.status
+                    );
+                }
+
+                const list = await listResponse.json();
+
+                if (Array.isArray(list)) {
+                    exception = list.find(item =>
+                        String(item.exceptionId ?? item.id) === String(exceptionId)
+                    );
+                }
+            } else {
+                throw new Error(
+                    "Exception request failed. HTTP " + singleResponse.status
+                );
+            }
+
+            if (!exception) {
+                throw new Error(
+                    "Exception " + exceptionId + " was not found."
+                );
+            }
+
+            renderException(exception);
+
+        } catch (error) {
+            console.error("Unable to load exception details:", error);
+
+            setText("exceptionId", "Exception ID: " + exceptionId);
+            setText("exceptionTitle", "Unable to Load Exception");
+            setText(
+                "exceptionSummary",
+                "The application could not retrieve this exception from the backend."
+            );
+
+            setText("infoExceptionId", exceptionId);
+            setText("infoDescription", error.message);
+
+            showShipmentUnavailable();
+
+            showNotice(
+                error.message +
+                " Check that Spring Boot is running and the exception ID is correct.",
+                "error"
+            );
+        }
+    }
+
+    document.getElementById("reloadButton").addEventListener("click", () => {
+        loadExceptionDetails();
+    });
+
+    document.getElementById("clearUpdateButton").addEventListener("click", () => {
+        document.getElementById("updateExceptionForm").reset();
+        clearNotice();
+    });
+
+    document.getElementById("updateExceptionForm").addEventListener("submit", event => {
+        event.preventDefault();
+
+        const status = document.getElementById("newStatus").value;
+        const priority = document.getElementById("newPriority").value;
+        const note = document.getElementById("adminNote").value.trim();
+
+        if (!status && !priority && !note) {
+            showNotice(
+                "Please select a status, select a priority, or enter an administrative note.",
+                "error"
+            );
+
+            return;
+        }
+
+        /*
+         * No update endpoint has been assumed.
+         * This prevents accidentally sending data to an incorrect API.
+         */
+        showNotice(
+            "Your changes have not been saved. To save updates safely, connect this form to the existing backend update endpoint for exceptions.",
+            "error"
+        );
+    });
+
+    document.getElementById("globalSearch").addEventListener("keydown", event => {
+        if (event.key === "Enter") {
+            const query = event.target.value.trim();
+
+            if (query) {
+                window.location.href =
+                    "exceptions.html?search=" + encodeURIComponent(query);
+            }
+        }
+    });
+
+    document.getElementById("settingsLink").addEventListener("click", event => {
+        event.preventDefault();
+
+        alert("Settings page is not connected yet.");
+    });
+
+    loadExceptionDetails();
+</script>
+
+</body>
+</html>

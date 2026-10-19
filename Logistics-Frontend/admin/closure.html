@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Exception Closure | Logistics Platform</title>
+
+    <link rel="stylesheet"
+          href="../css/admin.css">
+
+    <style>
+
+        .closure-container {
+            max-width: 950px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .page-header {
+            margin-bottom: 25px;
+        }
+
+        .page-header h1 {
+            margin: 0;
+            font-size: 30px;
+            color: #102a43;
+        }
+
+        .page-header p {
+            margin-top: 8px;
+            color: #777;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 14px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+        }
+
+        .card h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 20px;
+            color: #102a43;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        .info-box {
+            background: #f7f8fa;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .info-label {
+            font-size: 13px;
+            color: #777;
+            margin-bottom: 6px;
+        }
+
+        .info-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: #102a43;
+            word-break: break-word;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .status-open {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-resolved {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .status-closed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #102a43;
+        }
+
+        .form-group textarea,
+        .form-group select,
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d8dce2;
+            border-radius: 8px;
+            font-size: 14px;
+            box-sizing: border-box;
+            background: #ffffff;
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-group input:read-only {
+            background: #f5f6f8;
+            cursor: not-allowed;
+        }
+
+        .button-row {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        .btn {
+            border: none;
+            padding: 12px 22px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #333;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .message {
+            display: none;
+            padding: 14px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-weight: 600;
+        }
+
+        .success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .loading {
+            color: #777;
+            font-style: italic;
+        }
+
+        .amount {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        @media (max-width: 700px) {
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .button-row {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="closure-container">
+
+
+    <!-- ========================================= -->
+    <!-- PAGE HEADER -->
+    <!-- ========================================= -->
+
+    <div class="page-header">
+
+        <h1>
+            Exception Closure
+        </h1>
+
+        <p>
+            Review the resolved exception and complete the final closure.
+        </p>
+
+    </div>
+
+
+    <!-- ========================================= -->
+    <!-- EXCEPTION INFORMATION -->
+    <!-- ========================================= -->
+
+    <div class="card">
+
+        <h2>
+            Exception Information
+        </h2>
+
+
+        <div class="info-grid">
+
+
+            <div class="info-box">
+
+                <div class="info-label">
+                    Exception ID
+                </div>
+
+                <div
+                    class="info-value"
+                    id="exceptionId">
+                    Loading...
+                </div>
+
+            </div>
+
+
+            <div class="info-box">
+
+                <div class="info-label">
+                    Shipment ID
+                </div>
+
+                <div
+                    class="info-value"
+                    id="shipmentId">
+                    Loading...
+                </div>
+
+            </div>
+
+
+            <div class="info-box">
+
+                <div class="info-label">
+                    Exception Type
+                </div>
+
+                <div
+                    class="info-value"
+                    id="exceptionType">
+                    Loading...
+                </div>
+
+            </div>
+
+
+            <div class="info-box">
+
+                <div class="info-label">
+                    Priority
+                </div>
+
+                <div
+                    class="info-value"
+                    id="priority">
+                    Loading...
+                </div>
+
+            </div>
+
+
+            <div class="info-box">
+
+                <div class="info-label">
+                    Current Status
+                </div>
+
+                <div
+                    class="info-value"
+                    id="currentStatus">
+                    Loading...
+                </div>
+
+            </div>
+
+
+            <div class="info-box">
+
+                <div class="info-label">
+                    Reported Date
+                </div>
+
+                <div
+                    class="info-value"
+                    id="reportedDate">
+                    Loading...
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <!-- ========================================= -->
+    <!-- RESOLUTION INFORMATION -->
+    <!-- ========================================= -->
+
+    <div class="card">
+
+        <h2>
+            Resolution Information
+        </h2>
+
+
+        <div class="info-grid">
+
+
+            <div class="info-box">
+
+                <div class="info-label">
+                    Resolution Type
+                </div>
+
+                <div
+                    class="info-value"
+                    id="resolutionType">
+                    <span class="loading">
+                        Loading...
+                    </span>
+                </div>
+
+            </div>
+
+
+            <div class="info-box">
+
+                <div class="info-label">
+                    Resolution Status
+                </div>
+
+                <div
+                    class="info-value"
+                    id="resolutionStatus">
+                    <span class="loading">
+                        Loading...
+                    </span>
+                </div>
+
+            </div>
+
+
+            <div class="info-box">
+
+                <div class="info-label">
+                    Compensation Required
+                </div>
+
+                <div
+                    class="info-value"
+                    id="compensationRequired">
+                    <span class="loading">
+                        Loading...
+                    </span>
+                </div>
+
+            </div>
+
+
+            <div class="info-box">
+
+                <div class="info-label">
+                    Compensation Amount
+                </div>
+
+                <div
+                    class="info-value amount"
+                    id="compensationAmount">
+                    <span class="loading">
+                        Loading...
+                    </span>
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <div
+            class="info-box"
+            style="margin-top:18px;">
+
+            <div class="info-label">
+                Resolution Description
+            </div>
+
+            <div
+                class="info-value"
+                id="resolutionDescription">
+
+                <span class="loading">
+                    Loading...
+                </span>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- ========================================= -->
+    <!-- CLOSURE FORM -->
+    <!-- ========================================= -->
+
+    <div class="card">
+
+        <h2>
+            Complete Closure
+        </h2>
+
+
+        <div class="form-group">
+
+            <label for="closedBy">
+                Closed By
+            </label>
+
+            <input
+                type="number"
+                id="closedBy"
+                value="1"
+                readonly>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="finalStatus">
+                Final Status
+            </label>
+
+            <select id="finalStatus">
+
+                <option value="CLOSED">
+                    CLOSED
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="closureRemarks">
+                Closure Remarks
+            </label>
+
+            <textarea
+                id="closureRemarks"
+                placeholder="Enter final closure remarks...">Resolution completed successfully. Customer issue has been addressed and the exception can be closed.</textarea>
+
+        </div>
+
+
+        <div class="button-row">
+
+            <button
+                type="button"
+                class="btn btn-primary"
+                onclick="closeException()">
+
+                Complete Closure
+
+            </button>
+
+
+            <button
+                type="button"
+                class="btn btn-secondary"
+                onclick="goBack()">
+
+                Back
+
+            </button>
+
+        </div>
+
+
+        <div
+            id="message"
+            class="message">
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+
+<script>
+
+
+/* =========================================
+   API CONFIGURATION
+========================================= */
+
+const API_BASE_URL =
+    "http://127.0.0.1:8080";
+
+
+/* =========================================
+   GET EXCEPTION ID FROM URL
+========================================= */
+
+const params =
+    new URLSearchParams(
+        window.location.search
+    );
+
+const exceptionId =
+    params.get("exceptionId");
+
+
+/* =========================================
+   INITIALIZE PAGE
+========================================= */
+
+if (!exceptionId) {
+
+    showMessage(
+        "Exception ID is missing from the URL.",
+        false
+    );
+
+} else {
+
+    loadException();
+
+    loadResolution();
+
+}
+
+
+
+/* =========================================
+   LOAD EXCEPTION
+========================================= */
+
+async function loadException() {
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_BASE_URL}/api/exceptions/${exceptionId}`,
+                {
+                    credentials: "include"
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Unable to load exception information."
+            );
+
+        }
+
+
+        const exception =
+            await response.json();
+
+
+        console.log(
+            "Exception API Response:",
+            exception
+        );
+
+
+        document.getElementById(
+            "exceptionId"
+        ).textContent =
+            exception.exceptionId ?? "-";
+
+
+        document.getElementById(
+            "shipmentId"
+        ).textContent =
+            exception.shipmentId ?? "-";
+
+
+        document.getElementById(
+            "exceptionType"
+        ).textContent =
+            exception.exceptionType ?? "-";
+
+
+        document.getElementById(
+            "priority"
+        ).textContent =
+            exception.priority ?? "-";
+
+
+        document.getElementById(
+            "currentStatus"
+        ).innerHTML =
+            createStatusBadge(
+                exception.status
+            );
+
+
+        document.getElementById(
+            "reportedDate"
+        ).textContent =
+            exception.reportedDate
+                ? new Date(
+                    exception.reportedDate
+                  ).toLocaleString()
+                : "-";
+
+
+    } catch (error) {
+
+        console.error(
+            "Exception loading error:",
+            error
+        );
+
+
+        showMessage(
+            error.message,
+            false
+        );
+
+    }
+
+}
+
+
+
+/* =========================================
+   LOAD RESOLUTION
+========================================= */
+
+async function loadResolution() {
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_BASE_URL}/api/resolutions/exception/${exceptionId}`,
+                {
+                    credentials: "include"
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Unable to load resolution information."
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        console.log(
+            "Resolution API Response:",
+            data
+        );
+
+
+        /*
+         * The backend can return:
+         *
+         * A single object:
+         * {
+         *   resolutionId: 1,
+         *   exceptionId: 3,
+         *   ...
+         * }
+         *
+         * OR an array:
+         *
+         * [
+         *   {
+         *      resolutionId: 1,
+         *      exceptionId: 3,
+         *      ...
+         *   }
+         * ]
+         *
+         * This code supports BOTH.
+         */
+
+
+        let resolution = data;
+
+
+        if (Array.isArray(data)) {
+
+            if (data.length === 0) {
+
+                throw new Error(
+                    "No resolution found for Exception ID "
+                    + exceptionId
+                );
+
+            }
+
+
+            /*
+             * Use the latest resolution.
+             */
+
+            resolution =
+                data[data.length - 1];
+
+        }
+
+
+        console.log(
+            "Selected Resolution:",
+            resolution
+        );
+
+
+        /* =====================================
+           RESOLUTION TYPE
+        ===================================== */
+
+        document.getElementById(
+            "resolutionType"
+        ).textContent =
+            resolution.resolutionType ?? "-";
+
+
+        /* =====================================
+           RESOLUTION STATUS
+        ===================================== */
+
+        document.getElementById(
+            "resolutionStatus"
+        ).innerHTML =
+            createStatusBadge(
+                resolution.resolutionStatus
+            );
+
+
+        /* =====================================
+           COMPENSATION REQUIRED
+        ===================================== */
+
+        const compensationRequired =
+            resolution.compensationRequired;
+
+
+        document.getElementById(
+            "compensationRequired"
+        ).textContent =
+            compensationRequired === true
+                ? "Yes"
+                : compensationRequired === false
+                    ? "No"
+                    : "-";
+
+
+        /* =====================================
+           COMPENSATION AMOUNT
+        ===================================== */
+
+        const compensationAmount =
+            resolution.compensationAmount;
+
+
+        if (
+            compensationAmount !== null &&
+            compensationAmount !== undefined
+        ) {
+
+            document.getElementById(
+                "compensationAmount"
+            ).textContent =
+                "₹" +
+                Number(
+                    compensationAmount
+                ).toLocaleString(
+                    "en-IN"
+                );
+
+        } else {
+
+            document.getElementById(
+                "compensationAmount"
+            ).textContent =
+                "₹0";
+
+        }
+
+
+        /* =====================================
+           RESOLUTION DESCRIPTION
+        ===================================== */
+
+        document.getElementById(
+            "resolutionDescription"
+        ).textContent =
+            resolution.resolutionDescription ?? "-";
+
+
+    } catch (error) {
+
+        console.error(
+            "Resolution loading error:",
+            error
+        );
+
+
+        document.getElementById(
+            "resolutionType"
+        ).textContent =
+            "-";
+
+
+        document.getElementById(
+            "resolutionStatus"
+        ).textContent =
+            "-";
+
+
+        document.getElementById(
+            "compensationRequired"
+        ).textContent =
+            "-";
+
+
+        document.getElementById(
+            "compensationAmount"
+        ).textContent =
+            "₹0";
+
+
+        document.getElementById(
+            "resolutionDescription"
+        ).textContent =
+            "-";
+
+
+        showMessage(
+            error.message,
+            false
+        );
+
+    }
+
+}
+
+
+
+/* =========================================
+   CLOSE EXCEPTION
+========================================= */
+
+async function closeException() {
+
+    const closedBy =
+        Number(
+            document.getElementById(
+                "closedBy"
+            ).value
+        );
+
+
+    const finalStatus =
+        document.getElementById(
+            "finalStatus"
+        ).value;
+
+
+    const closureRemarks =
+        document.getElementById(
+            "closureRemarks"
+        ).value.trim();
+
+
+    if (!closureRemarks) {
+
+        showMessage(
+            "Please enter closure remarks.",
+            false
+        );
+
+        return;
+
+    }
+
+
+    const closureData = {
+
+        exceptionId:
+            Number(exceptionId),
+
+        closedBy:
+            closedBy,
+
+        finalStatus:
+            finalStatus,
+
+        closureReason:
+            closureRemarks
+
+    };
+
+
+    console.log(
+        "Closure Request:",
+        closureData
+    );
+
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_BASE_URL}/api/closures`,
+                {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    credentials: "include",
+
+                    body:
+                        JSON.stringify(
+                            closureData
+                        )
+
+                }
+            );
+
+
+        const resultText =
+            await response.text();
+
+
+        console.log(
+            "Closure API Response:",
+            resultText
+        );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                resultText ||
+                "Closure processing failed."
+            );
+
+        }
+
+
+        showMessage(
+            "Exception closed successfully.",
+            true
+        );
+
+
+        setTimeout(
+            () => {
+
+                window.location.href =
+                    "exceptions.html";
+
+            },
+            1500
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "Closure error:",
+            error
+        );
+
+
+        showMessage(
+            error.message,
+            false
+        );
+
+    }
+
+}
+
+
+
+/* =========================================
+   CREATE STATUS BADGE
+========================================= */
+
+function createStatusBadge(status) {
+
+    if (!status) {
+
+        return "-";
+
+    }
+
+
+    const normalized =
+        String(status)
+            .toUpperCase();
+
+
+    let className =
+        "status-open";
+
+
+    if (
+        normalized === "CLOSED"
+    ) {
+
+        className =
+            "status-closed";
+
+    }
+
+    else if (
+        normalized === "RESOLVED"
+    ) {
+
+        className =
+            "status-resolved";
+
+    }
+
+    else if (
+        normalized === "PENDING"
+    ) {
+
+        className =
+            "status-pending";
+
+    }
+
+
+    return `
+        <span class="status ${className}">
+            ${normalized}
+        </span>
+    `;
+
+}
+
+
+
+/* =========================================
+   SHOW MESSAGE
+========================================= */
+
+function showMessage(
+    message,
+    success
+) {
+
+    const messageBox =
+        document.getElementById(
+            "message"
+        );
+
+
+    messageBox.textContent =
+        message;
+
+
+    messageBox.className =
+        "message " +
+        (
+            success
+                ? "success"
+                : "error"
+        );
+
+
+    messageBox.style.display =
+        "block";
+
+}
+
+
+
+/* =========================================
+   BACK BUTTON
+========================================= */
+
+function goBack() {
+
+    window.location.href =
+        "exceptions.html";
+
+}
+
+
+</script>
+
+
+</body>
+
+</html>

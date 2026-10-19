@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Shipment Details | Logistics Platform</title>
+
+    <link rel="stylesheet" href="../css/customer.css">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Inter", "Segoe UI", Arial, sans-serif;
+            background: #f1f6fa;
+            color: #15334d;
+        }
+
+        .app-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+            width: 267px;
+            min-height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            background: linear-gradient(180deg, #061925, #092b38);
+            color: white;
+            padding: 25px 17px;
+            display: flex;
+            flex-direction: column;
+            z-index: 10;
+        }
+
+        .brand {
+            padding: 0 13px 25px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid rgba(255,255,255,.15);
+        }
+
+        .brand h2 {
+            margin: 0;
+            font-size: 24px;
+            line-height: 1.5;
+            color: white;
+        }
+
+        .brand h2 span {
+            color: #00c9e8;
+        }
+
+        .brand small {
+            color: #b8cbd6;
+            font-size: 12px;
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            min-height: 48px;
+            padding: 12px 15px;
+            border-radius: 11px;
+            color: #d5e4ed;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: .2s;
+        }
+
+        .sidebar-nav a:hover {
+            background: rgba(0, 190, 220, .12);
+            color: white;
+        }
+
+        .sidebar-nav a.active {
+            background: linear-gradient(135deg, #087f96, #07576b);
+            color: white;
+        }
+
+        .sidebar-bottom {
+            margin-top: auto;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255,255,255,.15);
+        }
+
+        .sidebar-bottom a {
+            display: block;
+            padding: 12px 15px;
+            color: #c8d9e3;
+            text-decoration: none;
+            border-radius: 9px;
+        }
+
+        .sidebar-bottom a:hover {
+            background: rgba(255,255,255,.08);
+        }
+
+        /* MAIN CONTENT */
+
+        .main-content {
+            width: calc(100% - 267px);
+            margin-left: 267px;
+            min-height: 100vh;
+        }
+
+        .topbar {
+            min-height: 76px;
+            padding: 18px 30px;
+            background: white;
+            border-bottom: 1px solid #e0e9ef;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        .topbar-label {
+            color: #07849c;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 1.2px;
+        }
+
+        .topbar-right {
+            color: #647b8d;
+            font-size: 13px;
+        }
+
+        .page-content {
+            padding: 30px;
+        }
+
+        .page-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .page-heading h1 {
+            margin: 0 0 8px;
+            color: #15334d;
+            font-size: 30px;
+        }
+
+        .page-heading p {
+            margin: 0;
+            color: #73899a;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 11px 17px;
+            border-radius: 9px;
+            border: 1px solid #d0dee8;
+            background: white;
+            color: #24465d;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: #f4fbfd;
+        }
+
+        .btn-primary {
+            background: #08bfd5;
+            border-color: #08bfd5;
+            color: #062e3b;
+        }
+
+        .btn-primary:hover {
+            background: #00a9bf;
+            color: white;
+        }
+
+        /* CARDS */
+
+        .card {
+            background: white;
+            border: 1px solid #dfe9f0;
+            border-radius: 16px;
+            padding: 23px;
+            margin-bottom: 22px;
+            box-shadow: 0 5px 20px rgba(20, 55, 80, .035);
+        }
+
+        .section-title {
+            margin: 0 0 19px;
+            font-size: 18px;
+            color: #173750;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+            margin-bottom: 22px;
+        }
+
+        .summary-card {
+            background: white;
+            border: 1px solid #dfe9f0;
+            border-radius: 15px;
+            padding: 21px;
+            min-height: 125px;
+            box-shadow: 0 5px 20px rgba(20, 55, 80, .035);
+        }
+
+        .summary-label {
+            color: #71889a;
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+
+        .summary-value {
+            font-size: 23px;
+            font-weight: 800;
+            color: #078aa4;
+        }
+
+        .summary-note {
+            margin-top: 7px;
+            color: #8295a3;
+            font-size: 12px;
+        }
+
+        .status-pill {
+            display: inline-block;
+            padding: 7px 12px;
+            border-radius: 20px;
+            background: #e1f8ed;
+            color: #138452;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .status-pill.transit {
+            background: #e3f1ff;
+            color: #1769ae;
+        }
+
+        .status-pill.delayed {
+            background: #fff0dc;
+            color: #b76a08;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .detail-item {
+            padding: 14px 0;
+            border-bottom: 1px solid #edf2f5;
+        }
+
+        .detail-label {
+            display: block;
+            color: #7c91a1;
+            font-size: 12px;
+            margin-bottom: 7px;
+        }
+
+        .detail-value {
+            color: #1c3b53;
+            font-size: 14px;
+            font-weight: 650;
+            overflow-wrap: anywhere;
+        }
+
+        /* TRACKING TIMELINE */
+
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .timeline::before {
+            content: "";
+            position: absolute;
+            left: 8px;
+            top: 8px;
+            bottom: 12px;
+            width: 2px;
+            background: #dbe9ef;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: 25px;
+        }
+
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -29px;
+            top: 4px;
+            width: 14px;
+            height: 14px;
+            background: #09b9ce;
+            border: 3px solid #dff8fb;
+            border-radius: 50%;
+        }
+
+        .timeline-item.pending .timeline-dot {
+            background: #b9c8d1;
+            border-color: #edf2f5;
+        }
+
+        .timeline-title {
+            margin: 0 0 5px;
+            font-size: 14px;
+            color: #1c3b53;
+        }
+
+        .timeline-description {
+            margin: 0;
+            color: #7b91a0;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .timeline-date {
+            display: block;
+            margin-top: 7px;
+            color: #07869c;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        /* TABLE */
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        thead {
+            background: #f4f8fb;
+        }
+
+        th {
+            text-align: left;
+            padding: 14px 12px;
+            color: #6d8292;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: .4px;
+            border-bottom: 1px solid #e5edf2;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 15px 12px;
+            color: #405b70;
+            border-bottom: 1px solid #edf2f5;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 28px;
+            color: #8195a3;
+        }
+
+        .message {
+            padding: 14px 16px;
+            border-radius: 10px;
+            margin-bottom: 18px;
+            display: none;
+            font-size: 13px;
+        }
+
+        .message.error {
+            display: block;
+            background: #fff0f0;
+            color: #bd3030;
+            border: 1px solid #ffdada;
+        }
+
+        .message.info {
+            display: block;
+            background: #eaf8fc;
+            color: #126a7c;
+            border: 1px solid #d3f0f6;
+        }
+
+        .loading {
+            color: #758c9b;
+            text-align: center;
+            padding: 24px;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 1000px) {
+            .summary-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 760px) {
+            .sidebar {
+                width: 75px;
+                padding: 20px 8px;
+            }
+
+            .brand {
+                padding: 0 0 20px;
+                text-align: center;
+            }
+
+            .brand h2 {
+                font-size: 16px;
+            }
+
+            .brand h2 span,
+            .brand small,
+            .sidebar-nav a .nav-text,
+            .sidebar-bottom .nav-text {
+                display: none;
+            }
+
+            .sidebar-nav a {
+                justify-content: center;
+                padding: 13px 5px;
+                font-size: 18px;
+            }
+
+            .sidebar-bottom a {
+                text-align: center;
+                font-size: 18px;
+                padding: 12px 5px;
+            }
+
+            .main-content {
+                margin-left: 75px;
+                width: calc(100% - 75px);
+            }
+
+            .page-content {
+                padding: 20px 15px;
+            }
+
+            .topbar {
+                padding: 15px;
+            }
+
+            .summary-grid,
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .page-heading {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 450px) {
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .page-heading h1 {
+                font-size: 24px;
+            }
+
+            .card {
+                padding: 17px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="app-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="brand">
+            <h2>🚚 Logistics<br><span>Platform</span></h2>
+            <small>Customer Portal</small>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="dashboard.html">
+                <span>▦</span><span class="nav-text">Dashboard</span>
+            </a>
+
+            <a href="shipments.html" class="active">
+                <span>□</span><span class="nav-text">My Shipments</span>
+            </a>
+
+            <a href="tracking.html">
+                <span>⌖</span><span class="nav-text">Shipment Tracking</span>
+            </a>
+
+            <a href="exceptions.html">
+                <span>⚠</span><span class="nav-text">My Exceptions</span>
+            </a>
+
+            <a href="resolutions.html">
+                <span>✓</span><span class="nav-text">My Resolutions</span>
+            </a>
+
+            <a href="notifications.html">
+                <span>♧</span><span class="nav-text">Notifications</span>
+            </a>
+
+            <a href="profile.html">
+                <span>♙</span><span class="nav-text">My Profile</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <a href="../index.html">
+                <span>⇥</span>
+                <span class="nav-text">Logout</span>
+            </a>
+        </div>
+
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        <header class="topbar">
+            <div>
+                <div class="topbar-label">CUSTOMER PORTAL</div>
+                <div style="margin-top:5px;font-size:13px;color:#71889a;">
+                    Shipment information and delivery progress
+                </div>
+            </div>
+
+            <div class="topbar-right">
+                🚚 My Shipment Details
+            </div>
+        </header>
+
+        <section class="page-content">
+
+            <div class="page-heading">
+                <div>
+                    <h1>Shipment Details</h1>
+                    <p>View your shipment information, delivery status, package details and tracking history.</p>
+                </div>
+
+                <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                    <a class="btn" href="shipments.html">← Back to Shipments</a>
+                    <button class="btn" type="button" onclick="loadShipment()">↻ Refresh</button>
+                </div>
+            </div>
+
+            <div id="message" class="message"></div>
+
+            <div class="summary-grid">
+
+                <div class="summary-card">
+                    <div class="summary-label">Shipment ID</div>
+                    <div class="summary-value" id="shipmentId">—</div>
+                    <div class="summary-note">Selected shipment</div>
+                </div>
+
+                <div class="summary-card">
+                    <div class="summary-label">Delivery Status</div>
+                    <div id="shipmentStatus">
+                        <span class="status-pill">Loading...</span>
+                    </div>
+                    <div class="summary-note">Latest available status</div>
+                </div>
+
+                <div class="summary-card">
+                    <div class="summary-label">Expected Delivery</div>
+                    <div class="summary-value" id="expectedDelivery" style="font-size:18px;">—</div>
+                    <div class="summary-note">Scheduled delivery date</div>
+                </div>
+
+            </div>
+
+            <!-- SHIPMENT INFORMATION -->
+            <section class="card">
+
+                <h2 class="section-title">📦 Shipment Information</h2>
+
+                <div id="shipmentLoading" class="loading">
+                    Loading shipment information...
+                </div>
+
+                <div class="details-grid" id="shipmentDetails" style="display:none;">
+
+                    <div class="detail-item">
+                        <span class="detail-label">Shipment ID</span>
+                        <span class="detail-value" id="detailShipmentId">—</span>
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="detail-label">Shipment Status</span>
+                        <span class="detail-value" id="detailStatus">—</span>
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="detail-label">Origin</span>
+                        <span class="detail-value" id="origin">—</span>
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="detail-label">Destination</span>
+                        <span class="detail-value" id="destination">—</span>
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="detail-label">Customer ID</span>
+                        <span class="detail-value" id="customerId">—</span>
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="detail-label">Consignee ID</span>
+                        <span class="detail-value" id="consigneeId">—</span>
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="detail-label">Created Date</span>
+                        <span class="detail-value" id="createdDate">—</span>
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="detail-label">Expected Delivery Date</span>
+                        <span class="detail-value" id="deliveryDate">—</span>
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- PACKAGE INFORMATION -->
+            <section class="card">
+
+                <h2 class="section-title">🧾 Package & Item Information</h2>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Package ID</th>
+                                <th>Package Description</th>
+                                <th>Weight</th>
+                                <th>Item Information</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="packageTableBody">
+                            <tr>
+                                <td colspan="4" class="empty-state">
+                                    Package information will appear when available.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </section>
+
+            <!-- TRACKING -->
+            <section class="card">
+
+                <h2 class="section-title">📍 Shipment Tracking History</h2>
+
+                <div id="trackingLoading" class="loading">
+                    Loading tracking information...
+                </div>
+
+                <div class="timeline" id="trackingTimeline" style="display:none;"></div>
+
+            </section>
+
+            <!-- EXCEPTIONS -->
+            <section class="card">
+
+                <h2 class="section-title">⚠ Delivery Exceptions</h2>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Exception ID</th>
+                                <th>Exception Type</th>
+                                <th>Priority</th>
+                                <th>Status</th>
+                                <th>Reported Date</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="exceptionTableBody">
+                            <tr>
+                                <td colspan="5" class="empty-state">
+                                    Loading exception information...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </section>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script>
+    /*
+     * This page reads the selected shipment ID from the URL.
+     *
+     * Example:
+     * shipment-details.html?id=9
+     *
+     * API paths below are examples based on common Spring Boot
+     * REST patterns. If your controller uses different paths,
+     * update the API constants to match your actual backend.
+     */
+
+    const API_BASE = "http://localhost:8080/api";
+
+    const SHIPMENT_API = API_BASE + "/shipments";
+    const PACKAGE_API = API_BASE + "/packages";
+    const TRACKING_API = API_BASE + "/tracking";
+    const EXCEPTION_API = API_BASE + "/exceptions";
+
+    const params = new URLSearchParams(window.location.search);
+
+    const shipmentId =
+        params.get("id") ||
+        params.get("shipmentId");
+
+    function safeText(value) {
+        if (value === null || value === undefined || value === "") {
+            return "—";
+        }
+
+        return String(value);
+    }
+
+    function formatDate(value) {
+        if (!value) return "—";
+
+        const date = new Date(value);
+
+        if (Number.isNaN(date.getTime())) {
+            return String(value);
+        }
+
+        return date.toLocaleDateString("en-IN", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric"
+        });
+    }
+
+    function showMessage(text, type = "info") {
+        const element = document.getElementById("message");
+
+        element.textContent = text;
+        element.className = "message " + type;
+    }
+
+    function clearMessage() {
+        const element = document.getElementById("message");
+
+        element.textContent = "";
+        element.className = "message";
+    }
+
+    async function fetchJson(url) {
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            throw new Error("Request failed: " + response.status);
+        }
+
+        return await response.json();
+    }
+
+    function getValue(object, keys) {
+        for (const key of keys) {
+            if (object && object[key] !== undefined && object[key] !== null) {
+                return object[key];
+            }
+        }
+
+        return null;
+    }
+
+    function displayStatus(status) {
+        const value = safeText(status);
+        const lower = value.toLowerCase();
+
+        let className = "";
+
+        if (lower.includes("transit")) {
+            className = "transit";
+        } else if (
+            lower.includes("delay") ||
+            lower.includes("exception")
+        ) {
+            className = "delayed";
+        }
+
+        return '<span class="status-pill ' + className + '">' +
+            escapeHtml(value) +
+            '</span>';
+    }
+
+    function escapeHtml(value) {
+        return String(value)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    async function loadShipment() {
+        clearMessage();
+
+        if (!shipmentId) {
+            document.getElementById("shipmentLoading").textContent =
+                "No shipment ID was provided.";
+
+            document.getElementById("trackingLoading").textContent =
+                "Open this page from My Shipments to view tracking information.";
+
+            showMessage(
+                "Shipment ID is missing. Open this page using the View Details button from your shipments list.",
+                "info"
+            );
+
+            return;
+        }
+
+        document.getElementById("shipmentId").textContent = shipmentId;
+        document.getElementById("detailShipmentId").textContent = shipmentId;
+
+        try {
+            const shipment = await fetchJson(
+                SHIPMENT_API + "/" + encodeURIComponent(shipmentId)
+            );
+
+            renderShipment(shipment);
+            await loadPackages();
+            await loadTracking();
+            await loadExceptions();
+
+        } catch (error) {
+            console.error("Unable to load shipment:", error);
+
+            document.getElementById("shipmentLoading").textContent =
+                "Shipment details could not be loaded from the backend.";
+
+            document.getElementById("trackingLoading").textContent =
+                "Tracking information is currently unavailable.";
+
+            showMessage(
+                "Could not load shipment details. Check that Spring Boot is running and that the shipment API endpoint is correct.",
+                "error"
+            );
+        }
+    }
+
+    function renderShipment(shipment) {
+        const id = getValue(shipment, [
+            "shipmentId", "id"
+        ]);
+
+        const status = getValue(shipment, [
+            "status", "shipmentStatus", "deliveryStatus"
+        ]);
+
+        const originValue = getValue(shipment, [
+            "origin", "source", "originAddress", "sourceLocation"
+        ]);
+
+        const destinationValue = getValue(shipment, [
+            "destination", "destinationAddress", "destinationLocation"
+        ]);
+
+        const customer = getValue(shipment, [
+            "customerId", "customer"
+        ]);
+
+        const consignee = getValue(shipment, [
+            "consigneeId", "consignee"
+        ]);
+
+        const created = getValue(shipment, [
+            "createdDate", "createdAt", "shipmentDate"
+        ]);
+
+        const delivery = getValue(shipment, [
+            "expectedDeliveryDate", "deliveryDate", "expectedDelivery"
+        ]);
+
+        document.getElementById("shipmentId").textContent =
+            safeText(id ?? shipmentId);
+
+        document.getElementById("shipmentStatus").innerHTML =
+            displayStatus(status);
+
+        document.getElementById("expectedDelivery").textContent =
+            formatDate(delivery);
+
+        document.getElementById("detailShipmentId").textContent =
+            safeText(id ?? shipmentId);
+
+        document.getElementById("detailStatus").textContent =
+            safeText(status);
+
+        document.getElementById("origin").textContent =
+            typeof originValue === "object"
+                ? safeText(getValue(originValue, ["city", "address", "name"]))
+                : safeText(originValue);
+
+        document.getElementById("destination").textContent =
+            typeof destinationValue === "object"
+                ? safeText(getValue(destinationValue, ["city", "address", "name"]))
+                : safeText(destinationValue);
+
+        document.getElementById("customerId").textContent =
+            typeof customer === "object"
+                ? safeText(getValue(customer, ["customerId", "id", "name"]))
+                : safeText(customer);
+
+        document.getElementById("consigneeId").textContent =
+            typeof consignee === "object"
+                ? safeText(getValue(consignee, ["consigneeId", "id", "name"]))
+                : safeText(consignee);
+
+        document.getElementById("createdDate").textContent =
+            formatDate(created);
+
+        document.getElementById("deliveryDate").textContent =
+            formatDate(delivery);
+
+        document.getElementById("shipmentLoading").style.display = "none";
+        document.getElementById("shipmentDetails").style.display = "grid";
+    }
+
+    async function loadPackages() {
+        const body = document.getElementById("packageTableBody");
+
+        try {
+            const result = await fetchJson(PACKAGE_API);
+
+            const packages = Array.isArray(result)
+                ? result
+                : result.content || result.data || [];
+
+            const filtered = packages.filter(item => {
+                const id = getValue(item, ["shipmentId"]);
+
+                const nested = getValue(item, ["shipment"]);
+
+                const nestedId = typeof nested === "object"
+                    ? getValue(nested, ["shipmentId", "id"])
+                    : nested;
+
+                return String(id ?? nestedId ?? "") === String(shipmentId);
+            });
+
+            if (!filtered.length) {
+                body.innerHTML =
+                    '<tr><td colspan="4" class="empty-state">' +
+                    'No package records were returned for this shipment.' +
+                    '</td></tr>';
+
+                return;
+            }
+
+            body.innerHTML = filtered.map(item => {
+                const packageId = getValue(item, ["packageId", "id"]);
+                const description = getValue(item, [
+                    "description", "packageDescription", "name"
+                ]);
+                const weight = getValue(item, ["weight", "weightKg"]);
+                const items = getValue(item, ["items", "itemDescription"]);
+
+                return `
+                    <tr>
+                        <td>${escapeHtml(safeText(packageId))}</td>
+                        <td>${escapeHtml(safeText(description))}</td>
+                        <td>${escapeHtml(safeText(weight))}</td>
+                        <td>${escapeHtml(
+                            Array.isArray(items)
+                                ? items.map(x => getValue(x, ["name", "description", "itemName"]) || "").join(", ") || "—"
+                                : safeText(items)
+                        )}</td>
+                    </tr>
+                `;
+            }).join("");
+
+        } catch (error) {
+            console.warn("Package API unavailable:", error);
+
+            body.innerHTML =
+                '<tr><td colspan="4" class="empty-state">' +
+                'Package details are unavailable. Check the package API endpoint.' +
+                '</td></tr>';
+        }
+    }
+
+    async function loadTracking() {
+        const loading = document.getElementById("trackingLoading");
+        const timeline = document.getElementById("trackingTimeline");
+
+        try {
+            const result = await fetchJson(
+                TRACKING_API + "/" + encodeURIComponent(shipmentId)
+            );
+
+            const events = Array.isArray(result)
+                ? result
+                : result.content || result.data || result.trackingEvents || [];
+
+            loading.style.display = "none";
+            timeline.style.display = "block";
+
+            if (!events.length) {
+                timeline.innerHTML =
+                    '<p class="timeline-description">' +
+                    'No tracking events are available for this shipment yet.' +
+                    '</p>';
+
+                return;
+            }
+
+            timeline.innerHTML = events.map(event => {
+                const status = getValue(event, [
+                    "status", "eventType", "description", "location"
+                ]);
+
+                const location = getValue(event, [
+                    "location", "currentLocation", "city"
+                ]);
+
+                const date = getValue(event, [
+                    "eventDate", "trackingDate", "timestamp", "createdAt", "date"
+                ]);
+
+                return `
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <h3 class="timeline-title">${escapeHtml(safeText(status))}</h3>
+                        <p class="timeline-description">${escapeHtml(safeText(location))}</p>
+                        <span class="timeline-date">${escapeHtml(formatDate(date))}</span>
+                    </div>
+                `;
+            }).join("");
+
+        } catch (error) {
+            console.warn("Tracking API unavailable:", error);
+
+            loading.textContent =
+                "Tracking history could not be loaded. Verify your tracking API endpoint.";
+        }
+    }
+
+    async function loadExceptions() {
+        const body = document.getElementById("exceptionTableBody");
+
+        try {
+            const result = await fetchJson(EXCEPTION_API);
+
+            const exceptions = Array.isArray(result)
+                ? result
+                : result.content || result.data || [];
+
+            const filtered = exceptions.filter(item => {
+                const id = getValue(item, ["shipmentId"]);
+
+                const nested = getValue(item, ["shipment"]);
+
+                const nestedId = typeof nested === "object"
+                    ? getValue(nested, ["shipmentId", "id"])
+                    : nested;
+
+                return String(id ?? nestedId ?? "") === String(shipmentId);
+            });
+
+            if (!filtered.length) {
+                body.innerHTML =
+                    '<tr><td colspan="5" class="empty-state">' +
+                    'No delivery exceptions were found for this shipment.' +
+                    '</td></tr>';
+
+                return;
+            }
+
+            body.innerHTML = filtered.map(item => `
+                <tr>
+                    <td>${escapeHtml(safeText(getValue(item, ["exceptionId", "id"])))}</td>
+                    <td>${escapeHtml(safeText(getValue(item, ["exceptionType", "type", "description"])))}</td>
+                    <td>${escapeHtml(safeText(getValue(item, ["priority"])))}</td>
+                    <td>${escapeHtml(safeText(getValue(item, ["status"])))}</td>
+                    <td>${escapeHtml(formatDate(getValue(item, ["reportedDate", "createdAt", "date"])))}</td>
+                </tr>
+            `).join("");
+
+        } catch (error) {
+            console.warn("Exception API unavailable:", error);
+
+            body.innerHTML =
+                '<tr><td colspan="5" class="empty-state">' +
+                'Exception information could not be loaded.' +
+                '</td></tr>';
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", loadShipment);
+</script>
+
+</body>
+</html>
